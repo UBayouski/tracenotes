@@ -81,6 +81,10 @@ backlog is `BACKLOG.md`.
 
 ## Process rules
 
-- Humans make every commit. Agents prepare changes and a suggested commit message, then stop.
+- Humans make every commit in interactive sessions. Agents prepare changes and a suggested commit
+  message, then stop. Exception: the workflows in `.github/workflows/` commit as a bot on `agent/*`
+  branches only. A human opens the pull request from such a branch and decides whether to merge.
+- Suggested commit messages carry no `Co-Authored-By` or other AI attribution trailer. Human
+  commits are the human's. Only bot commits on `agent/*` branches may name the agent.
 - One ticket per pull request where possible.
 - Each hackathon day gets a note in `journal/day-NN.md`.
