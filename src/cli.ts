@@ -39,6 +39,10 @@ async function readStdin(): Promise<string> {
 export interface CliIo {
   stdinIsTTY: boolean;
   readStdin: () => Promise<string>;
+  /** Where normal output goes; defaults to process.stdout. */
+  stdout?: (text: string) => void;
+  /** Where errors go; defaults to process.stderr. */
+  stderr?: (text: string) => void;
 }
 
 const defaultIo: CliIo = {
@@ -52,43 +56,45 @@ const defaultIo: CliIo = {
  * never reads stdin when a message argument is given or when stdin is a terminal.
  */
 export async function main(argv: string[], io: CliIo = defaultIo): Promise<number> {
+  const stdout = io.stdout ?? ((text: string) => { process.stdout.write(text); });
+  const stderr = io.stderr ?? ((text: string) => { process.stderr.write(text); });
   const [command, ...rest] = argv;
 
   if (!command || command === '--help' || command === '-h') {
-    process.stdout.write(USAGE);
+    stdout(USAGE);
     return command ? 0 : 2;
   }
 
   if (command === 'parse') {
     if (rest.length === 0 && io.stdinIsTTY) {
-      process.stderr.write(`error: no commit message given and stdin is a terminal\n\n${USAGE}`);
+      stderr(`error: no commit message given and stdin is a terminal\n\n${USAGE}`);
       return 2;
     }
     const message = rest.length > 0 ? rest.join(' ') : await io.readStdin();
     if (message.trim().length === 0) {
-      process.stderr.write('error: empty commit message\n');
+      stderr('error: empty commit message\n');
       return 2;
     }
-    process.stdout.write(`${JSON.stringify(parseCommit(message), null, 2)}\n`);
+    stdout(`${JSON.stringify(parseCommit(message), null, 2)}\n`);
     return 0;
   }
 
   if (command === 'log') {
     if (io.stdinIsTTY) {
-      process.stderr.write(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
+      stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
       return 2;
     }
     const stream = await io.readStdin();
     if (stream.trim().length === 0) {
-      process.stderr.write('error: empty git log stream on stdin\n');
+      stderr('error: empty git log stream on stdin\n');
       return 2;
     }
     // Malformed records are reported in the output, not as a failure: nothing vanishes.
-    process.stdout.write(`${JSON.stringify(parseGitLog(stream), null, 2)}\n`);
+    stdout(`${JSON.stringify(parseGitLog(stream), null, 2)}\n`);
     return 0;
   }
 
-  process.stderr.write(`error: unknown command "${command}"\n\n${USAGE}`);
+  stderr(`error: unknown command "${command}"\n\n${USAGE}`);
   return 2;
 }
 

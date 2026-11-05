@@ -84,19 +84,14 @@ describe('cli', () => {
 
 // T-026: terminal branch via injected io (no pseudo-terminal needed).
 async function runMain(argv: string[], io: { stdinIsTTY: boolean; readStdin: () => Promise<string> }) {
-  const origOut = process.stdout.write;
-  const origErr = process.stderr.write;
   let out = '';
   let err = '';
-  process.stdout.write = ((c: string) => { out += c; return true; }) as typeof process.stdout.write;
-  process.stderr.write = ((c: string) => { err += c; return true; }) as typeof process.stderr.write;
-  try {
-    const code = await main(argv, io);
-    return { code, out, err };
-  } finally {
-    process.stdout.write = origOut;
-    process.stderr.write = origErr;
-  }
+  const code = await main(argv, {
+    ...io,
+    stdout: text => { out += text; },
+    stderr: text => { err += text; },
+  });
+  return { code, out, err };
 }
 
 describe('cli with a terminal stdin', () => {
