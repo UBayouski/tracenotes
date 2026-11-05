@@ -7,7 +7,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | ID | Title | Day | Status |
 |---|---|---|---|
 | T-001 | Parse a Conventional Commits message | 01 Nov 02 | done |
-| T-002 | Read commits from a git log stream on stdin | 03 Nov 04 | ticket written |
+| T-002 | Read commits from a git log stream on stdin | 03 Nov 04 | done |
 | T-003 | Group commits into release-note sections | 04 Nov 05 | planned |
 | T-004 | Render Markdown notes with a source link on every entry | 05 Nov 06 | planned |
 | T-005 | Recommend the next version with the rule that produced it | 06 Nov 09 | planned |

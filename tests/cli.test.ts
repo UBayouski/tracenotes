@@ -1,6 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -48,6 +49,23 @@ describe('cli', () => {
     assert.equal(code, 2);
     assert.match(stderr, /unknown command "bogus"/);
     assert.match(stderr, /Usage:/);
+  });
+
+  // T-002 criterion 8
+  test('log parses a stream from stdin, reports malformed records, and exits 0', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const { code, stdout } = runCli(['log'], stream);
+    assert.equal(code, 0);
+    const result = JSON.parse(stdout);
+    assert.equal(result.count, 6);
+    assert.equal(result.commits.length, 5);
+    assert.equal(result.malformed.length, 1);
+  });
+
+  test('log with empty stdin exits 2', () => {
+    const { code, stderr } = runCli(['log'], '');
+    assert.equal(code, 2);
+    assert.match(stderr, /empty git log stream/);
   });
 
   test('--help exits 0 and prints usage', () => {

@@ -28,4 +28,4 @@ Fields are separated by the ASCII unit separator (0x1F): full SHA, author name, 
 
 **Verification.** `npm run check`. New tests in `tests/gitlog.test.ts`, one per criterion. The README gains a "From git history" section showing the pipe command.
 
-**Status.** Ticket written on Day 3. Implementation follows on a branch once the repository is on GitHub, so the pull request can carry the Qodo review.
+**Status.** Implemented on Day 3. See `journal/day-03.md` for the criterion-by-criterion comparison.
