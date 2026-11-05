@@ -9,6 +9,7 @@
  * Exit codes: 0 success, 2 usage error.
  * This is the only module allowed to call process.exit or write to stdout/stderr directly.
  */
+import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
 
 const USAGE = `tracenotes - release notes with receipts
@@ -49,7 +50,9 @@ export async function main(argv: string[]): Promise<number> {
   return 2;
 }
 
-const invokedDirectly = process.argv[1] !== undefined && import.meta.url === new URL(`file:///${process.argv[1].replace(/\\/g, '/')}`).href;
+// pathToFileURL handles both POSIX paths and Windows drive letters; a hand-built
+// `file:///` prefix does not, because POSIX paths already start with `/`.
+const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokedDirectly) {
   main(process.argv.slice(2)).then(code => { process.exitCode = code; });
 }

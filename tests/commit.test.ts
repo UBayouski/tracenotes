@@ -57,6 +57,23 @@ describe('header', () => {
     assert.equal(c.conventional, false);
   });
 
+  test('rejects a whitespace-only scope', () => {
+    const c = parseCommit('feat( ): blank scope');
+    assert.equal(c.conventional, false);
+    assert.equal(c.scope, null);
+  });
+
+  test('rejects a scope with leading or trailing whitespace', () => {
+    assert.equal(parseCommit('feat( parser): x').conventional, false);
+    assert.equal(parseCommit('feat(parser ): x').conventional, false);
+  });
+
+  test('accepts a scope with an inner space', () => {
+    const c = parseCommit('feat(release notes): x');
+    assert.equal(c.conventional, true);
+    assert.equal(c.scope, 'release notes');
+  });
+
   test('rejects an empty description', () => {
     const c = parseCommit('feat: ');
     assert.equal(c.conventional, false);
@@ -99,6 +116,11 @@ describe('body', () => {
     const c = parseCommit('feat: x\n\nFirst paragraph.\n\nSecond paragraph\nwith two lines.');
     assert.equal(c.body, 'First paragraph.\n\nSecond paragraph\nwith two lines.');
     assert.deepEqual(c.footers, []);
+  });
+
+  test('keeps leading indentation inside a paragraph', () => {
+    const c = parseCommit('feat: x\n\n    first\n    second\n\nAfter.');
+    assert.equal(c.body, '    first\n    second\n\nAfter.');
   });
 
   test('a paragraph that looks like prose is not a footer', () => {

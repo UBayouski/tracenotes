@@ -46,7 +46,9 @@ export interface ParsedCommit {
   issueRefs: number[];
 }
 
-const HEADER_RE = /^(?<type>[A-Za-z][A-Za-z0-9-]*)(?:\((?<scope>[^()]+)\))?(?<bang>!)?: (?<subject>\S.*)$/;
+// Scope must be non-empty and must not start or end with whitespace, so "feat(): x" and
+// "feat( ): x" are both non-conventional rather than silently scope-less.
+const HEADER_RE = /^(?<type>[A-Za-z][A-Za-z0-9-]*)(?:\((?<scope>[^()\s](?:[^()]*[^()\s])?)\))?(?<bang>!)?: (?<subject>\S.*)$/;
 const PR_SUFFIX_RE = /\s*\(#(?<pr>\d+)\)\s*$/;
 // A footer line is either "Token: value" or "Token #value". Tokens use "-" instead of spaces,
 // except the special "BREAKING CHANGE".
@@ -64,8 +66,11 @@ function normalize(message: string): string {
   return message.replace(/\r\n?/g, '\n').replace(/[ \t]+$/gm, '').replace(/\n+$/, '').replace(/^\n+/, '');
 }
 
+// Paragraphs are separated by blank lines. Only the separating newlines are removed;
+// leading indentation inside a paragraph (for example an indented code block) is kept.
+// Trailing whitespace on each line was already removed by normalize().
 function splitParagraphs(text: string): string[] {
-  return text.split(/\n{2,}/).map(p => p.trim()).filter(p => p.length > 0);
+  return text.split(/\n{2,}/).map(p => p.replace(/^\n+|\n+$/g, '')).filter(p => p.length > 0);
 }
 
 interface FooterMatch {
@@ -136,7 +141,7 @@ export function parseCommit(message: string): ParsedCommit {
   const h = HEADER_RE.exec(header);
   const conventional = h !== null;
   const type = h?.groups?.['type']?.toLowerCase() ?? null;
-  const scope = h?.groups?.['scope']?.trim() ?? null;
+  const scope = h?.groups?.['scope'] ?? null;
   const bang = h?.groups?.['bang'] === '!';
   const subject = (h?.groups?.['subject'] ?? header).trim();
 
@@ -169,7 +174,7 @@ export function parseCommit(message: string): ParsedCommit {
     raw,
     conventional,
     type,
-    scope: scope && scope.length > 0 ? scope : null,
+    scope,
     breaking: bang || breakingNotes.length > 0,
     subject,
     prNumber,
