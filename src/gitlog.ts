@@ -51,9 +51,11 @@ const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2
  * Parse one record (the text between two record separators) into a commit or a malformed entry.
  */
 function parseRecord(raw: string): LoggedCommit | MalformedRecord {
-  // git prints a newline after each record, so the next record starts with "\n". That
-  // leading whitespace belongs to the stream framing, not to the SHA field.
-  const text = raw.replace(/^\s+/, '');
+  // git prints a newline after each record, so the next record starts with "\n" (or "\r\n"
+  // when a Windows shell re-encodes the pipe). Only that framing is removed. Any other leading
+  // character, such as a space or tab, stays in the SHA field and fails validation below, so a
+  // corrupted record is reported rather than silently accepted.
+  const text = raw.replace(/^(?:\r?\n)+/, '');
   const fields = text.split(FIELD_SEPARATOR);
   if (fields.length < 4) {
     return { raw, reason: 'missing fields' };
@@ -92,7 +94,11 @@ export function parseGitLog(stream: string): GitLogResult {
   const commits: LoggedCommit[] = [];
   const malformed: MalformedRecord[] = [];
 
-  for (const raw of stream.split(RECORD_SEPARATOR)) {
+  // Windows PowerShell 5.1 prepends a UTF-8 byte order mark when piping to a native process.
+  // It is stream framing, not part of the first SHA, so it is removed once here.
+  const input = stream.startsWith('﻿') ? stream.slice(1) : stream;
+
+  for (const raw of input.split(RECORD_SEPARATOR)) {
     // The text after the final terminator is framing (usually "\n"), not a record.
     if (raw.trim().length === 0) continue;
     const entry = parseRecord(raw);

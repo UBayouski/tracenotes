@@ -102,6 +102,29 @@ describe('parseGitLog', () => {
     assert.equal(squash?.message.subject, 'detect direct invocation');
   });
 
+  test('only framing newlines are stripped; a space or tab before the SHA makes the record malformed', () => {
+    const record = (prefix: string) =>
+      `${prefix}${SHA1}${FIELD_SEPARATOR}A${FIELD_SEPARATOR}2026-01-01T00:00:00Z${FIELD_SEPARATOR}fix: a${RECORD_SEPARATOR}`;
+    for (const framing of ['\n', '\r\n', '\n\n']) {
+      const ok = parseGitLog(record(framing));
+      assert.equal(ok.commits.length, 1, `framing ${JSON.stringify(framing)}`);
+      assert.equal(ok.malformed.length, 0);
+    }
+    for (const junk of [' ', '\t', '\n ']) {
+      const bad = parseGitLog(record(junk));
+      assert.equal(bad.commits.length, 0, `prefix ${JSON.stringify(junk)}`);
+      assert.equal(bad.malformed.length, 1);
+      assert.match(bad.malformed[0]?.reason ?? '', /invalid sha/);
+    }
+  });
+
+  test('a leading UTF-8 byte order mark (PowerShell pipes) is ignored', () => {
+    const result = parseGitLog(`﻿${basic}`);
+    assert.equal(result.commits.length, 5);
+    assert.equal(result.malformed.length, 1);
+    assert.equal(result.commits[0]?.sha, SHA1);
+  });
+
   test('a message containing an extra field separator is kept whole', () => {
     const stream = `${SHA1}${FIELD_SEPARATOR}A${FIELD_SEPARATOR}2026-01-01T00:00:00Z${FIELD_SEPARATOR}fix: a${FIELD_SEPARATOR}b${RECORD_SEPARATOR}\n`;
     const result = parseGitLog(stream);

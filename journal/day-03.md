@@ -64,9 +64,28 @@ Next ticket: produce the fixture first, then write the criteria against it.
 
 ## Qodo review
 
-_TODO after the PR review._
+One finding on the first review (recommended, correctness): **malformed hashes enter the commit
+list**. `parseRecord` stripped all leading whitespace before validating the SHA, so a record
+with a space or tab in front of the hash passed as a commit instead of landing in `malformed`.
+Correct, and it contradicted criterion 2 as written. My own criterion check had not noticed
+because the fixture had no such record.
+
+The fix turned out to be more interesting than the finding. Narrowing the strip to framing
+newlines only (`\n` or `\r\n`) made the Git Bash pipe still parse all 8 commits, but the
+PowerShell 5.1 pipe reported 1 malformed record: the first SHA now began with U+FEFF.
+PowerShell prepends a UTF-8 byte order mark when piping to a native process, and JavaScript's
+`\s` happens to match U+FEFF, so the loose strip had been hiding a real input artifact. The
+final change strips a leading BOM once per stream, documented as framing, and keeps the
+per-record strip narrow. Two tests added: a tab or space before the SHA is reported as
+malformed, and a BOM-prefixed stream parses normally.
+
+**Useful.** The finding was small but exact, and chasing it exposed an undocumented dependency
+on a Windows shell quirk that would have surfaced as a confusing bug report later.
+
+**Missed.** The BOM itself. The reviewer flagged the over-broad strip but not what it was
+accidentally compensating for. Fair: that only shows up when you run the pipe on Windows.
 
 ## Evidence
 
-- PR: _TODO_
-- Qodo review: _TODO_
+- PR: https://github.com/UBayouski/tracenotes/pull/3
+- Qodo review: 1 finding on `db554e5`, fixed with tests in the follow-up commit.
