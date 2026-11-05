@@ -63,6 +63,9 @@ agent branch returned immediately with the error line and usage. Criterion 2 con
 - Every workflow change is a PR to `main`, since issue events only run workflows from the
   default branch. Three human round trips for one automated job so far.
 - Opening PR 7 from the bot's link, and commenting `@claude` to start the fix. Both deliberate.
+- Guard test: `@claude test` on PR 8, a human branch. The fix workflow ran for 8 seconds, made no
+  model call, and ended with "Skipped: head branch 'day-04-journal' is not agent/*; bot commits
+  are limited to agent branches." The PR 5 finding, verified live.
 - Commenting `/review` so Qodo would look at the bot's fix commit. Not deliberate: Qodo does
   not auto-review pushes by a bot account, so the fix loop has a human step in the middle that
   the brief's "fix confirmed problems, then repeat the checks and review" assumes away.
@@ -71,7 +74,9 @@ agent branch returned immediately with the error line and usage. Criterion 2 con
   handler runs, and `push_trigger_ignore_bot_commits = true` skips push triggers for bot commits
   on top of that. Posting `/review` from the workflow would not help either, since that comment
   would come from a bot too. Fix: `.pr_agent.toml` at the repo root sets both to `false`. To be
-  verified on the next agent PR.
+  verified on the next agent PR. Qodo's review of that config (PR 8) added that the shipped
+  default for `ignore_bot_pr` lives under `[github]`, not `[github_app]`, and some versions read
+  only one section; the key is now set in both.
 - The manual terminal check for criterion 2.
 
 ## Qodo review
