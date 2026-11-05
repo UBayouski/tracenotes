@@ -68,6 +68,7 @@ repository or make an HTTP request.
 - ESM TypeScript executed directly by Node. Import local modules with the `.ts` extension.
 - Only erasable TypeScript syntax: no `enum`, no `namespace`, no parameter properties, no `const enum`. `tsconfig.json` enforces this with `erasableSyntaxOnly`.
 - `src/cli.ts` is the only module that may touch `process.stdout`, `process.stderr`, or `process.exitCode`. Library code returns values or throws.
+- The CLI is tested as a child process in `tests/cli.test.ts`. Any change to argument handling, stdin reading, exit codes, or the direct-invocation check adds or updates a case there. Function-level tests of what the CLI calls do not count as CLI coverage. (Day 1 review lesson: an entry-point bug passed every unit test and would have made the CLI a no-op on Linux.)
 - Prefer small pure functions. Keep I/O at the edges.
 - Public functions have a doc comment stating inputs, outputs, and failure behavior.
 - Commit messages follow Conventional Commits. The project parses its own history, so malformed messages show up in its own notes.

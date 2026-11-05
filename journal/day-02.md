@@ -25,12 +25,28 @@ Runner-up: **The Nothing Vanishes Rule** (no commit in a range is dropped silent
 for the same reason, from the other side: the first rule guards against invented lines, the
 second guards against missing ones.
 
+## Qodo review of the PR
+
+PR 2 carried only documentation, and the review still produced two findings:
+
+| # | Level | Finding | Verdict |
+|---|---|---|---|
+| 1 | recommended | The Day 1 journal says CLI coverage rules belong in AGENTS.md, but AGENTS.md had no such rule. | Real. A cross-document consistency check, which a diff-only reviewer would not make. Added a code convention requiring child-process CLI tests. |
+| 2 | informational | Files already committed with CRLF would stay mixed after the LF policy. | False positive for this repository. `core.autocrlf=true` normalized every commit; `git ls-files --eol` shows all 19 tracked files as LF in the index. Correct reasoning, wrong premise. |
+
+**Useful.** Finding 1 shows the reviewer reads the whole PR as a set of claims, not only the
+diff. The journal made a promise and the rules did not keep it.
+
+**Questioned.** Finding 2. The fix was to verify, not to change anything. Worth noting because
+a less careful response would have been a pointless renormalize commit.
+
 ## Qodo Review Standards
 
-_TODO: after push, check Qodo Review Standards for the imported rules. Note whether all five
+_TODO after merge: check Review Standards for the imported rules. Note whether all five
 appeared, whether any needed activation, and whether "Import rules and skills" was required._
 
 ## Evidence
 
-- AGENTS.md link: _TODO after push_
+- AGENTS.md: https://github.com/UBayouski/tracenotes/blob/main/AGENTS.md
+- PR: https://github.com/UBayouski/tracenotes/pull/2
 - Day 2 Discussion post: _TODO_
