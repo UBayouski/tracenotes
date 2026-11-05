@@ -1,0 +1,73 @@
+# Day 4: the factory's first automated job.
+#
+# Trigger: a human adds the label `ready-for-agent` to a GitHub issue that mirrors a ticket in
+# tickets/. The agent reads the issue and AGENTS.md, implements the change, runs `npm run check`,
+# and commits on a branch named agent/issue-<n>-<slug>. It does not open the PR: the run ends with
+# a prefilled "open pull request" link in the issue comment, and a human opens it so Qodo reviews
+# it. Fixes for Qodo findings are requested by mentioning @claude on the PR (agent-fix.yml).
+#
+# Guard rails: one issue per run, --max-turns as the retry budget, a job timeout, and an explicit
+# instruction to stop and report when checks fail three times.
+name: Agent picks up a ticket
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: agent-ticket-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  implement:
+    if: github.event.label.name == 'ready-for-agent'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run the agent on the ticket
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          label_trigger: ready-for-agent
+          branch_prefix: agent/
+          branch_name_template: "{{prefix}}issue-{{entityNumber}}-{{description}}"
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(npm run check),Bash(npm test),Bash(npm run typecheck),Bash(node src/cli.ts:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*)"
+          prompt: |
+            You are the implementation agent for tracenotes. One ticket, one branch, one change.
+
+            1. Read AGENTS.md completely. Its rules apply to everything you write.
+            2. Read the issue you were triggered from: title, body, acceptance criteria. If the body
+               names a ticket file under tickets/, read that too. The ticket is the specification.
+               Do not widen it.
+            3. Implement the change. Add tests for every acceptance criterion. Keep runtime
+               dependencies at zero.
+            4. Run `npm run check`. If it fails, fix and rerun. After three failed attempts, stop:
+               commit nothing further, and report what failed verbatim in your comment.
+            5. When checks pass, commit with a Conventional Commits message that ends with the
+               issue reference (for example `fix(cli): print usage when stdin is a terminal (#12)`).
+            6. In your final comment, list every acceptance criterion with met / not met and the
+               test that proves it, the summary line of `npm run check`, and anything the ticket
+               left undefined that you decided yourself.
+
+            A human opens the pull request from your branch and merges it. Do not merge, rebase,
+            tag, or touch main.
