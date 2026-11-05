@@ -22,13 +22,36 @@ criteria, carried forward from the Day 1 and Day 3 journals.
 
 ## Run log
 
-_TODO after the run: what started, what it delivered, checks, review results, retries, blockers._
+| # | Time (UTC) | What happened | Outcome |
+|---|---|---|---|
+| 1 | 16:47 | Label added. Run queued 4 seconds later. | Never started. GitHub Actions incident opened at 16:50 ("workflow runs may experience delays or errors when starting"), resolved 17:42. The run stayed `queued` with zero jobs and could not be cancelled from the UI or the API. A zombie. |
+| 2 | 17:45 | Label removed and re-added by hand. New run started in seconds. | Failed in 26 s: "Claude Code is not installed on this repository." The action needs the Claude GitHub App for its bot identity; the OAuth secret only covers the model side. Fixed by installing the app on the repo. |
+| 2b | 17:48 | Re-run of the same event after the app install. | "Success" with nothing to show: 19 turns, 47 s, 6 permission denials, no branch, no comment, no commit. Cost 0.20 USD. |
+
+Why 2b did nothing: giving the action a `prompt` selects its **agent mode**. Agent mode does not
+create a branch, does not post a tracking comment, does not inject the issue text, and does not
+allow git add/commit/push. Our prompt said "read the issue you were triggered from" and the agent
+had no issue number and no tool to fetch one; its six denied tool calls were attempts to get at
+the issue or at git. It then reported success because, from its point of view, it had done what
+it could. The fix is `track_progress: true`, which forces **tag mode** on issue events: tag mode
+fetches the issue, creates the `agent/*` branch, posts a progress comment, allows the git
+commands, and appends our prompt as custom instructions.
+
+Lesson for the brief's "set a retry limit and stop for help": a green check is not evidence.
+The run log said success; the repository said nothing happened. The journal and the issue
+comment are the evidence, not the workflow status.
 
 ## What still needed me
 
 - Opening the PR. The action commits to a branch and leaves a prefilled "create PR" link. This
   is a deliberate fit with the workspace rule that a human owns every PR and merge.
-- _TODO after the run._
+- Un-sticking the first run after the GitHub incident: remove and re-add the label.
+- Installing the Claude GitHub App. Not mentioned in the action's quickstart unless you use
+  `/install-github-app` from the CLI, which we did not.
+- Diagnosing the silent no-op run: reading the action's source (`modes/detector.ts`,
+  `modes/agent/index.ts`, `modes/tag/index.ts`) to learn that `prompt` alone means agent mode.
+- Every workflow change is a PR to `main`, since issue events only run workflows from the
+  default branch. Three human round trips for one automated job so far.
 
 ## Qodo review
 
