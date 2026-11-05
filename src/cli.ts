@@ -22,6 +22,9 @@ Usage:
                                 Produce it with:
                                 git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' <range>
   tracenotes --help             Show this help.
+
+parse (without a message) and log read stdin only when it is not a terminal.
+Pipe or redirect input to them; in an interactive shell they print this usage and exit 2.
 `;
 
 async function readStdin(): Promise<string> {
@@ -32,7 +35,23 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString('utf8');
 }
 
-export async function main(argv: string[]): Promise<number> {
+/** Process input seen by the CLI; injectable so the terminal branch is testable without a pty. */
+export interface CliIo {
+  stdinIsTTY: boolean;
+  readStdin: () => Promise<string>;
+}
+
+const defaultIo: CliIo = {
+  get stdinIsTTY() { return process.stdin.isTTY === true; },
+  readStdin,
+};
+
+/**
+ * Runs the CLI. Inputs: argv without the node/script entries, and an optional `io`
+ * (defaults to the real process stdin). Returns the exit code (0 ok, 2 usage error);
+ * never reads stdin when a message argument is given or when stdin is a terminal.
+ */
+export async function main(argv: string[], io: CliIo = defaultIo): Promise<number> {
   const [command, ...rest] = argv;
 
   if (!command || command === '--help' || command === '-h') {
@@ -41,7 +60,11 @@ export async function main(argv: string[]): Promise<number> {
   }
 
   if (command === 'parse') {
-    const message = rest.length > 0 ? rest.join(' ') : await readStdin();
+    if (rest.length === 0 && io.stdinIsTTY) {
+      process.stderr.write(`error: no commit message given and stdin is a terminal\n\n${USAGE}`);
+      return 2;
+    }
+    const message = rest.length > 0 ? rest.join(' ') : await io.readStdin();
     if (message.trim().length === 0) {
       process.stderr.write('error: empty commit message\n');
       return 2;
@@ -51,7 +74,11 @@ export async function main(argv: string[]): Promise<number> {
   }
 
   if (command === 'log') {
-    const stream = await readStdin();
+    if (io.stdinIsTTY) {
+      process.stderr.write(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
+      return 2;
+    }
+    const stream = await io.readStdin();
     if (stream.trim().length === 0) {
       process.stderr.write('error: empty git log stream on stdin\n');
       return 2;
