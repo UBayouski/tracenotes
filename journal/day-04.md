@@ -41,6 +41,16 @@ Lesson for the brief's "set a retry limit and stop for help": a green check is n
 The run log said success; the repository said nothing happened. The journal and the issue
 comment are the evidence, not the workflow status.
 
+| # | Time (UTC) | What happened | Outcome |
+|---|---|---|---|
+| 3 | 18:11 | PR 6 merged (`track_progress: true`). Label toggled again. | **Worked.** 53 s. `claude[bot]` posted a progress comment on issue #4, created `agent/issue-4-t-026-print-usage-instead-of`, committed `8a5c41a` (`src/cli.ts` +30/-3, `tests/cli.test.ts` +55), `npm run check` 51/51, and left a "Create PR" link. Its comment had a 7-row criteria table with the proving test per row and four decisions the ticket left open. |
+| 4 | 18:24 | Human opened PR 7 from the link. Qodo reviewed within a minute. | One finding, recommended, maintainability: the test helper patched `process.stdout.write` and `process.stderr.write`, which puts process-stream access outside `src/cli.ts`, against the imported AGENTS.md rule. Fair: the agent injected input and then reached for global mutation for output. |
+| 5 | 18:25 | Human commented `@claude address the Qodo review findings on this PR`. | Fix workflow ran; the `agent/*` guard passed. 51 s later `claude[bot]` pushed `4ee70d0`: optional `stdout`/`stderr` sinks on `CliIo`, `main` writes through them, tests pass capturing sinks, the `try/finally` global restore is gone. 51/51. Qodo's own comments also fired the workflow and were skipped by the `@claude` condition, as designed. |
+| 6 | 18:27 | Waited for Qodo to re-review the bot's push. | **Nothing.** Qodo re-reviewed human pushes on PRs 3 and 5 within a minute; it did not react to a push by `claude[bot]`. A human `/review` comment ran it on `4ee70d0`: finding attributed as implemented, zero new findings. |
+
+Manual check the agent could not run (no TTY in CI): `node src/cli.ts log` in Git Bash on the
+agent branch returned immediately with the error line and usage. Criterion 2 confirmed by hand.
+
 ## What still needed me
 
 - Opening the PR. The action commits to a branch and leaves a prefilled "create PR" link. This
@@ -52,6 +62,17 @@ comment are the evidence, not the workflow status.
   `modes/agent/index.ts`, `modes/tag/index.ts`) to learn that `prompt` alone means agent mode.
 - Every workflow change is a PR to `main`, since issue events only run workflows from the
   default branch. Three human round trips for one automated job so far.
+- Opening PR 7 from the bot's link, and commenting `@claude` to start the fix. Both deliberate.
+- Commenting `/review` so Qodo would look at the bot's fix commit. Not deliberate: Qodo does
+  not auto-review pushes by a bot account, so the fix loop has a human step in the middle that
+  the brief's "fix confirmed problems, then repeat the checks and review" assumes away.
+  Cause, from the reviewer's open-source code (`pr_agent/servers/github_app.py`): with the
+  default `ignore_bot_pr = true` every webhook event from a bot sender is dropped before any
+  handler runs, and `push_trigger_ignore_bot_commits = true` skips push triggers for bot commits
+  on top of that. Posting `/review` from the workflow would not help either, since that comment
+  would come from a bot too. Fix: `.pr_agent.toml` at the repo root sets both to `false`. To be
+  verified on the next agent PR.
+- The manual terminal check for criterion 2.
 
 ## Qodo review
 
@@ -71,11 +92,16 @@ in the first run whether the agent can actually commit with that tool list.
 
 ## Lesson
 
-_TODO._
+The automation itself took one run to work once the mode was right. Everything else was the
+seams between tools: a platform incident, a missing app install, a mode detector that reads
+`prompt` as "scripted, not conversational", and a reviewer that ignores bots. None of those are
+visible from the workflow file, and all of them produced a green or silent result rather than
+an error. Design the loop so each hop leaves a human-readable trace (comment, commit, review)
+and check the traces, not the statuses.
 
 ## Evidence
 
-- Workflow: https://github.com/UBayouski/tracenotes/blob/main/.github/workflows/agent-ticket.yml
+- Workflows: https://github.com/UBayouski/tracenotes/blob/main/.github/workflows/agent-ticket.yml and `agent-fix.yml`
 - Issue: https://github.com/UBayouski/tracenotes/issues/4 (created with `gh issue create --body-file`, label `ready-for-agent` created with `gh label create`)
-- PR: _TODO_
-- Run: _TODO_
+- Runs: zombie https://github.com/UBayouski/tracenotes/actions/runs/42068078500, no-op https://github.com/UBayouski/tracenotes/actions/runs/42077789414, working https://github.com/UBayouski/tracenotes/actions/runs/42081802646, fix https://github.com/UBayouski/tracenotes/actions/runs/42084151374
+- PRs: workflows https://github.com/UBayouski/tracenotes/pull/5 and https://github.com/UBayouski/tracenotes/pull/6, the agent's work https://github.com/UBayouski/tracenotes/pull/7
