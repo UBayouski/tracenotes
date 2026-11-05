@@ -32,7 +32,19 @@ _TODO after the run: what started, what it delivered, checks, review results, re
 
 ## Qodo review
 
-_TODO._
+PR 5 (the workflows themselves, no product code). One finding on `71fb0c8`, recommended,
+correctness: **bot fixes can land on human branches**. `agent-fix.yml` accepted `@claude` on any
+pull request, so a maintainer asking for a fix on a human branch would have produced a bot
+commit outside the `agent/*` exception written into AGENTS.md in the same PR.
+
+Correct, and the same class of finding as PR 2: the reviewer read the rule and the workflow as
+one set of claims and found the contradiction. Fix: a guard step resolves the PR's head branch
+(from the event for review comments, via `gh pr view` for issue comments) and every later step
+runs only when it starts with `agent/`. Comments on plain issues are skipped too.
+
+**Missed, or not in scope:** nothing on `agent-ticket.yml`. The prompt there allows
+`Bash(git log:*)` and friends but the action's own git handling is what commits; worth watching
+in the first run whether the agent can actually commit with that tool list.
 
 ## Lesson
 

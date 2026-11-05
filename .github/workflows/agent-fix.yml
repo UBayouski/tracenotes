@@ -1,6 +1,10 @@
-# Companion to agent-ticket.yml: a human comments `@claude ...` on a PR or issue (for example
+# Companion to agent-ticket.yml: a human comments `@claude ...` on a pull request (for example
 # "@claude address the Qodo findings on this PR") and the agent pushes fixes to that PR's branch.
 # Qodo re-reviews the new commit. The human decides whether the review is clean enough to merge.
+#
+# Scope guard: the agent may only push to branches named agent/*, the ones agent-ticket.yml
+# creates (AGENTS.md, process rules). A comment on a PR from any other branch, or on a plain
+# issue, is logged and skipped so bot commits never land on a human's branch.
 name: Agent fixes review findings
 
 on:
@@ -22,18 +26,45 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - name: Allow only pull requests from agent/* branches
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          REVIEW_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          IS_PR_COMMENT: ${{ github.event.issue.pull_request != null }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request_review_comment" ]; then
+            ref="$REVIEW_HEAD_REF"
+          elif [ "$IS_PR_COMMENT" = "true" ]; then
+            ref="$(gh pr view "$ISSUE_NUMBER" --repo "$REPO" --json headRefName -q .headRefName)"
+          else
+            ref=""
+          fi
+          case "$ref" in
+            agent/*) echo "allowed=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "allowed=false" >> "$GITHUB_OUTPUT"
+               echo "::notice::Skipped: head branch '${ref:-none}' is not agent/*; bot commits are limited to agent branches." ;;
+          esac
+
+      - if: steps.guard.outputs.allowed == 'true'
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - if: steps.guard.outputs.allowed == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
 
-      - run: npm ci
+      - if: steps.guard.outputs.allowed == 'true'
+        run: npm ci
 
-      - uses: anthropics/claude-code-action@v1
+      - if: steps.guard.outputs.allowed == 'true'
+        uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: |
