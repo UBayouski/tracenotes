@@ -6,6 +6,11 @@
 # a prefilled "open pull request" link in the issue comment, and a human opens it so Qodo reviews
 # it. Fixes for Qodo findings are requested by mentioning @claude on the PR (agent-fix.yml).
 #
+# Mode: `track_progress: true` forces the action's tag mode on issue events. Tag mode is what
+# creates the branch, posts the tracking comment, injects the issue text, and allows git
+# add/commit/push. Without it a `prompt` selects agent mode, which does none of that: the first
+# run ended "successfully" after 19 turns with nothing committed (journal/day-04.md).
+#
 # Guard rails: one issue per run, --max-turns as the retry budget, a job timeout, and an explicit
 # instruction to stop and report when checks fail three times.
 name: Agent picks up a ticket
@@ -31,11 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -47,27 +52,30 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           label_trigger: ready-for-agent
+          track_progress: true
           branch_prefix: agent/
           branch_name_template: "{{prefix}}issue-{{entityNumber}}-{{description}}"
+          # Tag mode already allows Read/Glob/Grep, file edits inside the workspace, git
+          # add/commit/push, and the comment tool. This list only adds the project's checks.
           claude_args: |
             --max-turns 40
-            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(npm run check),Bash(npm test),Bash(npm run typecheck),Bash(node src/cli.ts:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*)"
+            --allowedTools "Bash(npm run check),Bash(npm test),Bash(npm run typecheck),Bash(node src/cli.ts:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*)"
           prompt: |
             You are the implementation agent for tracenotes. One ticket, one branch, one change.
 
             1. Read AGENTS.md completely. Its rules apply to everything you write.
-            2. Read the issue you were triggered from: title, body, acceptance criteria. If the body
-               names a ticket file under tickets/, read that too. The ticket is the specification.
-               Do not widen it.
+            2. The issue above is the ticket. If its body names a ticket file under tickets/, read
+               that too. The ticket is the specification. Do not widen it.
             3. Implement the change. Add tests for every acceptance criterion. Keep runtime
                dependencies at zero.
             4. Run `npm run check`. If it fails, fix and rerun. After three failed attempts, stop:
                commit nothing further, and report what failed verbatim in your comment.
             5. When checks pass, commit with a Conventional Commits message that ends with the
-               issue reference (for example `fix(cli): print usage when stdin is a terminal (#12)`).
+               issue reference (for example `fix(cli): print usage when stdin is a terminal (#4)`)
+               and push to your branch.
             6. In your final comment, list every acceptance criterion with met / not met and the
                test that proves it, the summary line of `npm run check`, and anything the ticket
-               left undefined that you decided yourself.
+               left undefined that you decided yourself. Include the link to open the pull request.
 
             A human opens the pull request from your branch and merges it. Do not merge, rebase,
             tag, or touch main.
