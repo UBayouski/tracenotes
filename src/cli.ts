@@ -11,12 +11,16 @@
  */
 import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
+import { parseGitLog } from './gitlog.ts';
 
 const USAGE = `tracenotes - release notes with receipts
 
 Usage:
   tracenotes parse <message>    Parse a commit message and print JSON.
   tracenotes parse              Read the message from stdin.
+  tracenotes log                Parse a git log stream from stdin and print JSON.
+                                Produce it with:
+                                git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' <range>
   tracenotes --help             Show this help.
 `;
 
@@ -43,6 +47,17 @@ export async function main(argv: string[]): Promise<number> {
       return 2;
     }
     process.stdout.write(`${JSON.stringify(parseCommit(message), null, 2)}\n`);
+    return 0;
+  }
+
+  if (command === 'log') {
+    const stream = await readStdin();
+    if (stream.trim().length === 0) {
+      process.stderr.write('error: empty git log stream on stdin\n');
+      return 2;
+    }
+    // Malformed records are reported in the output, not as a failure: nothing vanishes.
+    process.stdout.write(`${JSON.stringify(parseGitLog(stream), null, 2)}\n`);
     return 0;
   }
 

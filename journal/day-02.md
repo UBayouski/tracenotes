@@ -42,8 +42,38 @@ a less careful response would have been a pointless renormalize commit.
 
 ## Qodo Review Standards
 
-_TODO after merge: check Review Standards for the imported rules. Note whether all five
-appeared, whether any needed activation, and whether "Import rules and skills" was required._
+Merging AGENTS.md to `main` did **not** import the rules by itself. Background activity showed
+repository sync and PR indexing complete, but no rule import. "Import rules and skills" was
+required, as the Day 2 brief anticipated.
+
+The import read `AGENTS.md` and produced **14 active rules**, not 5. Qodo split compound rules
+into atomic, checkable statements and also picked up the code conventions and the verification
+section:
+
+| Source in AGENTS.md | Rules Qodo created | Severity |
+|---|---|---|
+| Rule 1, No Orphan Notes | Link every emitted release-note entry to its source | High |
+| Rule 2, Nothing Vanishes | Account for every commit instead of silently dropping | High |
+| Rule 3, Explain Every Bump | Return the determining rule with every version recommendation; Return triggering commits with every version recommendation | High, High |
+| Rule 4, Zero Runtime Dependencies | Do not add runtime dependencies without a built-in justification ticket; Limit development dependencies to type checking | High, Medium |
+| Rule 5, Tests never touch network or live repo | Keep tests free of HTTP requests; Do not run git against the real repository from tests; Put git and GitHub access behind an interface with a fake | High, High, Medium |
+| Code conventions | Use `.ts` extensions for local module imports; Use only erasable TypeScript syntax; Confine process output and exit-code mutation to `cli.ts`; Test CLI boundary changes through a real child process | High, High, High, High |
+| Setup and verification | Cover code changes with tests in `tests/` | Medium |
+
+All 14 were active immediately; no manual activation was needed. Categories were assigned
+automatically (Correctness, Testability, Maintainability, Security). The CLI child-process rule
+added during PR 2's review round was imported too, so the import reads the merged file, not the
+original.
+
+Observations for Day 6 and Day 7:
+- The split is useful: "Explain Every Bump" is really two checks, and the import made that
+  explicit.
+- Two imported rules are weaker than intended. "Limit development dependencies to type checking"
+  reads as Maintainability/Medium, but it is the enforcement half of rule 4. And "Cover code
+  changes with tests" came from a sentence in the setup section, not from a rule. Worth deciding
+  whether the setup section should be rule-shaped or not.
+- Nothing from the Process rules section (human commits, one ticket per PR, journal per day) was
+  imported. Those are not code-reviewable, which is the right outcome.
 
 ## Evidence
 

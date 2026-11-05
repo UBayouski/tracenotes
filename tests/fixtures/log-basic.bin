@@ -1,0 +1,20 @@
+1111111111111111111111111111111111111111Ada Lovelace2026-11-02T09:00:00+01:00feat: add parser
+
+2222222222222222222222222222222222222222Grace Hopper2026-11-03T10:30:00+01:00fix(cli): detect direct invocation (#1)
+
+3333333333333333333333333333333333333333Linus2026-11-03T11:00:00+01:00Merge pull request #1 from UBayouski/day-01-parse-commit
+
+ABCDEFMallory2026-11-04T12:00:00+01:00chore: this record has a bad sha
+
+5555555555555555555555555555555555555555Ada Lovelace2026-11-04T13:15:00Zfeat(parser)!: drop legacy footer syntax
+
+The old syntax allowed a colon without a space.
+
+    indented example
+    kept as is
+
+BREAKING CHANGE: colon must be followed by a space
+Refs: #4, #5
+
+6666666666666666666666666666666666666666BobTue Nov 4 14:00:00 2026docs: readme
+

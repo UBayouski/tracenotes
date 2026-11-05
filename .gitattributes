@@ -1,2 +1,4 @@
 # Normalize line endings: LF in the repository and in working copies on every platform.
 * text=auto eol=lf
+# Fixtures with control characters are binary; never normalize line endings.
+*.bin binary

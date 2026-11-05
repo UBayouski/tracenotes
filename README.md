@@ -8,9 +8,9 @@ in 30 Days". The tool is also the factory's own release-notes writer.
 
 ## Status
 
-Day 1 of 23. Current capability: parse a single Conventional Commits message into structured
-data, including scope, breaking-change markers, footers, issue references, and the pull request
-number from squash-merge subjects.
+Day 3 of 23. Current capabilities: parse a single Conventional Commits message into structured
+data (scope, breaking-change markers, footers, issue references, PR number from squash-merge
+subjects), and parse a whole `git log` stream into commits with SHA, author, and date.
 
 See `BACKLOG.md` for the plan and `journal/` for the daily log.
 
@@ -44,6 +44,20 @@ Multi-line messages can be piped on stdin:
 ```sh
 git log -1 --format=%B | node src/cli.ts parse
 ```
+
+### From git history
+
+tracenotes does not run git itself. Pipe a log stream in a fixed format and it returns every
+commit in the range, parsed, plus any record it could not read:
+
+```sh
+git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' v0.1.0..HEAD | node src/cli.ts log
+```
+
+The fields are SHA, author, ISO 8601 date, and full message, separated by the ASCII unit
+separator; records end with the record separator. Output has `commits`, `malformed` (with a
+reason per record), and `count`, which always equals the two lengths added together. Nothing
+in the range is dropped silently.
 
 ## Development
 
