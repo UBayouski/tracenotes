@@ -1,0 +1,20 @@
+# Qodo review settings for this repository.
+#
+# Day 4 finding: Qodo re-reviewed every human push within a minute but ignored the push made by
+# claude[bot] on PR 7 until a human commented /review. Two defaults cause that:
+#   ignore_bot_pr = true                   drops every webhook event whose sender is a bot
+#   push_trigger_ignore_bot_commits = true skips push triggers for commits authored by a bot
+# The agent-fix workflow pushes as claude[bot] on agent/* branches only, and a human still opens
+# and merges every PR, so letting Qodo see those pushes closes the fix-then-re-review loop
+# without removing the human from the merge.
+#
+# `ignore_bot_pr` is set in both sections on purpose. The shipped default lives under [github];
+# the GitHub App server reads GITHUB_APP.IGNORE_BOT_PR first and falls back to GITHUB.IGNORE_BOT_PR,
+# and older or newer versions may consult only one of them (Qodo review of PR 8).
+
+[github]
+ignore_bot_pr = false
+
+[github_app]
+ignore_bot_pr = false
+push_trigger_ignore_bot_commits = false
