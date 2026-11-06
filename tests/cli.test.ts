@@ -69,6 +69,25 @@ describe('cli', () => {
     assert.match(stderr, /empty git log stream/);
   });
 
+  // T-003 criterion 8
+  test('group prints ReleaseGroups, passes malformed through, exits 0', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const { code, stdout } = runCli(['group'], stream);
+    assert.equal(code, 0);
+    const result = JSON.parse(stdout);
+    assert.equal(result.total, 5);
+    assert.equal(result.malformed.length, 1);
+    assert.equal(result.ignored.length, 1);
+    assert.equal(result.sections[0].title, 'Breaking changes');
+  });
+
+  test('group with empty stdin exits 2', () => {
+    const { code, stdout, stderr } = runCli(['group'], '');
+    assert.equal(code, 2);
+    assert.equal(stdout, '');
+    assert.match(stderr, /empty git log stream/);
+  });
+
   test('--help exits 0 and prints usage', () => {
     const { code, stdout } = runCli(['--help']);
     assert.equal(code, 0);
@@ -106,6 +125,13 @@ describe('cli with a terminal stdin', () => {
 
   test('log prints error and usage, exits 2, does not read stdin', async () => {
     const { code, err } = await runMain(['log'], { stdinIsTTY: true, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.match(err, /^error: no git log stream on stdin \(stdin is a terminal\)\n/);
+    assert.match(err, /Usage:/);
+  });
+
+  test('group prints error and usage, exits 2, does not read stdin', async () => {
+    const { code, err } = await runMain(['group'], { stdinIsTTY: true, readStdin: failRead });
     assert.equal(code, 2);
     assert.match(err, /^error: no git log stream on stdin \(stdin is a terminal\)\n/);
     assert.match(err, /Usage:/);

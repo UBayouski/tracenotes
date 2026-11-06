@@ -12,6 +12,7 @@
 import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
 import { parseGitLog } from './gitlog.ts';
+import { groupGitLog } from './group.ts';
 
 const USAGE = `tracenotes - release notes with receipts
 
@@ -21,9 +22,11 @@ Usage:
   tracenotes log                Parse a git log stream from stdin and print JSON.
                                 Produce it with:
                                 git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' <range>
+  tracenotes group              Group a git log stream (same input as log) into
+                                release-note sections and print JSON.
   tracenotes --help             Show this help.
 
-parse (without a message) and log read stdin only when it is not a terminal.
+parse (without a message), log and group read stdin only when it is not a terminal.
 Pipe or redirect input to them; in an interactive shell they print this usage and exit 2.
 `;
 
@@ -91,6 +94,21 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
     }
     // Malformed records are reported in the output, not as a failure: nothing vanishes.
     stdout(`${JSON.stringify(parseGitLog(stream), null, 2)}\n`);
+    return 0;
+  }
+
+  if (command === 'group') {
+    if (io.stdinIsTTY) {
+      stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
+      return 2;
+    }
+    const stream = await io.readStdin();
+    if (stream.trim().length === 0) {
+      stderr('error: empty git log stream on stdin\n');
+      return 2;
+    }
+    // Malformed records are passed through so they stay visible.
+    stdout(`${JSON.stringify(groupGitLog(parseGitLog(stream)), null, 2)}\n`);
     return 0;
   }
 
