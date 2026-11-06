@@ -64,10 +64,13 @@ repository or make an HTTP request.
 - Why: tests must be deterministic and run in any sandbox in under a few seconds.
 
 ### 6. Validate Before You Normalize
-A parser checks a field on the raw text it received, then normalizes. The only thing removed
-before validation is documented framing: the record separator, the newline git prints after a
-record, a leading byte order mark. Never `.trim()` or strip a field and then validate what is
-left, and never let normalization turn an invalid value into a valid-looking one.
+A parser checks a field on the raw text it received, then normalizes. The only changes allowed
+before validation are documented framing: the record separator, the newline git prints after a
+record, a leading byte order mark, `\r\n` to `\n` line-ending normalization, trailing whitespace
+at the end of a line, and blank lines at the start or end of a whole message. Never `.trim()`
+or strip a field and then validate what is left, and never let normalization turn an invalid
+value into a valid-looking one. A new kind of framing is added to this list, with a test, before
+a parser removes it.
 - Applies to: `src/commit.ts`, `src/gitlog.ts`, and every future parser of commit messages, git
   output, config files, or MCP tool input.
 - Why: three of the first nine review findings were this one mistake. A scope of `( )` was trimmed
@@ -95,9 +98,11 @@ backlog is `BACKLOG.md`.
 ## Process rules
 
 - Humans make every commit in interactive sessions. Agents prepare changes and a suggested commit
-  message, then stop. An agent may push a branch only with the human's explicit approval for that
-  specific push. Exception: the workflows in `.github/workflows/` commit as a bot on `agent/*`
-  branches only. A human opens the pull request from such a branch and decides whether to merge.
+  message, then stop. In an interactive session an agent may push a branch only with the human's
+  explicit approval for that specific push. Exception: the workflows in `.github/workflows/`
+  commit and push as a bot on `agent/*` branches without per-push approval; the human's
+  `ready-for-agent` label or `@claude` comment is the approval for that run. A human opens the
+  pull request from such a branch and decides whether to merge.
 - Suggested commit messages carry no `Co-Authored-By` or other AI attribution trailer. Human
   commits are the human's. Only bot commits on `agent/*` branches may name the agent.
 - One ticket per pull request where possible.

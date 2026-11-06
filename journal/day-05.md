@@ -43,7 +43,26 @@ AGENTS.md), and that is what the post cites.
 
 ## Qodo review
 
-_TODO after the PR._
+PR 9, two findings on the first review, both recommended, both about wording in AGENTS.md:
+
+1. **Ticket agents may stop before pushing** (reliability). The new "push only with explicit
+   approval" rule would be read by the workflow agent too, since it reads AGENTS.md first, and
+   the workflow exception mentioned bot commits but not pushes. A literal agent would implement
+   the ticket and then wait for an approval nobody is there to give. Fixed: the exception now
+   says the workflows commit *and push* without per-push approval, and names the label or the
+   `@claude` comment as the approval for that run.
+2. **Valid commit messages fail the new rule** (maintainability). Rule 6 listed the framing a
+   parser may remove before validating, and the list missed one thing `parseCommit` already
+   does: `\r\n` to `\n` normalization before the header check (`src/commit.ts`). As written, a
+   valid CRLF commit message could not satisfy both rule 6 and the T-001 acceptance criteria.
+   Fixed: line-ending normalization is on the list, plus a sentence that new framing is added to
+   the list, with a test, before a parser removes it.
+
+Both are the rejected candidate 2 in action: a rule changed and the thing it governs did not
+match. The reviewer applies that check whether or not it is written down, which was the reason
+for rejecting it as a rule, and this PR is the evidence. Candidate 2 goes back on the list for
+a later day in a narrower form: "when a rule names what is allowed, the list must match the
+code that exists".
 
 ## Import check
 
