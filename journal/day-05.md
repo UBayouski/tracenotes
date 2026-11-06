@@ -93,3 +93,29 @@ author did. Rules written for the agent are also rules written for me.
 - CLI evidence: `qodo read rules list --state pending --json` → `{"totalCount":0}` before;
   `qodo read rules list --json` → 15 rules after import
 - Post: https://github.com/orgs/qodo-hackathon/discussions/7
+
+## Addendum, same evening: T-003 through the factory
+
+Issue #11 created from `tickets/T-003-group-commits-into-sections.md`, label added by hand.
+The run took 53 s on the second attempt (the first was a no-op; see the Day 4 note on agent
+mode) and produced `src/group.ts`, a `group` CLI command, 66 tests, and a 9/9 criteria table
+with six documented decisions on things the ticket left open. PR 12.
+
+Two firsts:
+
+- **Qodo re-reviewed a bot push on its own.** The `.pr_agent.toml` change from PR 8 works: the
+  second review started 19 seconds after `claude[bot]` pushed, no `/review` needed. The Day 4
+  gap is closed.
+- **The agent disagreed with the reviewer.** Qodo's one finding said an indented `  Merge ...`
+  header should be ignored as a merge; the code checks the raw header and sends it to
+  Unclassified. The agent read both files, decided the finding was wrong, added a test pinning
+  the behavior, and wrote "please overrule me if you disagree" instead of changing the code.
+  Its stated reason, rule 6, over-reaches: classification is not validation. The better reasons
+  are that git never indents a merge subject, and that surfacing an odd commit under
+  Unclassified with its SHA is safer than silently ignoring it. Human decision: keep the code,
+  dismiss as intentional with that explanation, recorded through the Qodo CLI.
+
+The ticket said "subject starts with `Merge `". The agent read "subject" as the raw header,
+the reviewer read it as the parsed, trimmed subject. Both readings were defensible; the ticket
+should have said which. Same lesson as Day 3: the edges of the input contract are where
+tickets go vague.

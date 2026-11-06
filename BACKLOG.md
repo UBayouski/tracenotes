@@ -8,7 +8,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 |---|---|---|---|
 | T-001 | Parse a Conventional Commits message | 01 Nov 02 | done |
 | T-002 | Read commits from a git log stream on stdin | 03 Nov 04 | done |
-| T-003 | Group commits into release-note sections | 03 Nov 04 | planned |
+| T-003 | Group commits into release-note sections | 03 Nov 04 (built Nov 06 via issue #11) | done |
 | T-004 | Render Markdown notes with a source link on every entry | 05 Nov 06 | planned |
 | T-005 | Recommend the next version with the rule that produced it | 06 Nov 09 | planned |
 | T-006 | Never drop a commit: Unclassified section and ignored counts | 07 Nov 10 | planned |
@@ -31,7 +31,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-023 | Author attribution with opt-out | spare | planned |
 | T-024 | Monorepo: filter commits by path and scope | spare | planned |
 | T-025 | Self-hosting: tracenotes generates its own CHANGELOG on tag | 21 Nov 30 | planned |
-| T-026 | Print usage instead of blocking when stdin is a terminal | 04 Nov 05 | planned |
+| T-026 | Print usage instead of blocking when stdin is a terminal | 04 Nov 05 | done |
 
 Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (submission).
 
