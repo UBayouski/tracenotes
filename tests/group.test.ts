@@ -104,4 +104,11 @@ describe('groupCommits', () => {
     assert.equal(g.ignored.length, 0);
     assert.equal(g.sections[0]!.title, 'Bug fixes');
   });
+
+  test('rule 6: an indented "Merge " header is not a merge commit; it stays visible as Unclassified', () => {
+    const g = groupStream(record(1, '  Merge branch x'));
+    assert.equal(g.ignored.length, 0);
+    assert.deepEqual(g.sections.map(s => s.title), ['Unclassified']);
+    assert.equal(g.total, 1);
+  });
 });
