@@ -66,11 +66,30 @@ code that exists".
 
 ## Import check
 
-_TODO after merge: run "Import rules and skills", confirm rule 6 appears with repository scope and
-active state, record the rule id._
+PR 9 merged as `02ce479`. "Import rules and skills" run by hand in the portal, as on Day 2.
+`qodo read rules list` then showed 15 rules, one new:
+
+- **4578695, "Validate raw parser fields before normalization"**: active, severity error,
+  category Correctness, scope `/ubayouski/tracenotes/`, source type Repository File.
+- Qodo rewrote the rule as a check procedure: trace each field from input to validation, verify
+  that trimming, stripping, or case conversion cannot make invalid input pass, allow only the
+  framing listed in AGENTS.md, and probe with whitespace-padded scopes, indented headers, and
+  junk before a SHA. The bad example is a `.trim()` before a SHA regex, which is the PR 3 finding
+  exactly.
+- The process-rule amendment (push with approval) was not imported. Right outcome; it is not
+  code-reviewable.
+
+## Lesson
+
+A rule proposed from review history was itself caught twice by review, for the pattern I had
+just declined to make a rule. The reviewer does not need the rule to apply the check, but the
+author did. Rules written for the agent are also rules written for me.
 
 ## Evidence
 
-- PR: _TODO_
-- CLI evidence: `qodo read rules list --state pending --json` → `{"totalCount":0}`
-- Post: _TODO_
+- PR: https://github.com/UBayouski/tracenotes/pull/9 (2 findings on `e12a599`, both fixed in
+  `190db54`, re-review clean)
+- Rule: https://app.qodo.ai/rules/4578695
+- CLI evidence: `qodo read rules list --state pending --json` → `{"totalCount":0}` before;
+  `qodo read rules list --json` → 15 rules after import
+- Post: https://github.com/orgs/qodo-hackathon/discussions/7
