@@ -13,6 +13,7 @@ import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
 import { parseGitLog } from './gitlog.ts';
 import { groupGitLog } from './group.ts';
+import { renderMarkdown } from './render.ts';
 
 const USAGE = `tracenotes - release notes with receipts
 
@@ -24,9 +25,13 @@ Usage:
                                 git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' <range>
   tracenotes group              Group a git log stream (same input as log) into
                                 release-note sections and print JSON.
+  tracenotes render [--repo-url <url>]
+                                Render a git log stream (same input as log) as
+                                Markdown release notes. With --repo-url
+                                https://<host>/<owner>/<repo>, SHAs and PRs are links.
   tracenotes --help             Show this help.
 
-parse (without a message), log and group read stdin only when it is not a terminal.
+parse (without a message), log, group and render read stdin only when it is not a terminal.
 Pipe or redirect input to them; in an interactive shell they print this usage and exit 2.
 `;
 
@@ -109,6 +114,43 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
     }
     // Malformed records are passed through so they stay visible.
     stdout(`${JSON.stringify(groupGitLog(parseGitLog(stream)), null, 2)}\n`);
+    return 0;
+  }
+
+  if (command === 'render') {
+    let repoUrl: string | undefined;
+    for (let i = 0; i < rest.length; i++) {
+      const arg = rest[i]!;
+      if (arg === '--repo-url') {
+        const value = rest[++i];
+        if (value === undefined) {
+          stderr('error: --repo-url needs a value\n');
+          return 2;
+        }
+        repoUrl = value;
+      } else {
+        stderr(`error: unknown option "${arg}"\n\n${USAGE}`);
+        return 2;
+      }
+    }
+    if (io.stdinIsTTY) {
+      stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
+      return 2;
+    }
+    const stream = await io.readStdin();
+    if (stream.trim().length === 0) {
+      stderr('error: empty git log stream on stdin\n');
+      return 2;
+    }
+    try {
+      stdout(renderMarkdown(groupGitLog(parseGitLog(stream)), repoUrl === undefined ? {} : { repoUrl }));
+    } catch (error) {
+      if (error instanceof RangeError) {
+        stderr(`error: ${error.message}\n`);
+        return 2;
+      }
+      throw error;
+    }
     return 0;
   }
 
