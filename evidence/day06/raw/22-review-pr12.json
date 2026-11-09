@@ -1,0 +1,1 @@
+{"error":{"code":"invalid_arguments","message":"--kind must be one of: metadata, files, patch, comments, inline_comments, reviews, threads, checks, statuses, annotations, runs, jobs, logs, readiness, history, principal, commit_changes, compare, parents, merge_base, issues (got \"review_comments\")"}}
