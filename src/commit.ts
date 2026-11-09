@@ -132,7 +132,9 @@ export function parseCommit(message: string): ParsedCommit {
   let header = headerLine;
   let prNumber: number | null = null;
   const prMatch = PR_SUFFIX_RE.exec(header);
-  if (prMatch?.groups?.['pr']) {
+  // A number beyond the safe-integer range would be rounded into a different PR, so it is
+  // not treated as a PR reference; the "(#...)" text stays in the subject, visible.
+  if (prMatch?.groups?.['pr'] && Number.isSafeInteger(Number(prMatch.groups['pr']))) {
     prNumber = Number(prMatch.groups['pr']);
     header = header.slice(0, prMatch.index).trimEnd();
   }

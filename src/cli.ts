@@ -13,7 +13,7 @@ import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
 import { parseGitLog } from './gitlog.ts';
 import { groupGitLog } from './group.ts';
-import { renderMarkdown } from './render.ts';
+import { checkRepoUrl, renderMarkdown } from './render.ts';
 
 const USAGE = `tracenotes - release notes with receipts
 
@@ -133,24 +133,28 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
         return 2;
       }
     }
+    // Validate the option before touching stdin so a bad URL fails immediately.
+    if (repoUrl !== undefined) {
+      try {
+        checkRepoUrl(repoUrl);
+      } catch (error) {
+        if (error instanceof RangeError) {
+          stderr(`error: ${error.message}\n`);
+          return 2;
+        }
+        throw error;
+      }
+    }
     if (io.stdinIsTTY) {
       stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
       return 2;
     }
     const stream = await io.readStdin();
     if (stream.trim().length === 0) {
-      stderr('error: empty git log stream on stdin\n');
+      stderr(`error: empty git log stream on stdin\n\n${USAGE}`);
       return 2;
     }
-    try {
-      stdout(renderMarkdown(groupGitLog(parseGitLog(stream)), repoUrl === undefined ? {} : { repoUrl }));
-    } catch (error) {
-      if (error instanceof RangeError) {
-        stderr(`error: ${error.message}\n`);
-        return 2;
-      }
-      throw error;
-    }
+    stdout(renderMarkdown(groupGitLog(parseGitLog(stream)), repoUrl === undefined ? {} : { repoUrl }));
     return 0;
   }
 

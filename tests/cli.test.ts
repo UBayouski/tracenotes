@@ -117,6 +117,7 @@ describe('cli', () => {
     assert.equal(code, 2);
     assert.equal(stdout, '');
     assert.match(stderr, /empty git log stream/);
+    assert.match(stderr, /Usage:/);
   });
 
   test('--help exits 0 and prints usage', () => {
@@ -146,6 +147,12 @@ async function runMain(argv: string[], io: { stdinIsTTY: boolean; readStdin: () 
 
 describe('cli with a terminal stdin', () => {
   const failRead = async (): Promise<string> => { throw new Error('stdin must not be read'); };
+
+  test('render validates --repo-url before reading stdin', async () => {
+    const { code, err } = await runMain(['render', '--repo-url', 'https://github.com:99999/o/r'], { stdinIsTTY: false, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.match(err, /invalid repoUrl/);
+  });
 
   test('parse without argument prints error and usage, exits 2, does not read stdin', async () => {
     const { code, err } = await runMain(['parse'], { stdinIsTTY: true, readStdin: failRead });

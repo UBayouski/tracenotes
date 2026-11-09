@@ -100,7 +100,8 @@ describe('renderMarkdown', () => {
 
   test('criterion 7: invalid repoUrl throws RangeError naming the value', () => {
     const bad = [
-      `${URL_}/`, `${URL_}.git`, `${URL_}?a=b`, `${URL_}#frag`, ` ${URL_}`, `${URL_} `, `${URL_}\n`,
+      `${URL_}/`, `${URL_}.git`, `${URL_}?a=b`, `${URL_}#frag`, ` ${URL_}`, `${URL_} `, `${URL_}\n`, `${URL_}\r\n`,
+      'https://github.com:99999/o/r', 'https://github.com:0/o/r', 'https://github.com:65536/o/r',
       'http://github.com/a/b', 'https://github.com/a', 'https://github.com/a/b/c', '', 'github.com/a/b',
     ];
     for (const repoUrl of bad) {
@@ -109,8 +110,15 @@ describe('renderMarkdown', () => {
     }
   });
 
+  test('oversized PR number is not rendered as a rounded, wrong PR link', () => {
+    const out = render(record(1, 'feat: big (#9007199254740993)'), URL_);
+    assert.ok(!out.includes('/pull/'));
+    assert.ok(!out.includes('9007199254740992'));
+    assert.ok(out.includes('9007199254740993'));
+  });
+
   test('criterion 7: valid forms accepted', () => {
-    for (const repoUrl of [URL_, 'https://git.example.com:8443/o/r.js', 'https://github.com/a/b.github.io']) {
+    for (const repoUrl of [URL_, 'https://git.example.com:65535/o/r', 'https://git.example.com:8443/o/r.js', 'https://github.com/a/b.github.io']) {
       assert.doesNotThrow(() => render(basic, repoUrl));
     }
   });

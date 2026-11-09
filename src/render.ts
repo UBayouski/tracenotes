@@ -21,8 +21,16 @@ function escapeText(text: string): string {
   return text.replace(ESCAPED, ch => `\\${ch}`);
 }
 
-function checkRepoUrl(repoUrl: string): void {
-  if (!REPO_URL.test(repoUrl) || repoUrl.endsWith('.git')) {
+/**
+ * Check a repository URL exactly as given; nothing is repaired.
+ *
+ * @param repoUrl Candidate `https://<host>/<owner>/<repo>`, port (if any) in 1-65535.
+ * @throws RangeError when the value does not match that shape.
+ */
+export function checkRepoUrl(repoUrl: string): void {
+  const port = /^https:\/\/[^/:]+:([0-9]+)\//.exec(repoUrl)?.[1];
+  const portOk = port === undefined || (Number(port) >= 1 && Number(port) <= 65535);
+  if (!REPO_URL.test(repoUrl) || repoUrl.endsWith('.git') || !portOk) {
     throw new RangeError(
       `invalid repoUrl ${JSON.stringify(repoUrl)}: expected https://<host>/<owner>/<repo> ` +
       'with no trailing slash, .git suffix, query or fragment',
