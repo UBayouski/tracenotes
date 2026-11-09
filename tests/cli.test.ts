@@ -88,6 +88,38 @@ describe('cli', () => {
     assert.match(stderr, /empty git log stream/);
   });
 
+  // T-004 criterion 8
+  test('render prints Markdown with and without --repo-url, exits 0', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const plain = runCli(['render'], stream);
+    assert.equal(plain.code, 0, plain.stderr);
+    assert.ok(plain.stdout.startsWith('## Unreleased\n'));
+    assert.match(plain.stdout, /\(`2222222`, #1\)/);
+    const url = 'https://github.com/UBayouski/tracenotes';
+    const linked = runCli(['render', '--repo-url', url], stream);
+    assert.equal(linked.code, 0, linked.stderr);
+    assert.ok(linked.stdout.includes(`[#1](${url}/pull/1)`));
+  });
+
+  test('render rejects an invalid URL, a missing value and unknown options with nothing on stdout', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    for (const args of [['--repo-url', 'https://github.com/a/b/'], ['--repo-url'], ['--bogus']]) {
+      const { code, stdout, stderr } = runCli(['render', ...args], stream);
+      assert.equal(code, 2, args.join(' '));
+      assert.equal(stdout, '');
+      assert.match(stderr, /^error: /);
+    }
+    assert.match(runCli(['render', '--repo-url', 'http://x/a/b'], stream).stderr, /http:\/\/x\/a\/b/);
+  });
+
+  test('render with empty stdin exits 2', () => {
+    const { code, stdout, stderr } = runCli(['render'], '');
+    assert.equal(code, 2);
+    assert.equal(stdout, '');
+    assert.match(stderr, /empty git log stream/);
+    assert.match(stderr, /Usage:/);
+  });
+
   test('--help exits 0 and prints usage', () => {
     const { code, stdout } = runCli(['--help']);
     assert.equal(code, 0);
@@ -116,6 +148,12 @@ async function runMain(argv: string[], io: { stdinIsTTY: boolean; readStdin: () 
 describe('cli with a terminal stdin', () => {
   const failRead = async (): Promise<string> => { throw new Error('stdin must not be read'); };
 
+  test('render validates --repo-url before reading stdin', async () => {
+    const { code, err } = await runMain(['render', '--repo-url', 'https://github.com:99999/o/r'], { stdinIsTTY: false, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.match(err, /invalid repoUrl/);
+  });
+
   test('parse without argument prints error and usage, exits 2, does not read stdin', async () => {
     const { code, err } = await runMain(['parse'], { stdinIsTTY: true, readStdin: failRead });
     assert.equal(code, 2);
@@ -133,6 +171,14 @@ describe('cli with a terminal stdin', () => {
   test('group prints error and usage, exits 2, does not read stdin', async () => {
     const { code, err } = await runMain(['group'], { stdinIsTTY: true, readStdin: failRead });
     assert.equal(code, 2);
+    assert.match(err, /^error: no git log stream on stdin \(stdin is a terminal\)\n/);
+    assert.match(err, /Usage:/);
+  });
+
+  test('render prints error and usage, exits 2, does not read stdin', async () => {
+    const { code, err, out } = await runMain(['render'], { stdinIsTTY: true, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.equal(out, '');
     assert.match(err, /^error: no git log stream on stdin \(stdin is a terminal\)\n/);
     assert.match(err, /Usage:/);
   });

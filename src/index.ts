@@ -2,3 +2,7 @@ export { parseCommit } from './commit.ts';
 export type { ParsedCommit, Footer } from './commit.ts';
 export { parseGitLog, RECORD_SEPARATOR, FIELD_SEPARATOR } from './gitlog.ts';
 export type { GitLogResult, LoggedCommit, MalformedRecord } from './gitlog.ts';
+export { groupCommits, groupGitLog } from './group.ts';
+export type { Entry, BreakingEntry, Section, IgnoredEntry, ReleaseGroups } from './group.ts';
+export { renderMarkdown } from './render.ts';
+export type { RenderOptions } from './render.ts';
