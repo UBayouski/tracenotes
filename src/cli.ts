@@ -14,6 +14,7 @@ import { parseCommit } from './commit.ts';
 import { parseGitLog } from './gitlog.ts';
 import { groupGitLog } from './group.ts';
 import { checkRepoUrl, renderMarkdown } from './render.ts';
+import { parseVersion, recommendVersion } from './version.ts';
 
 const USAGE = `tracenotes - release notes with receipts
 
@@ -29,9 +30,13 @@ Usage:
                                 Render a git log stream (same input as log) as
                                 Markdown release notes. With --repo-url
                                 https://<host>/<owner>/<repo>, SHAs and PRs are links.
+  tracenotes version --current <x.y.z>
+                                Recommend the next version from a git log stream
+                                (same input as log) and print JSON with the rule
+                                and the commits that triggered it.
   tracenotes --help             Show this help.
 
-parse (without a message), log, group and render read stdin only when it is not a terminal.
+parse (without a message), log, group, render and version read stdin only when it is not a terminal.
 Pipe or redirect input to them; in an interactive shell they print this usage and exit 2.
 `;
 
@@ -155,6 +160,58 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
       return 2;
     }
     stdout(renderMarkdown(groupGitLog(parseGitLog(stream)), repoUrl === undefined ? {} : { repoUrl }));
+    return 0;
+  }
+
+  if (command === 'version') {
+    let current: string | undefined;
+    for (let i = 0; i < rest.length; i++) {
+      const arg = rest[i]!;
+      if (arg === '--current') {
+        const value = rest[++i];
+        if (value === undefined) {
+          stderr('error: --current needs a value\n');
+          return 2;
+        }
+        current = value;
+      } else {
+        stderr(`error: unknown option "${arg}"\n\n${USAGE}`);
+        return 2;
+      }
+    }
+    if (current === undefined) {
+      stderr('error: --current <x.y.z> is required\n');
+      return 2;
+    }
+    // Validate before touching stdin so a bad version fails immediately.
+    try {
+      parseVersion(current);
+    } catch (error) {
+      if (error instanceof RangeError) {
+        stderr(`error: ${error.message}\n`);
+        return 2;
+      }
+      throw error;
+    }
+    if (io.stdinIsTTY) {
+      stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
+      return 2;
+    }
+    const stream = await io.readStdin();
+    if (stream.trim().length === 0) {
+      stderr(`error: empty git log stream on stdin\n\n${USAGE}`);
+      return 2;
+    }
+    try {
+      stdout(`${JSON.stringify(recommendVersion(groupGitLog(parseGitLog(stream)), current), null, 2)}\n`);
+    } catch (error) {
+      // Bump overflow: a RangeError from the library is a usage-level failure, not a crash.
+      if (error instanceof RangeError) {
+        stderr(`error: ${error.message}\n`);
+        return 2;
+      }
+      throw error;
+    }
     return 0;
   }
 
