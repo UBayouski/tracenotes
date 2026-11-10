@@ -6,3 +6,5 @@ export { groupCommits, groupGitLog } from './group.ts';
 export type { Entry, BreakingEntry, Section, IgnoredEntry, ReleaseGroups } from './group.ts';
 export { renderMarkdown } from './render.ts';
 export type { RenderOptions } from './render.ts';
+export { recommendVersion, parseVersion } from './version.ts';
+export type { Bump, RuleId, VersionTrigger, VersionRecommendation } from './version.ts';

@@ -120,6 +120,41 @@ describe('cli', () => {
     assert.match(stderr, /Usage:/);
   });
 
+  // T-005 criterion 7
+  test('version prints the recommendation as JSON and exits 0', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const { code, stdout, stderr } = runCli(['version', '--current', '1.4.2'], stream);
+    assert.equal(code, 0, stderr);
+    assert.ok(stdout.endsWith('}\n') && !stdout.endsWith('\n\n'));
+    const r = JSON.parse(stdout);
+    assert.equal(stdout, `${JSON.stringify(r, null, 2)}\n`);
+    assert.equal(r.next, '2.0.0');
+    assert.equal(r.rule.id, 'breaking');
+    assert.equal(r.triggers[0].shortSha, '5555555');
+  });
+
+  test('version rejects bad arguments with nothing on stdout, before reading stdin', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    for (const args of [[], ['--current'], ['--current', 'v1.2.3'], ['--current', '1.2.3 '], ['--current', '1.2.3', '--bogus']]) {
+      const { code, stdout, stderr } = runCli(['version', ...args], stream);
+      assert.equal(code, 2, args.join(' '));
+      assert.equal(stdout, '');
+      assert.match(stderr, /^error: /);
+    }
+    assert.match(runCli(['version', '--current', 'v1.2.3'], stream).stderr, /v1\.2\.3/);
+  });
+
+  test('version with empty stdin exits 2 with usage', () => {
+    const { code, stdout, stderr } = runCli(['version', '--current', '1.0.0'], '');
+    assert.equal(code, 2);
+    assert.equal(stdout, '');
+    assert.match(stderr, /Usage:/);
+  });
+
+  test('usage lists the version command', () => {
+    assert.match(runCli(['--help']).stdout, /tracenotes version --current <x\.y\.z>/);
+  });
+
   test('--help exits 0 and prints usage', () => {
     const { code, stdout } = runCli(['--help']);
     assert.equal(code, 0);
@@ -181,6 +216,20 @@ describe('cli with a terminal stdin', () => {
     assert.equal(out, '');
     assert.match(err, /^error: no git log stream on stdin \(stdin is a terminal\)\n/);
     assert.match(err, /Usage:/);
+  });
+
+  test('version prints error and usage on a terminal, does not read stdin', async () => {
+    const { code, err, out } = await runMain(['version', '--current', '1.0.0'], { stdinIsTTY: true, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.equal(out, '');
+    assert.match(err, /^error: no git log stream on stdin \(stdin is a terminal\)\n/);
+    assert.match(err, /Usage:/);
+  });
+
+  test('version validates --current before reading stdin', async () => {
+    const { code, err } = await runMain(['version', '--current', '01.2.3'], { stdinIsTTY: false, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.match(err, /01\.2\.3/);
   });
 
   test('parse with an argument never consults stdin', async () => {
