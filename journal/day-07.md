@@ -93,7 +93,8 @@ its own acceptance criteria.
 
 ## Links
 
-- PR: https://github.com/UBayouski/tracenotes/pull/16
+- PR: https://github.com/UBayouski/tracenotes/pull/16 (merged by the human as `5f14bc7`; this
+  journal reached the branch after the merge and went to `main` in a follow-up docs PR)
 - Issue: https://github.com/UBayouski/tracenotes/issues/15
 - Ticket: `tickets/T-005-recommend-next-version.md`
 - Evidence: `evidence/day07/`
