@@ -21,7 +21,10 @@ export interface VersionRecommendation {
   next: string;
   bump: Bump;
   rule: { id: RuleId; description: string };
-  /** Every entry matching the winning rule; empty only when the rule is `none`. */
+  /**
+   * Every entry matching the winning rule; empty only when the rule is `none`. Section order,
+   * then input order within a section: the order `render` prints them.
+   */
   triggers: VersionTrigger[];
   counts: {
     total: number;

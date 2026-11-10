@@ -80,7 +80,16 @@ describe('recommendVersion', () => {
     assert.equal(r.rule.id, 'fix');
     assert.equal(r.bump, 'patch');
     assert.equal(r.next, '1.4.3');
-    assert.deepEqual(r.triggers.map(t => t.type).sort(), ['fix', 'perf', 'revert']);
+    assert.deepEqual(r.triggers.map(t => t.type), ['fix', 'perf', 'revert']);
+    assertInvariants(r, 0);
+  });
+
+  test('rule fix: triggers follow section order, then input order within a section', () => {
+    // Input order perf, revert, fix, perf. Section order is Bug fixes, Performance, Reverts,
+    // the same order render prints them (ticket criterion 4, amended after Qodo on PR 16).
+    const r = recommend(stream('perf: b1', 'revert: c', 'fix: a', 'perf: b2'), '1.4.2');
+    assert.equal(r.rule.id, 'fix');
+    assert.deepEqual(r.triggers.map(t => t.subject), ['a', 'b1', 'b2', 'c']);
     assertInvariants(r, 0);
   });
 
