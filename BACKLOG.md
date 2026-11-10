@@ -10,7 +10,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-002 | Read commits from a git log stream on stdin | 03 Nov 04 | done |
 | T-003 | Group commits into release-note sections | 03 Nov 04 (built Nov 06 via issue #11) | done |
 | T-004 | Render Markdown notes with a source link on every entry | 06 Nov 09 (investigated; built via issue #13, PR 14) | done |
-| T-005 | Recommend the next version with the rule that produced it | 06 Nov 09 | planned |
+| T-005 | Recommend the next version with the rule that produced it | 07 Nov 10 | done (PR 16) |
 | T-006 | Never drop a commit: Unclassified section and ignored counts (mostly delivered by T-003; rescope, see journal/day-06.md) | 07 Nov 10 | needs rescope |
 | T-007 | JSON output mode for machine consumers | 08 Nov 11 | planned |
 | T-008 | Config file `.tracenotes.json` with ignore patterns and section names | 09 Nov 12 | planned |
