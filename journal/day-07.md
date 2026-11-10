@@ -98,4 +98,4 @@ its own acceptance criteria.
 - Issue: https://github.com/UBayouski/tracenotes/issues/15
 - Ticket: `tickets/T-005-recommend-next-version.md`
 - Evidence: `evidence/day07/`
-- Post: _TODO_
+- Post: https://github.com/orgs/qodo-hackathon/discussions/9#discussioncomment-19525727
