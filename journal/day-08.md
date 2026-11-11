@@ -105,6 +105,10 @@ again. It had two informational findings, both right, both in what the local loo
 - **75293ebe** `BACKLOG.md` said `built, uncommitted` in the commit that delivers the ticket.
   Fixed: `done (PR 19)`.
 
+The human pushed the fixes as `dedc5fa`. Qodo re-reviewed on its own (run 1915915, standard
+effort, completed at `dedc5fa` = PR head): both findings attributed `implemented`, no new ones,
+0 open. Nobody had to mark them by hand, unlike the local finding.
+
 Neither review noticed that the commit subject starts with `     - ` (a pasted list marker), so
 tracenotes files its own T-007 commit under *Unclassified*. AGENTS.md asks for Conventional
 Commits; no rule enforces it on the commit message itself. Raw PR findings:
@@ -123,5 +127,7 @@ while the local review reference is still valid.
 - Issue: https://github.com/UBayouski/tracenotes/issues/18
 - Ticket: `tickets/T-007-json-output.md`
 - Evidence: `evidence/day08/`
-- PR: https://github.com/UBayouski/tracenotes/pull/19
-- Post: _TODO_
+- PR: https://github.com/UBayouski/tracenotes/pull/19 (squash-merged by the human as `7a1d606`
+  with a clean `feat(render): ...` subject, so tracenotes lists it under Features with its PR
+  link; issue #18 closed by the merge)
+- Post: https://github.com/orgs/qodo-hackathon/discussions/10#discussioncomment-19549395
