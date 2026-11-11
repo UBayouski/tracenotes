@@ -65,7 +65,7 @@ export interface NotesSection {
 export interface NotesCounts {
   /** Entries in `sections`. `shown + ignored === total`. */
   shown: number;
-  /** Input commits. */
+  /** Parsed input commits; malformed records are counted in `malformed` only. */
   total: number;
   /** Merge commits left out of the sections. */
   ignored: number;

@@ -93,6 +93,23 @@ repeated-options rule and called it "a decision for the team rather than a clear
   commits", since malformed records are outside `total`. Not applied; it would change the reviewed
   tree. `--repo-url` errors and README coverage of `render` are untouched and out of scope.
 
+## After the commit: the PR review
+
+The human committed everything as `3673123` and opened PR 19. Qodo's PR review (run 1915739,
+extended effort, completed at `3673123` = PR head) did not raise the repeated-`--format` issue
+again. It had two informational findings, both right, both in what the local loop left behind:
+
+- **83cdca80** `NotesCounts.total` was documented as "Input commits", but malformed records are
+  outside `total`. This is the run-4 comment that was left unapplied to keep the reviewed tree
+  unchanged; the PR review cited that evidence file. Fixed: the doc comment now says so.
+- **75293ebe** `BACKLOG.md` said `built, uncommitted` in the commit that delivers the ticket.
+  Fixed: `done (PR 19)`.
+
+Neither review noticed that the commit subject starts with `     - ` (a pasted list marker), so
+tracenotes files its own T-007 commit under *Unclassified*. AGENTS.md asks for Conventional
+Commits; no rule enforces it on the commit message itself. Raw PR findings:
+`evidence/day08/pr19-findings.json`.
+
 ## Lesson
 
 The context file decides what the review argues with. Eight written decisions gave two clean
@@ -106,5 +123,5 @@ while the local review reference is still valid.
 - Issue: https://github.com/UBayouski/tracenotes/issues/18
 - Ticket: `tickets/T-007-json-output.md`
 - Evidence: `evidence/day08/`
-- PR: _TODO after the human commits_
+- PR: https://github.com/UBayouski/tracenotes/pull/19
 - Post: _TODO_

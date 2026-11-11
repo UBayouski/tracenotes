@@ -14,6 +14,7 @@ Base for every run: `25903fb` (`main`, pushed). Nothing was committed between ru
 | `context-3.json` | context for run 4 | | adds the human's choice to fix 277d5eae |
 | `review-4-rerun.json` | run 4, `--deep` | 32,286 B: last `--format` wins, new test | no new finding; 277d5eae `still_open` with its run-3 text and a code snippet that no longer exists; 1 optional comment |
 | `mark-implemented-result.json` | `qodo pr-review-session mark-implemented --finding-ids 277d5eae-... --local-review-id 78909a70-...` | same tree as run 4 | `implemented`, `reconciled: true` |
+| `pr19-findings.json` | `qodo read pr-review-session findings --pr-url .../pull/19 --extended --json` | commit `3673123` (PR head) | run 1915739, extended, completed: 2 informational findings (83cdca80, 75293ebe) |
 
 `*.stderr.txt` files hold the CLI's scope line for each run (bytes reviewed, depth, trace id).
 Runs 2 to 4 were limited to `src tests tickets` so this evidence folder stayed out of the diff.
