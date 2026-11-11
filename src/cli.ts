@@ -13,7 +13,7 @@ import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
 import { parseGitLog } from './gitlog.ts';
 import { groupGitLog } from './group.ts';
-import { checkRepoUrl, renderMarkdown } from './render.ts';
+import { checkRepoUrl, renderJson, renderMarkdown } from './render.ts';
 import { parseVersion, recommendVersion } from './version.ts';
 
 const USAGE = `tracenotes - release notes with receipts
@@ -26,10 +26,12 @@ Usage:
                                 git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' <range>
   tracenotes group              Group a git log stream (same input as log) into
                                 release-note sections and print JSON.
-  tracenotes render [--repo-url <url>]
+  tracenotes render [--repo-url <url>] [--format markdown|json]
                                 Render a git log stream (same input as log) as
                                 Markdown release notes. With --repo-url
                                 https://<host>/<owner>/<repo>, SHAs and PRs are links.
+                                With --format json, print the same notes as a JSON
+                                document: sections, entries with their source, counts.
   tracenotes version --current <x.y.z>
                                 Recommend the next version from a git log stream
                                 (same input as log) and print JSON with the rule
@@ -124,6 +126,7 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
 
   if (command === 'render') {
     let repoUrl: string | undefined;
+    let formatArg: string | undefined;
     for (let i = 0; i < rest.length; i++) {
       const arg = rest[i]!;
       if (arg === '--repo-url') {
@@ -133,12 +136,29 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
           return 2;
         }
         repoUrl = value;
+      } else if (arg === '--format') {
+        const value = rest[++i];
+        if (value === undefined) {
+          stderr('error: --format needs a value: markdown or json\n');
+          return 2;
+        }
+        // A repeated option overrides the earlier one, so only the last value is validated below.
+        formatArg = value;
       } else {
         stderr(`error: unknown option "${arg}"\n\n${USAGE}`);
         return 2;
       }
     }
-    // Validate the option before touching stdin so a bad URL fails immediately.
+    // Validate the options before touching stdin so a bad value fails immediately.
+    // The format is compared as given: no trimming, no lower-casing (Validate Before You Normalize).
+    let format: 'markdown' | 'json' = 'markdown';
+    if (formatArg !== undefined) {
+      if (formatArg !== 'markdown' && formatArg !== 'json') {
+        stderr(`error: invalid --format ${JSON.stringify(formatArg)}: expected markdown or json\n`);
+        return 2;
+      }
+      format = formatArg;
+    }
     if (repoUrl !== undefined) {
       try {
         checkRepoUrl(repoUrl);
@@ -159,7 +179,9 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
       stderr(`error: empty git log stream on stdin\n\n${USAGE}`);
       return 2;
     }
-    stdout(renderMarkdown(groupGitLog(parseGitLog(stream)), repoUrl === undefined ? {} : { repoUrl }));
+    const groups = groupGitLog(parseGitLog(stream));
+    const options = repoUrl === undefined ? {} : { repoUrl };
+    stdout(format === 'json' ? renderJson(groups, options) : renderMarkdown(groups, options));
     return 0;
   }
 
