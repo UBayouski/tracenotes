@@ -112,6 +112,85 @@ describe('cli', () => {
     assert.match(runCli(['render', '--repo-url', 'http://x/a/b'], stream).stderr, /http:\/\/x\/a\/b/);
   });
 
+  // T-007 criterion 9
+  test('render --format json prints the notes document, with and without --repo-url', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const plain = runCli(['render', '--format', 'json'], stream);
+    assert.equal(plain.code, 0, plain.stderr);
+    assert.equal(plain.stderr, '');
+    assert.ok(plain.stdout.endsWith('}\n'));
+    const doc = JSON.parse(plain.stdout);
+    assert.equal(doc.schemaVersion, 1);
+    assert.deepEqual(doc.counts, { shown: 4, total: 5, ignored: 1, malformed: 1 });
+    assert.equal(doc.sections[2].entries[0].source.sha, '2'.repeat(40));
+    assert.equal(doc.sections[2].entries[0].source.commitUrl, null);
+    const url = 'https://github.com/UBayouski/tracenotes';
+    for (const args of [['--format', 'json', '--repo-url', url], ['--repo-url', url, '--format', 'json']]) {
+      const linked = runCli(['render', ...args], stream);
+      assert.equal(linked.code, 0, linked.stderr);
+      const source = JSON.parse(linked.stdout).sections[2].entries[0].source;
+      assert.equal(source.commitUrl, `${url}/commit/${'2'.repeat(40)}`);
+      assert.equal(source.prUrl, `${url}/pull/1`);
+    }
+  });
+
+  test('render output is Markdown by default and with --format markdown; the last --format wins', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const byDefault = runCli(['render'], stream);
+    const explicit = runCli(['render', '--format', 'markdown'], stream);
+    assert.equal(explicit.code, 0, explicit.stderr);
+    assert.ok(explicit.stdout.startsWith('## Unreleased\n'));
+    assert.equal(explicit.stdout, byDefault.stdout);
+    assert.equal(runCli(['render', '--format', 'json', '--format', 'markdown'], stream).stdout, byDefault.stdout);
+    assert.equal(
+      runCli(['render', '--format', 'markdown', '--format', 'json'], stream).stdout,
+      runCli(['render', '--format', 'json'], stream).stdout,
+    );
+  });
+
+  test('render rejects an invalid, wrong-case, padded or missing --format with nothing on stdout', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    for (const value of ['yaml', 'JSON', 'Json', ' json', 'json ', '', 'md']) {
+      const { code, stdout, stderr } = runCli(['render', '--format', value], stream);
+      assert.equal(code, 2, JSON.stringify(value));
+      assert.equal(stdout, '');
+      assert.ok(stderr.startsWith(`error: invalid --format ${JSON.stringify(value)}: expected markdown or json\n`), stderr);
+    }
+    const missing = runCli(['render', '--format'], stream);
+    assert.equal(missing.code, 2);
+    assert.equal(missing.stdout, '');
+    assert.match(missing.stderr, /^error: --format needs a value/);
+  });
+
+  // Qodo local review finding 277d5eae: only the last --format value counts, like --repo-url.
+  test('render: an invalid --format before a valid one is overridden; an invalid last one fails', () => {
+    const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+    const overridden = runCli(['render', '--format', 'yaml', '--format', 'json'], stream);
+    assert.equal(overridden.code, 0, overridden.stderr);
+    assert.equal(overridden.stderr, '');
+    assert.equal(overridden.stdout, runCli(['render', '--format', 'json'], stream).stdout);
+    const toMarkdown = runCli(['render', '--format', 'JSON', '--format', 'markdown'], stream);
+    assert.equal(toMarkdown.code, 0, toMarkdown.stderr);
+    assert.equal(toMarkdown.stdout, runCli(['render'], stream).stdout);
+    for (const args of [['--format', 'json', '--format', 'yaml'], ['--format', 'json', '--format']]) {
+      const { code, stdout, stderr } = runCli(['render', ...args], stream);
+      assert.equal(code, 2, args.join(' '));
+      assert.equal(stdout, '');
+      assert.match(stderr, /^error: /);
+    }
+  });
+
+  test('render --format json with empty stdin exits 2', () => {
+    const { code, stdout, stderr } = runCli(['render', '--format', 'json'], '');
+    assert.equal(code, 2);
+    assert.equal(stdout, '');
+    assert.match(stderr, /empty git log stream/);
+  });
+
+  test('usage documents --format', () => {
+    assert.match(runCli(['--help']).stdout, /tracenotes render \[--repo-url <url>\] \[--format markdown\|json\]/);
+  });
+
   test('render with empty stdin exits 2', () => {
     const { code, stdout, stderr } = runCli(['render'], '');
     assert.equal(code, 2);
@@ -187,6 +266,20 @@ describe('cli with a terminal stdin', () => {
     const { code, err } = await runMain(['render', '--repo-url', 'https://github.com:99999/o/r'], { stdinIsTTY: false, readStdin: failRead });
     assert.equal(code, 2);
     assert.match(err, /invalid repoUrl/);
+  });
+
+  test('render validates --format before reading stdin (T-007 criterion 9)', async () => {
+    const { code, err, out } = await runMain(['render', '--format', 'yaml'], { stdinIsTTY: false, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.equal(out, '');
+    assert.match(err, /invalid --format "yaml"/);
+  });
+
+  test('render --format json on a terminal prints error and usage, does not read stdin', async () => {
+    const { code, err, out } = await runMain(['render', '--format', 'json'], { stdinIsTTY: true, readStdin: failRead });
+    assert.equal(code, 2);
+    assert.equal(out, '');
+    assert.match(err, /Usage:/);
   });
 
   test('parse without argument prints error and usage, exits 2, does not read stdin', async () => {
