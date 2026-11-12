@@ -1,0 +1,242 @@
+
+> tracenotes@0.1.0 check
+> npm run typecheck && npm test
+
+
+> tracenotes@0.1.0 typecheck
+> tsc -p tsconfig.json
+
+
+> tracenotes@0.1.0 test
+> node --test "tests/**/*.test.ts"
+
+▶ cli
+  ✔ parse with an argument prints JSON and exits 0 (152.8077ms)
+  ✔ parse reads the message from stdin when no argument is given (113.4041ms)
+  ✔ empty input exits 2 with an error (107.2202ms)
+  ✔ unknown command exits 2 and prints usage (103.7674ms)
+  ✔ log parses a stream from stdin, reports malformed records, and exits 0 (114.528ms)
+  ✔ log with empty stdin exits 2 (100.6035ms)
+  ✔ group prints ReleaseGroups, passes malformed through, exits 0 (108.1469ms)
+  ✔ group with empty stdin exits 2 (117.2837ms)
+  ✔ render prints Markdown with and without --repo-url, exits 0 (250.5451ms)
+  ✔ render rejects an invalid URL, a missing value and unknown options with nothing on stdout (442.0095ms)
+  ✔ render --format json prints the notes document, with and without --repo-url (402.168ms)
+  ✔ render output is Markdown by default and with --format markdown; the last --format wins (679.1862ms)
+  ✔ render rejects an invalid, wrong-case, padded or missing --format with nothing on stdout (1072.4902ms)
+  ✔ render: an invalid --format before a valid one is overridden; an invalid last one fails (815.4774ms)
+  ✔ render --format json with empty stdin exits 2 (122.4694ms)
+  ✔ usage documents --format (130.3483ms)
+  ✔ render with empty stdin exits 2 (113.0769ms)
+  ✔ version prints the recommendation as JSON and exits 0 (126.9386ms)
+  ✔ version rejects bad arguments with nothing on stdout, before reading stdin (626.79ms)
+  ✔ version with empty stdin exits 2 with usage (140.3419ms)
+  ✔ usage lists the version command (134.6627ms)
+  ✔ --help exits 0 and prints usage (121.0357ms)
+  ✔ piped stdin still parses (T-026 criterion 3) (128.3166ms)
+✔ cli (6227.2274ms)
+▶ cli --config
+  ✔ group lists commits ignored by config with their pattern (124.9669ms)
+  ✔ render counts commits ignored by config in Markdown and JSON (246.3472ms)
+  ✔ version ignores matching commits but never a breaking one (117.8662ms)
+  ✔ without --config the output is what it was (661.3622ms)
+  ✔ a missing value, a missing file and invalid files exit 2 with one error line naming the path (1748.3987ms)
+  ✔ a directory given as the config file is an error, not a crash (154.62ms)
+  ✔ when --config is repeated only the last file is read (1238.5086ms)
+  ✔ group now rejects an unknown argument with usage (363.1062ms)
+  ✔ a config file that is not valid UTF-8 is rejected, not repaired (424.8912ms)
+  ✔ a newline in the path or in the file cannot add lines to the error (263.9402ms)
+  ✔ usage documents --config on group, render and version (117.9047ms)
+✔ cli --config (5463.4136ms)
+▶ cli with a terminal stdin
+  ✔ render validates --repo-url before reading stdin (1.4729ms)
+  ✔ render validates --format before reading stdin (T-007 criterion 9) (0.7323ms)
+  ✔ render --format json on a terminal prints error and usage, does not read stdin (0.3318ms)
+  ✔ parse without argument prints error and usage, exits 2, does not read stdin (0.2401ms)
+  ✔ log prints error and usage, exits 2, does not read stdin (0.2086ms)
+  ✔ group prints error and usage, exits 2, does not read stdin (0.1599ms)
+  ✔ render prints error and usage, exits 2, does not read stdin (0.1589ms)
+  ✔ version prints error and usage on a terminal, does not read stdin (0.3524ms)
+  ✔ version validates --current before reading stdin (0.2661ms)
+  ✔ parse with an argument never consults stdin (1.0245ms)
+  ✔ usage says stdin is read only when not a terminal (0.2284ms)
+✔ cli with a terminal stdin (5.8046ms)
+▶ cli --config with an injected reader
+  ✔ an invalid config fails before stdin is read (0.7807ms)
+  ✔ an unreadable config fails before stdin is read (0.2496ms)
+  ✔ control characters in a reader or parser message are escaped, one line out (0.5041ms)
+  ✔ the config is not read when another option is invalid, or without --config (1.2586ms)
+  ✔ only the last --config path is passed to the reader, exactly as given (0.8786ms)
+  ✖ DEL, C1 controls and line separators in the path are escaped in both error lines (1.8976ms)
+✖ cli --config with an injected reader (6.0726ms)
+▶ header
+  ✔ parses type and subject (3.4595ms)
+  ✔ parses scope (0.4576ms)
+  ✔ lower-cases the type but keeps the subject as written (0.2478ms)
+  ✔ bang marks a breaking change (0.248ms)
+  ✔ extracts a trailing PR number from squash merges (0.2274ms)
+  ✔ does not treat a PR-like token in the middle of the subject as the PR number (0.184ms)
+  ✔ requires a space after the colon (0.1659ms)
+  ✔ rejects an empty scope (0.2187ms)
+  ✔ rejects a whitespace-only scope (0.2293ms)
+  ✔ rejects a scope with leading or trailing whitespace (0.3829ms)
+  ✔ accepts a scope with an inner space (0.1945ms)
+  ✔ rejects an empty description (0.1312ms)
+✔ header (8.6182ms)
+▶ non-conventional messages
+  ✔ are kept with the header as subject (0.1846ms)
+  ✔ still get PR number, body and footers (1.5701ms)
+  ✔ empty input yields an empty, non-conventional commit (0.1757ms)
+✔ non-conventional messages (2.1637ms)
+▶ body
+  ✔ is null when absent (0.1664ms)
+  ✔ keeps multiple paragraphs (0.1364ms)
+  ✔ keeps leading indentation inside a paragraph (0.0932ms)
+  ✔ a paragraph that looks like prose is not a footer (0.2695ms)
+✔ body (0.8806ms)
+▶ footers
+  ✔ parses "Token: value" and "Token #value" forms (0.3151ms)
+  ✔ BREAKING CHANGE footer marks breaking and records the note (0.176ms)
+  ✔ BREAKING-CHANGE is a synonym (0.1709ms)
+  ✔ multi-line footer values are joined (0.1716ms)
+  ✔ collects several issue numbers from one footer and dedupes (0.1665ms)
+  ✔ issue tokens are matched case-insensitively (0.1444ms)
+  ✔ footers separated by blank lines are all collected and body stays separate (0.2346ms)
+✔ footers (1.7108ms)
+▶ normalization
+  ✔ handles CRLF line endings (0.22ms)
+  ✔ trims trailing whitespace and blank lines (0.1213ms)
+✔ normalization (0.5944ms)
+▶ parseConfig
+  ✔ criterion 1: a valid file gives the patterns as written; exported from index (3.9414ms)
+  ✔ criterion 1: {} and an empty ignore list mean no patterns (0.2383ms)
+  ✔ criterion 1: text that is not JSON is rejected (0.7114ms)
+  ✔ criterion 1: a top level that is not an object is rejected (0.2556ms)
+  ✔ criterion 1: an unknown key is rejected and named (0.2046ms)
+  ✔ criterion 1: ignore that is not an array is rejected (0.3854ms)
+  ✔ criterion 1: an element that is not a string is rejected with its index (0.1703ms)
+  ✔ criterion 1: an empty pattern is rejected with its index (0.1633ms)
+  ✔ criterion 1: an invalid regular expression is rejected with index and pattern (0.1932ms)
+  ✔ criterion 2: patterns are not trimmed, lower-cased or repaired (0.2333ms)
+  ✔ criterion 2: one leading byte order mark is allowed framing (1.5928ms)
+✔ parseConfig (10.5175ms)
+▶ parseGitLog
+  ✔ splits records and fields and keeps input order (5.2763ms)
+  ✔ a record with an invalid SHA goes to malformed with a reason, not dropped (0.9043ms)
+  ✔ a record with fewer than four fields is reported as missing fields (0.276ms)
+  ✔ empty or whitespace-and-separator-only input yields an empty result (0.4221ms)
+  ✔ message content is passed through untouched apart from framing (0.4806ms)
+  ✔ count equals commits plus malformed (0.3181ms)
+  ✔ date is kept as a string and a non-ISO shape only produces a warning (0.3818ms)
+  ✔ fixture covers non-conventional and squash-merge records (0.4421ms)
+  ✔ only framing newlines are stripped; a space or tab before the SHA makes the record malformed (0.5ms)
+  ✔ a leading UTF-8 byte order mark (PowerShell pipes) is ignored (0.5997ms)
+  ✔ a message containing an extra field separator is kept whole (0.1591ms)
+✔ parseGitLog (12.0683ms)
+▶ groupCommits
+  ✔ criterion 1: fixed section order, empty sections omitted (1.6943ms)
+  ✔ criterion 1: full ordering of known and unknown types (0.4445ms)
+  ✔ criterion 2: entry fields (0.2006ms)
+  ✔ criterion 3: breaking commit only under Breaking changes, with notes (0.2161ms)
+  ✔ criterion 4: merge commits are ignored with a reason (0.1287ms)
+  ✔ criterion 5: totals add up on every fixture (4.1557ms)
+  ✔ criterion 6: order inside a section is input order (0.4125ms)
+  ✔ criterion 7: JSON round trip is lossless (0.436ms)
+  ✔ criterion 9: only merge commits (0.2945ms)
+  ✔ criterion 9: feat! without footer has empty notes (0.2522ms)
+  ✔ criterion 9: unseen type gets its own section (0.1849ms)
+  ✔ a conventional commit whose subject starts with Merge is not ignored (0.1091ms)
+  ✔ rule 6: an indented "Merge " header is not a merge commit; it stays visible as Unclassified (0.1066ms)
+✔ groupCommits (10.6066ms)
+▶ groupCommits with ignore patterns
+  ✔ criterion 3: without options, and with an empty list, the result is unchanged (0.5034ms)
+  ✔ criterion 5: a match goes to ignored with the first matching pattern, as written (0.1592ms)
+  ✔ criterion 4: a merge commit keeps its reason even when a pattern matches it (0.2393ms)
+  ✔ criterion 4: a breaking commit is never ignored by a pattern (0.234ms)
+  ✔ criterion 5: nothing vanishes with merges, matches and a matching breaking commit (0.1951ms)
+  ✔ criterion 3: the pattern sees the first line only, untrimmed, case-sensitive, u flag only (0.6143ms)
+  ✔ criterion 3: the same pattern list gives the same result twice (no regex state) (0.1497ms)
+  ✔ an invalid or empty pattern given to the library throws RangeError (0.5032ms)
+✔ groupCommits with ignore patterns (2.9759ms)
+▶ renderMarkdown
+  ✔ criterion 1: pure and exported from index (1.6834ms)
+  ✔ criteria 2, 3, 5, 6: fixture without repoUrl (0.4079ms)
+  ✔ criterion 3: links with repoUrl (0.6257ms)
+  ✔ criterion 4: injection subject renders as text (0.267ms)
+  ✔ criterion 4: nothing is trimmed (0.1991ms)
+  ✔ criterion 5: breaking with and without notes (0.191ms)
+  ✔ criterion 6: merge-only stream (0.1549ms)
+  ✔ criterion 6: counts match total and malformed (0.3726ms)
+  ✔ criterion 7: invalid repoUrl throws RangeError naming the value (1.4621ms)
+  ✔ oversized PR number is not rendered as a rounded, wrong PR link (0.2954ms)
+  ✔ criterion 7: valid forms accepted (0.5655ms)
+✔ renderMarkdown (7.864ms)
+▶ notesDocument and renderJson
+  ✔ criterion 1: pure, exported from index, 2-space JSON with one trailing newline (1.5999ms)
+  ✔ criterion 1: the document shares no arrays with the groups (0.228ms)
+  ✔ criteria 2, 3, 6: exact document for the fixture without repoUrl (0.5061ms)
+  ✔ criterion 3: exact document for the fixture with repoUrl (0.2909ms)
+  ✔ criterion 2: key order is fixed at every level (0.2733ms)
+  ✔ criterion 3: every entry has a 40-character sha, with and without repoUrl (0.2954ms)
+  ✔ criterion 3: URLs are the ones the Markdown links use (0.223ms)
+  ✔ criterion 3: oversized PR number gives null prNumber and prUrl, subject keeps the text (0.9638ms)
+  ✔ criterion 4: sections and entries in the order Markdown prints them (0.3419ms)
+  ✔ criterion 5: text is raw and round-trips through JSON.parse (0.2139ms)
+  ✔ criterion 5: nothing is trimmed (0.1821ms)
+  ✔ criterion 6: count identities, and the numbers match the Markdown closing line (0.1927ms)
+  ✔ criterion 7: merge-only range and empty input give a valid document (0.1366ms)
+  ✔ criterion 8: invalid repoUrl throws RangeError naming the value (0.4858ms)
+✔ notesDocument and renderJson (6.654ms)
+▶ render with ignore patterns
+  ✔ criterion 6: no pattern match leaves the Markdown byte-identical (0.4309ms)
+  ✔ criterion 6: the closing line splits merge commits from commits ignored by config (0.1304ms)
+  ✔ criterion 6: only pattern matches, no merge commit (0.1291ms)
+  ✔ criterion 7: the JSON document keeps its keys; counts.ignored is merges plus matches (0.1065ms)
+✔ render with ignore patterns (0.946ms)
+▶ recommendVersion
+  ✔ criterion 1: exported from the index and pure (4.307ms)
+  ✔ fixture: breaking wins, counts and identities hold (1.0778ms)
+  ✔ rule breaking-pre-1.0: breaking in 0.x bumps minor (0.2986ms)
+  ✔ a breaking commit marked only with ! triggers major (0.2487ms)
+  ✔ rule feat: minor, resets patch, lower entries are not triggers (0.2312ms)
+  ✔ rule fix: fix, perf and revert all trigger patch (0.1856ms)
+  ✔ rule fix: triggers follow section order, then input order within a section (0.2126ms)
+  ✔ rule none: only docs/chore keeps the version (0.3472ms)
+  ✔ only merge commits: none, all ignored (0.2517ms)
+  ✔ a malformed record is counted, not dropped (0.4076ms)
+  ✔ criterion 2: invalid versions throw RangeError naming the value (0.9057ms)
+  ✔ criterion 3: overflow on bump throws RangeError (0.3292ms)
+✔ recommendVersion (10.5167ms)
+▶ recommendVersion with ignore patterns
+  ✔ a commit ignored by a pattern does not trigger a bump and is counted as ignored (0.5338ms)
+  ✔ a breaking commit that matches a pattern still gives a major recommendation (0.2156ms)
+✔ recommendVersion with ignore patterns (0.902ms)
+ℹ tests 165
+ℹ suites 18
+ℹ pass 164
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11906.3189
+
+✖ failing tests:
+
+test at tests\cli.test.ts:538:3
+✖ DEL, C1 controls and line separators in the path are escaped in both error lines (1.8976ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'error: cannot read config "a\x7Fb\x85c d e.json": EACCES: permission denied\n'
+  - 'error: cannot read config "a\\u007fb\\u0085c\\u2028d\\u2029e.json": EACCES: permission denied\n'
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/cli.test.ts:544:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'error: cannot read config "a\x7Fb\x85c d e.json": EACCES: permission denied\n',
+    expected: 'error: cannot read config "a\\u007fb\\u0085c\\u2028d\\u2029e.json": EACCES: permission denied\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -534,4 +534,17 @@ describe('cli --config with an injected reader', () => {
     assert.deepEqual(seen, [' second.json ']);
     assert.equal(JSON.parse(out).ignored[0].reason, 'ignore pattern: ^feat');
   });
+  // Qodo PR review finding fa44bb08: the path itself, beyond what JSON.stringify escapes.
+  test('DEL, C1 controls and line separators in the path are escaped in both error lines', async () => {
+    const path = 'a\u007fb\u0085c\u2028d\u2029e.json';
+    const shown = '"a\\u007fb\\u0085c\\u2028d\\u2029e.json"';
+    const denied = (): string => { throw new Error('EACCES: permission denied'); };
+    const read = await run(['group', '--config', path], denied);
+    assert.equal(read.code, 2);
+    assert.equal(read.err, `error: cannot read config ${shown}: EACCES: permission denied\n`);
+    const parsed = await run(['group', '--config', path], () => '[]');
+    assert.equal(parsed.code, 2);
+    assert.ok(parsed.err.startsWith(`error: config ${shown}: invalid config: `), parsed.err);
+    assert.doesNotMatch(parsed.err, /[\u007f-\u009f\u2028\u2029]/);
+  });
 });

@@ -83,8 +83,26 @@ as `--ticket` and a context file with ten decisions and who made each.
   complete, `introduced: []`, `still_open: []`, `resolved: [9f986931, e7cc6b40]`.
 - Fix rounds used: 1 of 3.
 
-**Quality gate: MET.** No High or Medium finding is open, the checks pass, and the last review
-covers the code that will be committed.
+**Quality gate: MET** for the local loop. No High or Medium finding is open, the checks pass, and
+the last review covers the code that will be committed. The PR review below reopened it.
+
+## PR review (the gate's PR clause)
+
+PR 21, head `501f983`. Qodo's review, read with the Review Resolver skill
+(`evidence/day09/pr21-review-1.json`): `completed`, `commit_sha` = head, two findings, both open.
+
+| Finding | Type, `category` | `action_level` → severity | Decision | Evidence |
+|---|---|---|---|---|
+| fa44bb08 Config path can still break the one-line error (`src/cli.ts`) | Bug, Observability | `remediation_recommended` → Medium | fixed locally, not yet pushed | Red (`evidence/day09/red-pr-round1.txt`): a path with DEL, U+0085, U+2028 and U+2029 came out raw in the error line, 164 of 165. `JSON.stringify` escapes only C0 controls. Now the quoted path goes through `oneLine()` too. `tests 165, pass 165, fail 0`. |
+| cf1c4585 Backlog marks T-008 done before it is merged (`BACKLOG.md`) | Maintainability, no rule cited | `informational` → Low | reported, unchanged | Valid: the row says `done (issue #20)` and every other finished row cites the merged PR. Left for the human, as the gate says for Lows. |
+
+This is the same class as 9f986931: round 1 escaped the message detail and left the path to
+`JSON.stringify`, on the untested belief that it escapes everything `oneLine()` does. The local deep
+review accepted that fix; the PR review did not.
+
+**Quality gate on the PR: NOT MET.** A valid Medium is open at the head commit. The fix is in the
+working tree (fix round 2 of 3) and needs the human's commit and push, then a completed review of
+the new head.
 
 ## What the agent or review missed
 
@@ -122,5 +140,5 @@ improvise. And a met gate describes the findings that came up: today that was th
 - Ticket: `tickets/T-008-config-ignore-patterns.md`
 - Gate: `AGENTS.md`, section "Quality gate"
 - Evidence: `evidence/day09/`
-- PR: _TODO after the human commits_
+- PR: https://github.com/UBayouski/tracenotes/pull/21
 - Post: _TODO_

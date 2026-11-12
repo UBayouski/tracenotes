@@ -87,13 +87,13 @@ function loadConfig(configPath: string | undefined, readFile: (path: string) => 
     text = readFile(configPath);
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
-    return { error: `error: cannot read config ${JSON.stringify(configPath)}: ${oneLine(detail)}\n` };
+    return { error: `error: cannot read config ${oneLine(JSON.stringify(configPath))}: ${oneLine(detail)}\n` };
   }
   try {
     return parseConfig(text);
   } catch (error) {
     if (error instanceof RangeError) {
-      return { error: `error: config ${JSON.stringify(configPath)}: ${oneLine(error.message)}\n` };
+      return { error: `error: config ${oneLine(JSON.stringify(configPath))}: ${oneLine(error.message)}\n` };
     }
     throw error;
   }
