@@ -110,3 +110,4 @@ and check the traces, not the statuses.
 - Issue: https://github.com/UBayouski/tracenotes/issues/4 (created with `gh issue create --body-file`, label `ready-for-agent` created with `gh label create`)
 - Runs: zombie https://github.com/UBayouski/tracenotes/actions/runs/42068078500, no-op https://github.com/UBayouski/tracenotes/actions/runs/42077789414, working https://github.com/UBayouski/tracenotes/actions/runs/42081802646, fix https://github.com/UBayouski/tracenotes/actions/runs/42084151374
 - PRs: workflows https://github.com/UBayouski/tracenotes/pull/5 and https://github.com/UBayouski/tracenotes/pull/6, the agent's work https://github.com/UBayouski/tracenotes/pull/7
+- Post: https://github.com/orgs/qodo-hackathon/discussions/6#discussioncomment-19424650

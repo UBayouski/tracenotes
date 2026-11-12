@@ -171,4 +171,4 @@ Finding 3 also broke the ticket's *Must not break* line in a small way: `parse` 
 - PR: https://github.com/UBayouski/tracenotes/pull/14
 - Ticket: `tickets/T-004-render-markdown-notes.md` (issue: https://github.com/UBayouski/tracenotes/issues/13)
 - Evidence: `evidence/day06/`
-- Post: _TODO_
+- Post: https://github.com/orgs/qodo-hackathon/discussions/8#discussioncomment-19498517

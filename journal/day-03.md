@@ -89,3 +89,4 @@ accidentally compensating for. Fair: that only shows up when you run the pipe on
 
 - PR: https://github.com/UBayouski/tracenotes/pull/3
 - Qodo review: 1 finding on `db554e5`, fixed with tests in the follow-up commit.
+- Post: https://github.com/orgs/qodo-hackathon/discussions/5#discussioncomment-19410501

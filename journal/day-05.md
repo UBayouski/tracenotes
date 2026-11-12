@@ -92,7 +92,7 @@ author did. Rules written for the agent are also rules written for me.
 - Rule: https://app.qodo.ai/rules/4578695
 - CLI evidence: `qodo read rules list --state pending --json` → `{"totalCount":0}` before;
   `qodo read rules list --json` → 15 rules after import
-- Post: https://github.com/orgs/qodo-hackathon/discussions/7
+- Post: https://github.com/orgs/qodo-hackathon/discussions/7#discussioncomment-19446426
 
 ## Addendum, same evening: T-003 through the factory
 

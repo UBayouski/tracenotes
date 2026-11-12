@@ -79,4 +79,5 @@ Observations for Day 6 and Day 7:
 
 - AGENTS.md: https://github.com/UBayouski/tracenotes/blob/main/AGENTS.md
 - PR: https://github.com/UBayouski/tracenotes/pull/2
-- Day 2 Discussion post: _TODO_
+- Post: https://github.com/orgs/qodo-hackathon/discussions/4#discussioncomment-19410314
+- Reply to another factory's rule (posted late, Nov 12): https://github.com/orgs/qodo-hackathon/discussions/4#discussioncomment-19574198

@@ -91,3 +91,7 @@ into a contract that fixtures can target.
   file succeeded. Installed with Standards enabled, wired to Claude Code only.
 - Qodo review was read through the CLI (`qodo read pr-review-session findings`) rather than by
   scraping PR comments, which gives the reviewed commit SHA and attribution status per finding.
+
+## Evidence
+
+- Post: https://github.com/orgs/qodo-hackathon/discussions/2#discussioncomment-19410155

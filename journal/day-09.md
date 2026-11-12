@@ -131,6 +131,10 @@ the file, so it stays reported for the human.
 **Quality gate on the PR: MET**, on condition that Qodo's run for the final head is again a skip
 or a complete review without a High or Medium.
 
+Final head `ca9f87e`: Qodo's run was again a skip, as the condition required. The human merged
+PR 21 (`138b35e`). Issue #20 stayed open because the PR body said `(#20)`, not `Closes #20`; it
+was closed by hand. The `BACKLOG.md` row now says `done (PR 21)`, which settles the Low cf1c4585.
+
 ## What the agent or review missed
 
 - **The gate did not know that a review can be skipped.** It asked for a completed review of the
@@ -172,4 +176,4 @@ improvise. And a met gate describes the findings that came up: today that was th
 - Gate: `AGENTS.md`, section "Quality gate"
 - Evidence: `evidence/day09/`
 - PR: https://github.com/UBayouski/tracenotes/pull/21
-- Post: _TODO_
+- Post: https://github.com/orgs/qodo-hackathon/discussions/11#discussioncomment-19573939
