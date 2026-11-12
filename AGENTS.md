@@ -138,7 +138,12 @@ type together with Qodo's own `category`, unchanged.
    file, and the reviewer gave no new description. It is reported as "fixed, reviewer stale".
    Recording that outcome in Qodo needs the human's approval.
 8. **On a pull request**, the latest completed review must be for the head commit. A review of an
-   older commit says nothing about the code that would be merged.
+   older commit says nothing about the code that would be merged. One allowance: Qodo may skip a
+   commit (`review_effort: skip`, `review_complete: false`). A skipped review at the head counts
+   when every commit since the last complete review changes only Markdown files and files under
+   `evidence/`, nothing under `src/`, `tests/` or `.github/` and no package or config file. The
+   gate report then names the last completely reviewed commit and lists the files changed since.
+   This file is Markdown, so a rule change can pass without a review; the human reads those.
 
 **Not done.** The agent reports the task as NOT DONE, and says why, when any of these is true: a
 valid or disputed High or Medium finding is open; `npm run check` fails; the last review does not

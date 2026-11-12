@@ -14,6 +14,7 @@ pathspec `. ":(exclude)evidence" ":(exclude)journal"`.
 | `pr21-review-1.json` | Qodo PR review of PR 21, read with Review Resolver | head `501f983` | completed at head; 1 `remediation_recommended` (fa44bb08), 1 `informational` (cf1c4585), both `pending` |
 | `red-pr-round1.txt` | `npm run check` after adding the test for fa44bb08, before the fix | `501f983` plus one test | 1 failing, 164 passing |
 | `pr21-review-2.json` | Qodo PR review after the fix commit | head `931d447` | completed at head; fa44bb08 `implemented`; cf1c4585 `pending` (Low, report-only) |
+| `pr21-review-3-extended.json` | Extended read with `review_runs`, after two docs-only commits | head `f3dc67b` | runs for `e3684e4` and `f3dc67b`: `review_effort: skip`, `review_complete: false`; both findings `implemented` |
 | `review-2-deep.json` | run 2, `--deep` (effective: extended, two issue reviewers) | 61,683 B: after fix round 1, 164 tests | full review; 0 introduced, 0 still open, both findings `resolved` with `attribution_status: implemented`; two reviewer comments; coverage complete |
 
 `*.stderr.txt` files hold the CLI's scope line for each run (untracked files included, bytes

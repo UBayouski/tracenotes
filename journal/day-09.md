@@ -112,7 +112,30 @@ reported and unchanged.
 (165 of 165), and the latest completed review is for the head commit. Any later commit moves the
 head and needs a completed review again before merge.
 
+**Then the head moved twice and Qodo skipped both commits.** `e3684e4` (human: rule, journal,
+evidence) and `f3dc67b` (agent: rule wording) each got a run with `review_effort: skip` and
+`review_complete: false` (`evidence/day09/pr21-review-3-extended.json`). The gate text did not
+cover this: read literally, a skipped review at the head is incomplete verification, NOT MET. The
+agent stopped and asked. The human's decision: amend the gate. A skipped review at the head
+counts when every commit since the last complete review changes only Markdown and `evidence/`,
+and the report lists the files (`AGENTS.md`, point 8). Known cost, accepted: `AGENTS.md` is
+Markdown, so a rule change can pass without a Qodo review.
+
+Under the amended gate, at the head after this note is pushed: last completely reviewed commit
+`931d447`; changed since: `AGENTS.md`, `journal/day-09.md`, `evidence/day09/README.md`,
+`evidence/day09/pr21-review-2.json`, `evidence/day09/pr21-review-3-extended.json`; no code
+change; `tests 165, pass 165, fail 0`; no High or Medium open. Qodo also set the Low cf1c4585 to
+`implemented` although the `BACKLOG.md` row still says `done (issue #20)`: the status contradicts
+the file, so it stays reported for the human.
+
+**Quality gate on the PR: MET**, on condition that Qodo's run for the final head is again a skip
+or a complete review without a High or Medium.
+
 ## What the agent or review missed
+
+- **The gate did not know that a review can be skipped.** It asked for a completed review of the
+  head and treated anything incomplete as NOT DONE. Docs-only commits made the PR fail its own
+  gate until the human amended it.
 
 - **The ticket draft claimed something false about the code.** It said `group` "keeps rejecting"
   unknown arguments; running `group --x` printed JSON and exited 0. Caught before implementation
