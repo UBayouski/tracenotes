@@ -159,13 +159,14 @@ human, and one line: `Quality gate: MET` or `Quality gate: NOT MET`, with the re
   commit and push as a bot on `agent/*` branches without per-push approval; the human's
   `ready-for-agent` label or `@claude` comment is the approval for that run. A human opens the
   pull request from such a branch and decides whether to merge.
-- Second exception (Day 9): in an interactive session an agent may commit and push fixes for
-  review findings to the branch of a pull request the human has already opened, without asking
-  each time. Conditions: the fix is test-first and `npm run check` passes; nothing about it needs
-  the human's decision (a disputed finding, an unclear label, a change of ticket or scope, or any
-  other open question: stop and ask first); the commit holds only the fix and its evidence; it is
-  a new commit, never an amend, force-push, merge or rebase; it never goes to `main`. The first
-  commit of a task and the pull request itself stay human.
+- Second exception (Day 9): once an interactive agent is working on a pull request the human has
+  opened, it may commit and push to that PR's branch on its own, without asking each time: fixes
+  for review findings, their tests, and the journal, evidence and docs that belong to that PR. If
+  the agent has any question or concern, or needs the human's input (a disputed finding, an
+  unclear label, a change of ticket or scope, anything it is unsure about), it stops and asks
+  before committing. Limits: `npm run check` passes; code fixes are test-first; new commits only,
+  never an amend, force-push or rebase; never on `main`; no merge; labels and other triggers still
+  need approval. The first commit of a task, opening the pull request and merging stay human.
 - Suggested commit messages carry no `Co-Authored-By` or other AI attribution trailer. Human
   commits are the human's. Agent commits (bot commits on `agent/*` branches and review-fix
   commits under the second exception) name the agent in a trailer.
