@@ -2,7 +2,8 @@
  * Render release groups as Markdown (tickets/T-004) or as a JSON document (tickets/T-007).
  *
  * No Orphan Notes: every entry line carries its short SHA (and PR number when known).
- * Nothing Vanishes: a closing line accounts for ignored merges and malformed records.
+ * Nothing Vanishes: a closing line accounts for ignored merges, commits ignored by config and
+ * malformed records.
  * Validate Before You Normalize: `repoUrl` is checked as given and never repaired.
  */
 import type { BreakingEntry, Entry, ReleaseGroups } from './group.ts';
@@ -67,7 +68,7 @@ export interface NotesCounts {
   shown: number;
   /** Parsed input commits; malformed records are counted in `malformed` only. */
   total: number;
-  /** Merge commits left out of the sections. */
+  /** Commits left out of the sections: merge commits plus commits matching a config ignore pattern. */
   ignored: number;
   /** Records `parseGitLog` could not parse; not part of `total`. */
   malformed: number;
@@ -175,8 +176,11 @@ export function renderMarkdown(groups: ReleaseGroups, options: RenderOptions = {
     blocks.push(lines.join('\n'));
   }
   const { shown, total, ignored, malformed } = doc.counts;
+  // The config segment appears only when a pattern matched, so notes without a config are unchanged.
+  const byConfig = groups.ignored.filter(e => e.reason !== 'merge commit').length;
   blocks.push(
-    `_${shown} of ${total} commits shown; ${ignored} merge commits ignored; ` +
+    `_${shown} of ${total} commits shown; ${ignored - byConfig} merge commits ignored; ` +
+    (byConfig > 0 ? `${byConfig} ignored by config; ` : '') +
     `${malformed} malformed records skipped._`,
   );
   return `${blocks.join('\n\n')}\n`;

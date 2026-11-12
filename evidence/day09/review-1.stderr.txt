@@ -1,0 +1,5 @@
+Including 9 untracked file(s): src/config.ts, tests/config.test.ts, tests/fixtures/config-bad-regex.json, tests/fixtures/config-bom.json, +5 more
+262 gitignored file(s) not reviewed.
+Reviewing UBayouski/tracenotes @ 280c2fd2f — 57776B of local changes (filtered to 3 paths) · auto depth (base cloned by the reviewer)
+Full review: no saved checkpoint is available.
+  trace 8a4ffbcb48d38a2cbf2f98fb3af33b9a

@@ -1,0 +1,25 @@
+  ✖ a config file that is not valid UTF-8 is rejected, not repaired (86.3091ms)
+  ✖ a newline in the path or in the file cannot add lines to the error (78.3374ms)
+✖ cli --config (3426.0897ms)
+  ✖ control characters in a reader or parser message are escaped, one line out (0.757ms)
+✖ cli --config with an injected reader (3.9456ms)
+ℹ tests 164
+ℹ pass 161
+ℹ fail 3
+✖ failing tests:
+✖ a config file that is not valid UTF-8 is rejected, not repaired (86.3091ms)
+  AssertionError [ERR_ASSERTION]: group
+    actual: 0,
+    expected: 2,
+✖ a newline in the path or in the file cannot add lines to the error (78.3374ms)
+  AssertionError [ERR_ASSERTION]: error: cannot read config "nope\nerror: forged line": ENOENT: no such file or directory, open 'D:\Projects\Qodo\dark_factory\nope
+  error: forged line'
+    actual: 2,
+    expected: 1,
+✖ control characters in a reader or parser message are escaped, one line out (0.757ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  + 'error: cannot read config "c.json": first\nerror: second\r\x1B[31m x\n'
+  - 'error: cannot read config "c.json": first\\u000aerror: second\\u000d\\u001b[31m\\u2028x\n'
+    actual: 'error: cannot read config "c.json": first\nerror: second\r\x1B[31m x\n',
+    expected: 'error: cannot read config "c.json": first\\u000aerror: second\\u000d\\u001b[31m\\u2028x\n',

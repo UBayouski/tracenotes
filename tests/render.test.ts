@@ -294,3 +294,40 @@ describe('notesDocument and renderJson', () => {
     }
   });
 });
+
+// tickets/T-008-config-ignore-patterns.md
+describe('render with ignore patterns', () => {
+  const stream = fixture('log-basic.bin');
+  const plain = groupGitLog(parseGitLog(stream));
+  const ignoring = groupGitLog(parseGitLog(stream), { ignore: ['^docs', '^fix\\(cli\\)'] });
+
+  test('criterion 6: no pattern match leaves the Markdown byte-identical', () => {
+    const noMatch = groupGitLog(parseGitLog(stream), { ignore: ['^nothing matches this'] });
+    assert.equal(renderMarkdown(noMatch), renderMarkdown(plain));
+    assert.equal(renderJson(noMatch), renderJson(plain));
+  });
+
+  test('criterion 6: the closing line splits merge commits from commits ignored by config', () => {
+    const out = renderMarkdown(ignoring);
+    assert.ok(
+      out.endsWith('\n\n_2 of 5 commits shown; 1 merge commits ignored; 2 ignored by config; 1 malformed records skipped._\n'),
+      out,
+    );
+    assert.ok(!out.includes('readme'));
+    assert.ok(!out.includes('detect direct invocation'));
+  });
+
+  test('criterion 6: only pattern matches, no merge commit', () => {
+    const g = groupGitLog(parseGitLog(record(1, 'docs: a') + record(2, 'feat: b')), { ignore: ['^docs'] });
+    assert.ok(renderMarkdown(g).endsWith('_1 of 2 commits shown; 0 merge commits ignored; 1 ignored by config; 0 malformed records skipped._\n'));
+  });
+
+  test('criterion 7: the JSON document keeps its keys; counts.ignored is merges plus matches', () => {
+    const doc = notesDocument(ignoring);
+    assert.deepEqual(Object.keys(doc), ['schemaVersion', 'title', 'sections', 'counts']);
+    assert.equal(doc.schemaVersion, 1);
+    assert.deepEqual(doc.counts, { shown: 2, total: 5, ignored: 3, malformed: 1 });
+    assert.equal(doc.counts.shown + doc.counts.ignored, doc.counts.total);
+    assert.deepEqual(doc.sections.map(s => s.title), ['Breaking changes', 'Features']);
+  });
+});
