@@ -247,6 +247,132 @@ describe('cli', () => {
   });
 });
 
+// tickets/T-008-config-ignore-patterns.md criterion 9
+describe('cli --config', () => {
+  const stream = readFileSync(path.join(repoRoot, 'tests', 'fixtures', 'log-basic.bin'), 'utf8');
+  const cfg = (name: string) => path.join('tests', 'fixtures', name);
+  const commands: string[][] = [['group'], ['render'], ['version', '--current', '1.4.2']];
+
+  test('group lists commits ignored by config with their pattern', () => {
+    const { code, stdout, stderr } = runCli(['group', '--config', cfg('config-ignore-docs.json')], stream);
+    assert.equal(code, 0, stderr);
+    assert.equal(stderr, '');
+    const result = JSON.parse(stdout);
+    assert.deepEqual(result.ignored.map((e: { reason: string }) => e.reason), ['merge commit', 'ignore pattern: ^docs']);
+    assert.equal(result.total, 5);
+    assert.ok(!result.sections.some((s: { title: string }) => s.title === 'docs'));
+  });
+
+  test('render counts commits ignored by config in Markdown and JSON', () => {
+    const md = runCli(['render', '--config', cfg('config-ignore-docs.json')], stream);
+    assert.equal(md.code, 0, md.stderr);
+    assert.ok(md.stdout.endsWith('_3 of 5 commits shown; 1 merge commits ignored; 1 ignored by config; 1 malformed records skipped._\n'), md.stdout);
+    const json = runCli(['render', '--format', 'json', '--config', cfg('config-ignore-docs.json')], stream);
+    assert.equal(json.code, 0, json.stderr);
+    assert.deepEqual(JSON.parse(json.stdout).counts, { shown: 3, total: 5, ignored: 2, malformed: 1 });
+  });
+
+  test('version ignores matching commits but never a breaking one', () => {
+    const { code, stdout, stderr } = runCli(['version', '--current', '1.4.2', '--config', cfg('config-ignore-fix.json')], stream);
+    assert.equal(code, 0, stderr);
+    const r = JSON.parse(stdout);
+    // The fixture's breaking commit is `feat(parser)!`, which matches ^feat and must still count.
+    assert.equal(r.next, '2.0.0');
+    assert.equal(r.rule.id, 'breaking');
+    assert.equal(r.counts.ignored, 3);
+  });
+
+  test('without --config the output is what it was', () => {
+    for (const command of commands) {
+      const bom = runCli([...command, '--config', cfg('config-bom.json')], stream);
+      assert.equal(bom.code, 0, bom.stderr);
+      // ' ^docs' (leading space kept) matches nothing, so the result equals a run without config.
+      assert.equal(bom.stdout, runCli(command, stream).stdout, command.join(' '));
+    }
+  });
+
+  test('a missing value, a missing file and invalid files exit 2 with one error line naming the path', () => {
+    const bad: [string, RegExp][] = [
+      ['does-not-exist.json', /^error: cannot read config "tests[\\/]+fixtures[\\/]+does-not-exist\.json": .*ENOENT/],
+      ['config-not-json.json', /^error: config "[^"]+config-not-json\.json": invalid config: not valid JSON/],
+      ['config-unknown-key.json', /^error: config "[^"]+config-unknown-key\.json": invalid config: unknown key "sections"/],
+      ['config-bad-regex.json', /^error: config "[^"]+config-bad-regex\.json": invalid config: ignore\[1\] is not a valid regular expression/],
+    ];
+    for (const command of commands) {
+      const missing = runCli([...command, '--config'], stream);
+      assert.equal(missing.code, 2, command.join(' '));
+      assert.equal(missing.stdout, '');
+      assert.equal(missing.stderr, 'error: --config needs a value\n');
+      for (const [name, pattern] of bad) {
+        const { code, stdout, stderr } = runCli([...command, '--config', cfg(name)], stream);
+        assert.equal(code, 2, `${command.join(' ')} ${name}`);
+        assert.equal(stdout, '');
+        assert.match(stderr, pattern);
+        assert.equal(stderr.trimEnd().split('\n').length, 1, stderr);
+      }
+    }
+  });
+
+  test('a directory given as the config file is an error, not a crash', () => {
+    const { code, stdout, stderr } = runCli(['render', '--config', path.join('tests', 'fixtures')], stream);
+    assert.equal(code, 2);
+    assert.equal(stdout, '');
+    assert.match(stderr, /^error: cannot read config /);
+  });
+
+  test('when --config is repeated only the last file is read', () => {
+    for (const command of commands) {
+      const last = runCli([...command, '--config', 'does-not-exist.json', '--config', cfg('config-ignore-docs.json')], stream);
+      assert.equal(last.code, 0, last.stderr);
+      assert.equal(last.stdout, runCli([...command, '--config', cfg('config-ignore-docs.json')], stream).stdout);
+      const bad = runCli([...command, '--config', cfg('config-ignore-docs.json'), '--config', cfg('config-not-json.json')], stream);
+      assert.equal(bad.code, 2, command.join(' '));
+      assert.equal(bad.stdout, '');
+    }
+  });
+
+  test('group now rejects an unknown argument with usage', () => {
+    for (const args of [['--bogus'], ['extra'], ['--config', cfg('config-ignore-docs.json'), '--repo-url', 'x']]) {
+      const { code, stdout, stderr } = runCli(['group', ...args], stream);
+      assert.equal(code, 2, args.join(' '));
+      assert.equal(stdout, '');
+      assert.match(stderr, /^error: unknown option /);
+      assert.match(stderr, /Usage:/);
+    }
+  });
+
+  // Qodo local review finding e7cc6b40: bytes that are not UTF-8 must not be replaced and accepted.
+  test('a config file that is not valid UTF-8 is rejected, not repaired', () => {
+    for (const command of commands) {
+      const { code, stdout, stderr } = runCli([...command, '--config', cfg('config-invalid-utf8.json')], stream);
+      assert.equal(code, 2, command.join(' '));
+      assert.equal(stdout, '');
+      assert.match(stderr, /^error: cannot read config "[^"]+config-invalid-utf8\.json": the file is not valid UTF-8\n$/);
+    }
+  });
+
+  // Qodo local review finding 9f986931: the diagnostic stays one line whatever the path or file holds.
+  test('a newline in the path or in the file cannot add lines to the error', () => {
+    const forged = runCli(['render', '--config', 'nope\nerror: forged line'], stream);
+    assert.equal(forged.code, 2);
+    assert.equal(forged.stdout, '');
+    assert.match(forged.stderr, /^error: cannot read config "nope\\nerror: forged line": /);
+    assert.equal(forged.stderr.trimEnd().split('\n').length, 1, forged.stderr);
+    const multiline = runCli(['render', '--config', cfg('config-not-json-multiline.json')], stream);
+    assert.equal(multiline.code, 2);
+    assert.match(multiline.stderr, /^error: config "[^"]+": invalid config: not valid JSON/);
+    assert.equal(multiline.stderr.trimEnd().split('\n').length, 1, multiline.stderr);
+  });
+
+  test('usage documents --config on group, render and version', () => {
+    const usage = runCli(['--help']).stdout;
+    assert.match(usage, /tracenotes group \[--config <path>\]/);
+    assert.match(usage, /tracenotes render \[--repo-url <url>\] \[--format markdown\|json\] \[--config <path>\]/);
+    assert.match(usage, /tracenotes version --current <x\.y\.z> \[--config <path>\]/);
+    assert.match(usage, /No config file is read unless --config is given/);
+  });
+});
+
 // T-026: terminal branch via injected io (no pseudo-terminal needed).
 async function runMain(argv: string[], io: { stdinIsTTY: boolean; readStdin: () => Promise<string> }) {
   let out = '';
@@ -336,5 +462,76 @@ describe('cli with a terminal stdin', () => {
   test('usage says stdin is read only when not a terminal', async () => {
     const { out } = await runMain(['--help'], { stdinIsTTY: true, readStdin: failRead });
     assert.match(out, /read stdin only when it is not a terminal/);
+  });
+});
+
+// tickets/T-008-config-ignore-patterns.md criteria 9 and 10: the config is read through CliIo,
+// after the other options and before stdin.
+describe('cli --config with an injected reader', () => {
+  const failRead = async (): Promise<string> => { throw new Error('stdin must not be read'); };
+  const failFile = (): string => { throw new Error('the config file must not be read'); };
+  const commands: string[][] = [['group'], ['render'], ['version', '--current', '1.0.0']];
+
+  async function run(argv: string[], readFile: (path: string) => string, readStdin: () => Promise<string> = failRead) {
+    let out = '';
+    let err = '';
+    const code = await main(argv, {
+      stdinIsTTY: false,
+      readStdin,
+      readFile,
+      stdout: text => { out += text; },
+      stderr: text => { err += text; },
+    });
+    return { code, out, err };
+  }
+
+  test('an invalid config fails before stdin is read', async () => {
+    for (const command of commands) {
+      const { code, out, err } = await run([...command, '--config', 'c.json'], () => '{"ignore": [""]}');
+      assert.equal(code, 2, command.join(' '));
+      assert.equal(out, '');
+      assert.equal(err, 'error: config "c.json": invalid config: ignore[0] is an empty pattern, which would match every commit\n');
+    }
+  });
+
+  test('an unreadable config fails before stdin is read', async () => {
+    const denied = (): string => { throw new Error('EACCES: permission denied'); };
+    const { code, err } = await run(['render', '--config', 'c.json'], denied);
+    assert.equal(code, 2);
+    assert.equal(err, 'error: cannot read config "c.json": EACCES: permission denied\n');
+  });
+
+  // Qodo local review finding 9f986931, without a file system: reader and parser messages.
+  test('control characters in a reader or parser message are escaped, one line out', async () => {
+    const thrower = (): string => { throw new Error('first\nerror: second\r\u001b[31m\u2028x'); };
+    const read = await run(['group', '--config', 'c.json'], thrower);
+    assert.equal(read.code, 2);
+    assert.equal(read.err, 'error: cannot read config "c.json": first\\u000aerror: second\\u000d\\u001b[31m\\u2028x\n');
+    const regex = await run(['group', '--config', 'c.json'], () => '{"ignore": ["a\\nb("]}');
+    assert.equal(regex.code, 2);
+    assert.equal(regex.err.trimEnd().split('\n').length, 1, regex.err);
+    assert.match(regex.err, /^error: config "c\.json": invalid config: ignore\[0\] is not a valid regular expression: "a\\nb\("/);
+  });
+
+  test('the config is not read when another option is invalid, or without --config', async () => {
+    const badFormat = await run(['render', '--format', 'yaml', '--config', 'c.json'], failFile);
+    assert.equal(badFormat.code, 2);
+    assert.match(badFormat.err, /invalid --format/);
+    const badVersion = await run(['version', '--current', 'v1', '--config', 'c.json'], failFile);
+    assert.equal(badVersion.code, 2);
+    assert.match(badVersion.err, /invalid version/);
+    const stdin = async () => '1'.repeat(40) + '\u001fA\u001f2026-11-01T00:00:00Z\u001ffeat: a\u001e\n';
+    const none = await run(['group'], failFile, stdin);
+    assert.equal(none.code, 0, none.err);
+  });
+
+  test('only the last --config path is passed to the reader, exactly as given', async () => {
+    const seen: string[] = [];
+    const reader = (p: string): string => { seen.push(p); return '{"ignore": ["^feat"]}'; };
+    const stdin = async () => '1'.repeat(40) + '\u001fA\u001f2026-11-01T00:00:00Z\u001ffeat: a\u001e\n';
+    const { code, out } = await run(['group', '--config', 'first.json', '--config', ' second.json '], reader, stdin);
+    assert.equal(code, 0);
+    assert.deepEqual(seen, [' second.json ']);
+    assert.equal(JSON.parse(out).ignored[0].reason, 'ignore pattern: ^feat');
   });
 });

@@ -1,0 +1,126 @@
+# Day 09 — Nov 12 — Set up quality gates
+
+Brief: https://github.com/orgs/qodo-hackathon/discussions/11. Save a quality gate where the factory
+reads it (which findings must be fixed, which are only flagged), try it on a small change with
+Qodo's Reviewer or Review Resolver, let the agent fix what the gate covers and review again until
+the gate is met, and have it report "not done" when it is not. (The plan said "Write the missing
+skill" for today; the thread is canonical.)
+
+## The gate
+
+Saved in `AGENTS.md`, section "Quality gate", before any code was written. Both the interactive
+agent and the workflow bot already read that file in full. In short:
+
+- Qodo's tools report `action_level`, not High/Medium/Low. The gate reads `action_required` as
+  High, `remediation_recommended` as Medium, `informational` as Low. Anything else: stop and ask.
+- Every valid High or Medium finding is fixed, whatever its type (Bug, Rule violation,
+  Requirement gap). Every Low is reported and left alone, Low Rule violations included.
+- Valid means reproduced: a failing test, or a cited line that contradicts a rule or a criterion.
+- A finding the agent thinks is wrong is disputed with evidence and still blocks until the human
+  decides. The agent does not dismiss findings and does not edit the ticket to fit the code.
+- Fixes are test-first. The last review must cover the final tree, one review is deep, and there
+  are at most three fix rounds.
+- A finding listed again after its fix counts as fixed only with a red-then-green test, the cited
+  code gone and no new description (the Day 8 `still_open` case).
+- On a PR the latest completed review must be for the head commit.
+- Otherwise the task is NOT DONE. An agent that cannot run a review says "implemented, gate
+  pending". `agent-ticket.yml` now tells the bot exactly that (prompt step 7).
+
+The three `action_level` values and their order come from the Review Resolver skill
+(`action_required` > `remediation_recommended` > `informational`). That they correspond to the
+High/Medium/Low labels of the PR comment is this project's reading, not something Qodo's docs state.
+
+## The task
+
+`tickets/T-008-config-ignore-patterns.md`, issue #20 (no label, nothing triggered): a JSON config
+file given with `--config <path>` lists regular expressions; commits whose first line matches are
+moved out of the notes but stay counted, and `group` lists them with the pattern. Eleven criteria.
+The backlog item also had custom section names; those moved to T-027.
+
+Built in an interactive session on local branch `t-008-config-ignore`, nothing committed:
+`src/config.ts` (`parseConfig`), `options.ignore` in `groupCommits`, `--config` on `group`,
+`render` and `version`, the closing line of the Markdown notes, tests and fixtures. Three choices
+were the agent's and were approved by the human before implementation: a breaking commit is never
+hidden by a pattern; `group` now rejects unknown arguments; the Markdown line changes only when a
+pattern matched.
+
+## Review loop
+
+Base `280c2fd` (`main`, pushed). Scope: every changed and new file except `evidence/` and
+`journal/`, so `AGENTS.md` with the gate itself was reviewed too. Nothing was staged: all changes
+were unstaged or untracked, and the CLI listed the untracked files it included. Context: issue #20
+as `--ticket` and a context file with ten decisions and who made each.
+
+| Run | Depth (effective) | Tree | Result |
+|---|---|---|---|
+| 1 | auto (standard) | first implementation, 161 tests, 57,776 B | 2 findings, both `remediation_recommended` |
+| 2 | deep (extended, two reviewers) | after fix round 1, 164 tests, 61,683 B | 0 new; both findings `resolved` / `implemented`; coverage complete |
+
+## Gate report
+
+| Finding | Type, `category` | `action_level` → severity | Decision | Evidence |
+|---|---|---|---|---|
+| e7cc6b40 Invalid UTF-8 in a config file silently alters its patterns (`src/cli.ts`) | Rule violation (cites rule 4578695, Validate Before You Normalize), Correctness | `remediation_recommended` → Medium | fixed | Red: `--config tests/fixtures/config-invalid-utf8.json` exited 0. Now the reader decodes with a fatal UTF-8 decoder and exits 2 with `the file is not valid UTF-8`. |
+| 9f986931 A config path can forge error lines (`src/cli.ts`) | Bug, Observability | `remediation_recommended` → Medium | fixed | Red: `--config $'nope\nerror: forged line'` printed two lines. Now every reader and parser message goes through `oneLine()`, which escapes control characters. |
+
+- What the code showed for e7cc6b40: `readFileSync(path, 'utf8')` replaces invalid bytes with
+  U+FFFD before `parseConfig` sees the text, so a pattern is accepted in a form that is not in the
+  file. That is rule 6 exactly. The agent had listed this case under "not tested or uncertain" in
+  its own context notes instead of fixing it; the reviewer quoted that note back.
+- What the code showed for 9f986931: valid, and wider than reported. The same failing test showed
+  that an ordinary multi-line file that is not JSON also printed several lines, because V8 quotes
+  the source text in its message. The ticket asks for one `error:` line (criterion 9); the agent's
+  test for it used a single-line fixture. The fix covers path, system message, JSON message and
+  regex message.
+- Disputed findings: none. Low findings: none. Unmapped labels: none.
+- Reviewer comments (not findings, reported, not changed): (1) check on Linux that a directory as
+  the config path gives one `error:` line (EISDIR); only run on Windows here, and the repository
+  has no CI job that runs the tests, so this is unverified. (2) For later: keep `groupGitLog`
+  outside the `try` in `version` that turns `RangeError` into an error line.
+- Checks: `npm run check` on the final tree: typecheck clean; `tests 164, pass 164, fail 0`
+  (123 before the ticket, 161 after the first implementation). Red run: `evidence/day09/red-round1.txt`.
+- Latest review: run 2, deep, full review of the final tree (`tree_sha 696edd6f`), coverage
+  complete, `introduced: []`, `still_open: []`, `resolved: [9f986931, e7cc6b40]`.
+- Fix rounds used: 1 of 3.
+
+**Quality gate: MET.** No High or Medium finding is open, the checks pass, and the last review
+covers the code that will be committed.
+
+## What the agent or review missed
+
+- **The ticket draft claimed something false about the code.** It said `group` "keeps rejecting"
+  unknown arguments; running `group --x` printed JSON and exited 0. Caught before implementation
+  only because the Day 8 lesson (run it before writing "as X behaves") was in the plan.
+- **"Not tested" was treated as a disclosure, not a task.** Invalid UTF-8 sat in the agent's notes
+  as an uncertainty. Under a gate, a known gap in the area of a project rule should be closed or
+  put in the ticket's out-of-scope list before review.
+- **The one-line test proved less than the criterion said.** Single-line fixtures only. The review
+  found the path case; the multi-line file case, the common one, was found while reproducing.
+- **Invisible characters in source.** The agent's file writes turned `\uFEFF`, `\u2028` and
+  `\u00e9` escapes into the literal characters, so `src/config.ts` held an invisible BOM inside a
+  string. Tests passed and neither review mentioned it. Found by scanning the changed files for
+  non-ASCII characters; replaced with escapes before run 2.
+- **Only one branch of the gate was exercised.** Two Mediums, both valid, both fixed. Report-only
+  Lows, a disputed finding, an unmapped label, the stale-finding clause and the three-round stop
+  did not occur. This time Qodo marked both findings `implemented` by itself on the rerun, unlike
+  Day 8, where the fixed finding stayed `still_open`; run 2 was a full review after a depth change,
+  run 4 on Day 8 was not.
+- **The mapping is unverified against a PR.** No finding has yet been seen with both an
+  `action_level` and a High/Medium/Low label side by side.
+- **The bot's "gate pending" line is untested.** No workflow was triggered today.
+
+## Lesson
+
+A gate is only as precise as the labels the tool actually returns. The brief speaks of High,
+Medium and Low; the API returns `action_level`. Writing the gate meant writing that mapping down
+and deciding what happens when a label does not fit, which is the part an agent would otherwise
+improvise. And a met gate describes the findings that came up: today that was the fix path only.
+
+## Links
+
+- Issue: https://github.com/UBayouski/tracenotes/issues/20
+- Ticket: `tickets/T-008-config-ignore-patterns.md`
+- Gate: `AGENTS.md`, section "Quality gate"
+- Evidence: `evidence/day09/`
+- PR: _TODO after the human commits_
+- Post: _TODO_

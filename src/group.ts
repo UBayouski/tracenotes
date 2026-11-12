@@ -2,8 +2,10 @@
  * Group parsed commits into release-note sections (tickets/T-003-group-commits-into-sections.md).
  *
  * No Orphan Notes: every entry is built from a LoggedCommit and always carries `sha`.
- * Nothing Vanishes: every input commit lands in exactly one section or in `ignored`.
+ * Nothing Vanishes: every input commit lands in exactly one section or in `ignored`, and an
+ * ignored commit says why (merge commit, or the config pattern that matched; tickets/T-008).
  */
+import { compileIgnorePattern } from './config.ts';
 import type { GitLogResult, LoggedCommit, MalformedRecord } from './gitlog.ts';
 
 export interface Entry {
@@ -31,7 +33,16 @@ export interface Section {
 }
 
 export interface IgnoredEntry extends Entry {
-  reason: 'merge commit';
+  /** `ignore pattern: <pattern>` carries the first matching config pattern, as written. */
+  reason: 'merge commit' | `ignore pattern: ${string}`;
+}
+
+export interface GroupOptions {
+  /**
+   * Regular expressions (source text, compiled with the `u` flag) from the config file. A commit
+   * whose first message line matches one is moved to `ignored`. Breaking commits never are.
+   */
+  ignore?: string[];
 }
 
 export interface ReleaseGroups {
@@ -64,15 +75,34 @@ function toEntry(commit: LoggedCommit): Entry {
   };
 }
 
+/** Source of the first pattern, in file order, that matches the first line of `raw`, untrimmed. */
+function firstMatch(patterns: { source: string; regex: RegExp }[], raw: string): string | undefined {
+  if (patterns.length === 0) return undefined;
+  const newline = raw.indexOf('\n');
+  const firstLine = newline === -1 ? raw : raw.slice(0, newline);
+  return patterns.find(p => p.regex.test(firstLine))?.source;
+}
+
 /**
  * Group commits into sections.
  *
  * @param commits Commits as produced by `parseGitLog`.
  * @param malformed Optional malformed records to pass through unchanged.
- * @returns Sections in the fixed order from the ticket (empty ones omitted), merge commits in
- *          `ignored`, and `total === commits.length`. Never throws; entries are plain data.
+ * @param options `ignore` patterns from the config file; none by default.
+ * @returns Sections in the fixed order from the ticket (empty ones omitted), merge commits and
+ *          commits matching an ignore pattern in `ignored` with their reason, and
+ *          `total === commits.length`. Entries are plain data.
+ * @throws RangeError when an ignore pattern is empty or not a valid regular expression.
  */
-export function groupCommits(commits: LoggedCommit[], malformed: MalformedRecord[] = []): ReleaseGroups {
+export function groupCommits(
+  commits: LoggedCommit[],
+  malformed: MalformedRecord[] = [],
+  options: GroupOptions = {},
+): ReleaseGroups {
+  const patterns = (options.ignore ?? []).map((source, index) => ({
+    source,
+    regex: compileIgnorePattern(source, `ignore[${index}]`),
+  }));
   const breaking: BreakingEntry[] = [];
   const byType = new Map<string, Entry[]>();
   const unclassified: Entry[] = [];
@@ -80,11 +110,15 @@ export function groupCommits(commits: LoggedCommit[], malformed: MalformedRecord
 
   for (const commit of commits) {
     const entry = toEntry(commit);
+    let matched: string | undefined;
     // Checked on the raw first line as parsed; no trimming before the test.
     if (commit.message.raw.startsWith('Merge ')) {
       ignored.push({ ...entry, reason: 'merge commit' });
     } else if (commit.message.breaking) {
+      // Before the ignore patterns on purpose: a config file cannot hide a breaking change.
       breaking.push({ ...entry, breakingNotes: [...commit.message.breakingNotes] });
+    } else if ((matched = firstMatch(patterns, commit.message.raw)) !== undefined) {
+      ignored.push({ ...entry, reason: `ignore pattern: ${matched}` });
     } else if (entry.type === null) {
       unclassified.push(entry);
     } else {
@@ -108,7 +142,10 @@ export function groupCommits(commits: LoggedCommit[], malformed: MalformedRecord
   return { sections, ignored, malformed, total: commits.length };
 }
 
-/** Convenience for the CLI: group a `parseGitLog` result and keep its malformed records. */
-export function groupGitLog(result: GitLogResult): ReleaseGroups {
-  return groupCommits(result.commits, result.malformed);
+/**
+ * Convenience for the CLI: group a `parseGitLog` result and keep its malformed records.
+ * `options` and the RangeError are those of `groupCommits`.
+ */
+export function groupGitLog(result: GitLogResult, options: GroupOptions = {}): ReleaseGroups {
+  return groupCommits(result.commits, result.malformed, options);
 }

@@ -142,3 +142,32 @@ describe('recommendVersion', () => {
     assert.equal(recommend(stream('docs: a'), `${max}.${max}.${max}`).bump, 'none');
   });
 });
+
+// tickets/T-008-config-ignore-patterns.md criterion 8
+describe('recommendVersion with ignore patterns', () => {
+  const withConfig = (s: string, ignore: string[], current: string) =>
+    recommendVersion(groupGitLog(parseGitLog(s), { ignore }), current);
+
+  test('a commit ignored by a pattern does not trigger a bump and is counted as ignored', () => {
+    const s = stream('feat: a', 'fix: b', 'docs: c');
+    assert.equal(recommend(s, '1.2.3').next, '1.3.0');
+    const r = withConfig(s, ['^feat'], '1.2.3');
+    assert.equal(r.next, '1.2.4');
+    assert.equal(r.rule.id, 'fix');
+    assert.deepEqual(r.counts, { total: 3, triggering: 1, notTriggering: 1, ignored: 1, malformed: 0 });
+    assertInvariants(r, 0);
+    const none = withConfig(s, ['^feat', '^fix'], '1.2.3');
+    assert.equal(none.bump, 'none');
+    assertInvariants(none, 0);
+  });
+
+  test('a breaking commit that matches a pattern still gives a major recommendation', () => {
+    const s = stream('feat!: drop the old flag', 'docs: c');
+    const r = withConfig(s, ['^feat', '.'], '1.2.3');
+    assert.equal(r.next, '2.0.0');
+    assert.equal(r.rule.id, 'breaking');
+    assert.equal(r.triggers.length, 1);
+    assert.equal(r.counts.ignored, 1);
+    assertInvariants(r, 0);
+  });
+});

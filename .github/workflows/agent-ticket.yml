@@ -76,6 +76,9 @@ jobs:
             6. In your final comment, list every acceptance criterion with met / not met and the
                test that proves it, the summary line of `npm run check`, and anything the ticket
                left undefined that you decided yourself. Include the link to open the pull request.
+            7. AGENTS.md has a "Quality gate" section. You cannot run a Qodo review in this job,
+               so end your comment with the line "Implemented, gate pending": the gate is
+               evaluated on the pull request after Qodo reviews it. Never write "done".
 
             A human opens the pull request from your branch and merges it. Do not merge, rebase,
             tag, or touch main.

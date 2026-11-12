@@ -9,8 +9,11 @@
  * Exit codes: 0 success, 2 usage error.
  * This is the only module allowed to call process.exit or write to stdout/stderr directly.
  */
+import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { parseCommit } from './commit.ts';
+import { parseConfig } from './config.ts';
+import type { Config } from './config.ts';
 import { parseGitLog } from './gitlog.ts';
 import { groupGitLog } from './group.ts';
 import { checkRepoUrl, renderJson, renderMarkdown } from './render.ts';
@@ -24,19 +27,25 @@ Usage:
   tracenotes log                Parse a git log stream from stdin and print JSON.
                                 Produce it with:
                                 git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' <range>
-  tracenotes group              Group a git log stream (same input as log) into
+  tracenotes group [--config <path>]
+                                Group a git log stream (same input as log) into
                                 release-note sections and print JSON.
-  tracenotes render [--repo-url <url>] [--format markdown|json]
+  tracenotes render [--repo-url <url>] [--format markdown|json] [--config <path>]
                                 Render a git log stream (same input as log) as
                                 Markdown release notes. With --repo-url
                                 https://<host>/<owner>/<repo>, SHAs and PRs are links.
                                 With --format json, print the same notes as a JSON
                                 document: sections, entries with their source, counts.
-  tracenotes version --current <x.y.z>
+  tracenotes version --current <x.y.z> [--config <path>]
                                 Recommend the next version from a git log stream
                                 (same input as log) and print JSON with the rule
                                 and the commits that triggered it.
   tracenotes --help             Show this help.
+
+--config <path> names a JSON file such as {"ignore": ["^chore\\\\(deps\\\\)"]}. Each pattern is a
+regular expression tested against the first line of a commit message. A commit that matches is
+left out of the notes and counted as ignored; group lists it with the pattern. A breaking change
+is never ignored. No config file is read unless --config is given.
 
 parse (without a message), log, group, render and version read stdin only when it is not a terminal.
 Pipe or redirect input to them; in an interactive shell they print this usage and exit 2.
@@ -58,6 +67,63 @@ export interface CliIo {
   stdout?: (text: string) => void;
   /** Where errors go; defaults to process.stderr. */
   stderr?: (text: string) => void;
+  /**
+   * Reads the --config file as text; defaults to the file system with strict UTF-8 decoding.
+   * Throws when the file cannot be read or decoded.
+   */
+  readFile?: (path: string) => string;
+}
+
+/**
+ * Read and parse the file given with --config. Inputs: the path as given (undefined when the
+ * option is absent) and the reader. Returns the config (no patterns without a path), or
+ * `{ error }` with one line that names the path and the problem. Never throws for a missing,
+ * unreadable or invalid file.
+ */
+function loadConfig(configPath: string | undefined, readFile: (path: string) => string): Config | { error: string } {
+  if (configPath === undefined) return { ignore: [] };
+  let text: string;
+  try {
+    text = readFile(configPath);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    return { error: `error: cannot read config ${JSON.stringify(configPath)}: ${oneLine(detail)}\n` };
+  }
+  try {
+    return parseConfig(text);
+  } catch (error) {
+    if (error instanceof RangeError) {
+      return { error: `error: config ${JSON.stringify(configPath)}: ${oneLine(error.message)}\n` };
+    }
+    throw error;
+  }
+}
+
+/**
+ * Escape control characters and line separators as `\uXXXX` so a message built from a path, a
+ * system error or file content stays on one line and cannot forge a second `error:` line.
+ * Only adds characters; printable text is returned unchanged.
+ */
+function oneLine(text: string): string {
+  return text.replace(
+    /[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g,
+    ch => `\\u${ch.charCodeAt(0).toString(16).padStart(4, '0')}`,
+  );
+}
+
+/**
+ * Default config reader: the file's bytes decoded as strict UTF-8. Throws the system error when
+ * the file cannot be read, and an Error when the bytes are not valid UTF-8; invalid bytes are
+ * never replaced (Validate Before You Normalize). A leading byte order mark is kept for
+ * `parseConfig`, which owns that piece of framing.
+ */
+function readConfigFile(path: string): string {
+  const bytes = readFileSync(path);
+  try {
+    return new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+  } catch {
+    throw new Error('the file is not valid UTF-8');
+  }
 }
 
 const defaultIo: CliIo = {
@@ -73,6 +139,7 @@ const defaultIo: CliIo = {
 export async function main(argv: string[], io: CliIo = defaultIo): Promise<number> {
   const stdout = io.stdout ?? ((text: string) => { process.stdout.write(text); });
   const stderr = io.stderr ?? ((text: string) => { process.stderr.write(text); });
+  const readFile = io.readFile ?? readConfigFile;
   const [command, ...rest] = argv;
 
   if (!command || command === '--help' || command === '-h') {
@@ -110,6 +177,28 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
   }
 
   if (command === 'group') {
+    let configPath: string | undefined;
+    for (let i = 0; i < rest.length; i++) {
+      const arg = rest[i]!;
+      if (arg === '--config') {
+        const value = rest[++i];
+        if (value === undefined) {
+          stderr('error: --config needs a value\n');
+          return 2;
+        }
+        // A repeated option overrides the earlier one, so only the last file is read.
+        configPath = value;
+      } else {
+        stderr(`error: unknown option "${arg}"\n\n${USAGE}`);
+        return 2;
+      }
+    }
+    // The config is read before stdin so a bad file fails immediately.
+    const config = loadConfig(configPath, readFile);
+    if ('error' in config) {
+      stderr(config.error);
+      return 2;
+    }
     if (io.stdinIsTTY) {
       stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
       return 2;
@@ -120,13 +209,14 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
       return 2;
     }
     // Malformed records are passed through so they stay visible.
-    stdout(`${JSON.stringify(groupGitLog(parseGitLog(stream)), null, 2)}\n`);
+    stdout(`${JSON.stringify(groupGitLog(parseGitLog(stream), { ignore: config.ignore }), null, 2)}\n`);
     return 0;
   }
 
   if (command === 'render') {
     let repoUrl: string | undefined;
     let formatArg: string | undefined;
+    let configPath: string | undefined;
     for (let i = 0; i < rest.length; i++) {
       const arg = rest[i]!;
       if (arg === '--repo-url') {
@@ -144,6 +234,13 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
         }
         // A repeated option overrides the earlier one, so only the last value is validated below.
         formatArg = value;
+      } else if (arg === '--config') {
+        const value = rest[++i];
+        if (value === undefined) {
+          stderr('error: --config needs a value\n');
+          return 2;
+        }
+        configPath = value;
       } else {
         stderr(`error: unknown option "${arg}"\n\n${USAGE}`);
         return 2;
@@ -170,6 +267,12 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
         throw error;
       }
     }
+    // After the other options, before stdin: only the last --config file is read.
+    const config = loadConfig(configPath, readFile);
+    if ('error' in config) {
+      stderr(config.error);
+      return 2;
+    }
     if (io.stdinIsTTY) {
       stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
       return 2;
@@ -179,7 +282,7 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
       stderr(`error: empty git log stream on stdin\n\n${USAGE}`);
       return 2;
     }
-    const groups = groupGitLog(parseGitLog(stream));
+    const groups = groupGitLog(parseGitLog(stream), { ignore: config.ignore });
     const options = repoUrl === undefined ? {} : { repoUrl };
     stdout(format === 'json' ? renderJson(groups, options) : renderMarkdown(groups, options));
     return 0;
@@ -187,6 +290,7 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
 
   if (command === 'version') {
     let current: string | undefined;
+    let versionConfigPath: string | undefined;
     for (let i = 0; i < rest.length; i++) {
       const arg = rest[i]!;
       if (arg === '--current') {
@@ -196,6 +300,13 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
           return 2;
         }
         current = value;
+      } else if (arg === '--config') {
+        const value = rest[++i];
+        if (value === undefined) {
+          stderr('error: --config needs a value\n');
+          return 2;
+        }
+        versionConfigPath = value;
       } else {
         stderr(`error: unknown option "${arg}"\n\n${USAGE}`);
         return 2;
@@ -215,6 +326,11 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
       }
       throw error;
     }
+    const config = loadConfig(versionConfigPath, readFile);
+    if ('error' in config) {
+      stderr(config.error);
+      return 2;
+    }
     if (io.stdinIsTTY) {
       stderr(`error: no git log stream on stdin (stdin is a terminal)\n\n${USAGE}`);
       return 2;
@@ -225,7 +341,8 @@ export async function main(argv: string[], io: CliIo = defaultIo): Promise<numbe
       return 2;
     }
     try {
-      stdout(`${JSON.stringify(recommendVersion(groupGitLog(parseGitLog(stream)), current), null, 2)}\n`);
+      const groups = groupGitLog(parseGitLog(stream), { ignore: config.ignore });
+      stdout(`${JSON.stringify(recommendVersion(groups, current), null, 2)}\n`);
     } catch (error) {
       // Bump overflow: a RangeError from the library is a usage-level failure, not a crash.
       if (error instanceof RangeError) {

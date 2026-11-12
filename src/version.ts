@@ -31,7 +31,7 @@ export interface VersionRecommendation {
     triggering: number;
     /** Entries that matched no rule or a lower-priority rule. */
     notTriggering: number;
-    /** Merge commits. */
+    /** Merge commits and commits matching a config ignore pattern; they never trigger a bump. */
     ignored: number;
     malformed: number;
   };

@@ -95,6 +95,62 @@ Work items live in `tickets/` as `T-NNN-<slug>.md`, each with acceptance criteri
 implementing a ticket, restate each criterion and show how the change satisfies it. The ordered
 backlog is `BACKLOG.md`.
 
+## Quality gate
+
+A coding task is done only when this gate is met. It applies to every agent that changes code
+here: an interactive session reviewing uncommitted work with Qodo local review (`qodo review`),
+and any agent resolving Qodo findings on a pull request. The agent applies the gate itself and
+ends its work with the gate report below.
+
+**Severity.** Qodo's tools report `action_level`, not High, Medium or Low. This project reads
+them as:
+
+| `action_level` | Severity | Gate |
+|---|---|---|
+| `action_required` | High | must be fixed |
+| `remediation_recommended` | Medium | must be fixed |
+| `informational` | Low | reported, not changed |
+
+Any other value, or a finding with no `action_level`, is not guessed: the agent stops and asks.
+A reviewer comment that is not a finding (`review_agent_comment`) is reported and never blocks.
+
+**Type.** The gate covers all three finding types: Bug, Rule violation (the evidence cites a
+rule from this file) and Requirement gap (the evidence cites the ticket). The report gives the
+type together with Qodo's own `category`, unchanged.
+
+1. **Fix every valid High and Medium finding**, of any type, including Medium Bugs.
+2. **Report every Low finding and leave the code as it is**, Low Rule violations included. The
+   human decides whether a Low is worth a change.
+3. **Valid means reproduced.** A finding is valid when a test fails because of it, or when the
+   cited line contradicts a rule in this file or a criterion in the ticket. Read the code and the
+   ticket before deciding; the reviewer's text alone is not evidence either way.
+4. **A finding the agent believes is wrong is disputed, not dropped.** The report gives the
+   evidence (file and line, command output, or the criterion). A disputed High or Medium blocks
+   the gate until the human decides. The agent does not dismiss a finding in Qodo on its own, and
+   does not edit the ticket so that the code passes.
+5. **Fix test-first.** Add a test that fails for the reported reason, then fix, then run
+   `npm run check`.
+6. **Review again after fixes.** The last review must cover the final tree (for local review:
+   coverage complete, staged and unstaged changes and new files included). At least one review of
+   the task runs at deep depth. At most three fix rounds; then stop.
+7. **A finding listed again after its fix** counts as fixed only when all three hold: the test
+   from point 5 failed before and passes now, the code the finding cites is no longer in the
+   file, and the reviewer gave no new description. It is reported as "fixed, reviewer stale".
+   Recording that outcome in Qodo needs the human's approval.
+8. **On a pull request**, the latest completed review must be for the head commit. A review of an
+   older commit says nothing about the code that would be merged.
+
+**Not done.** The agent reports the task as NOT DONE, and says why, when any of these is true: a
+valid or disputed High or Medium finding is open; `npm run check` fails; the last review does not
+cover the final code; the review failed, was partial, or could not run; three fix rounds did not
+clear the gate; a label could not be mapped. An agent that cannot run a Qodo review reports
+"implemented, gate pending", never "done".
+
+**Gate report.** One row per finding: id, type and `category`, `action_level` and severity,
+decision (fixed, disputed, reported, fixed with reviewer stale), evidence. Then the checks run
+with their result, the latest review and what it covered, the Low findings, any question for the
+human, and one line: `Quality gate: MET` or `Quality gate: NOT MET`, with the reason.
+
 ## Process rules
 
 - Humans make every commit in interactive sessions. Agents prepare changes and a suggested commit

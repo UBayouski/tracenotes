@@ -112,3 +112,73 @@ describe('groupCommits', () => {
     assert.equal(g.total, 1);
   });
 });
+
+// tickets/T-008-config-ignore-patterns.md
+describe('groupCommits with ignore patterns', () => {
+  const messages = [
+    'feat: add parser', 'chore(deps): bump typescript', 'docs: typo in readme',
+    'Merge pull request #1 from a/b', 'chore(deps)!: drop node 22', 'chore: tidy', 'not conventional',
+  ];
+  const commits = parseGitLog(messages.map((m, i) => record(i + 1, m)).join('')).commits;
+  const ignore = ['^chore\\(deps\\)', '^docs: typo', '^chore'];
+  const g = groupCommits(commits, [], { ignore });
+
+  test('criterion 3: without options, and with an empty list, the result is unchanged', () => {
+    assert.deepEqual(groupCommits(commits, []), groupCommits(commits));
+    assert.deepEqual(groupCommits(commits, [], {}), groupCommits(commits));
+    assert.deepEqual(groupCommits(commits, [], { ignore: [] }), groupCommits(commits));
+  });
+
+  test('criterion 5: a match goes to ignored with the first matching pattern, as written', () => {
+    assert.deepEqual(g.ignored.map(e => [e.subject, e.reason]), [
+      ['bump typescript', 'ignore pattern: ^chore\\(deps\\)'],
+      ['typo in readme', 'ignore pattern: ^docs: typo'],
+      ['Merge pull request #1 from a/b', 'merge commit'],
+      ['tidy', 'ignore pattern: ^chore'],
+    ]);
+    assert.equal(g.ignored[0]!.sha, '2'.repeat(40));
+  });
+
+  test('criterion 4: a merge commit keeps its reason even when a pattern matches it', () => {
+    const merged = groupCommits(commits, [], { ignore: ['^Merge', '.'] });
+    assert.equal(merged.ignored.find(e => e.subject.startsWith('Merge'))!.reason, 'merge commit');
+  });
+
+  test('criterion 4: a breaking commit is never ignored by a pattern', () => {
+    assert.deepEqual(g.sections[0]!.title, 'Breaking changes');
+    assert.deepEqual(g.sections[0]!.entries.map(e => e.subject), ['drop node 22']);
+    const all = groupCommits(commits, [], { ignore: ['.'] });
+    assert.deepEqual(all.sections.map(s => s.title), ['Breaking changes']);
+    assert.equal(all.ignored.length, commits.length - 1);
+    // A BREAKING CHANGE footer counts the same as `!`.
+    const footer = parseGitLog(record(1, 'fix: x\n\nBREAKING CHANGE: y')).commits;
+    assert.equal(groupCommits(footer, [], { ignore: ['^fix'] }).ignored.length, 0);
+  });
+
+  test('criterion 5: nothing vanishes with merges, matches and a matching breaking commit', () => {
+    assert.equal(g.total, commits.length);
+    assert.equal(count(g), g.total);
+    assert.deepEqual(g.sections.map(s => [s.title, s.entries.length]), [
+      ['Breaking changes', 1], ['Features', 1], ['Unclassified', 1],
+    ]);
+  });
+
+  test('criterion 3: the pattern sees the first line only, untrimmed, case-sensitive, u flag only', () => {
+    const one = (message: string, pattern: string) =>
+      groupCommits(parseGitLog(record(1, message)).commits, [], { ignore: [pattern] }).ignored.length;
+    assert.equal(one('feat: a\n\nfix: mentioned in the body', 'fix: mentioned'), 0);
+    assert.equal(one('feat: a\n\nbody', '^feat: a$'), 1);
+    assert.equal(one('feat: a', '^FEAT'), 0);
+    assert.equal(one('feat: a', ' ^feat'), 0);
+    assert.equal(one('feat: caf\u00e9 \u{1F600}', '^feat: caf\\u{e9} \\u{1F600}$'), 1);
+  });
+
+  test('criterion 3: the same pattern list gives the same result twice (no regex state)', () => {
+    assert.deepEqual(groupCommits(commits, [], { ignore }), g);
+  });
+
+  test('an invalid or empty pattern given to the library throws RangeError', () => {
+    assert.throws(() => groupCommits(commits, [], { ignore: ['^ok', '('] }), RangeError);
+    assert.throws(() => groupCommits(commits, [], { ignore: [''] }), /ignore\[0\] is an empty pattern/);
+  });
+});
