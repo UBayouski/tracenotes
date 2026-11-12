@@ -100,9 +100,17 @@ This is the same class as 9f986931: round 1 escaped the message detail and left 
 `JSON.stringify`, on the untested belief that it escapes everything `oneLine()` does. The local deep
 review accepted that fix; the PR review did not.
 
-**Quality gate on the PR: NOT MET.** A valid Medium is open at the head commit. The fix is in the
-working tree (fix round 2 of 3) and needs the human's commit and push, then a completed review of
-the new head.
+**Quality gate on the PR at `501f983`: NOT MET.** A valid Medium was open at the head commit.
+
+The human then allowed the agent to commit and push review-finding fixes to an open PR when it
+has no open question (now a process rule in `AGENTS.md`). The agent pushed `931d447` (fix round 2
+of 3). Qodo's next review (`evidence/day09/pr21-review-2.json`): `completed`, `commit_sha`
+`931d447` = head; fa44bb08 `implemented`, set by Qodo itself; cf1c4585 still `pending`, Low,
+reported and unchanged.
+
+**Quality gate on the PR at `931d447`: MET.** No High or Medium finding is open, the checks pass
+(165 of 165), and the latest completed review is for the head commit. Any later commit moves the
+head and needs a completed review again before merge.
 
 ## What the agent or review missed
 

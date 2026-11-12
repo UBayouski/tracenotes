@@ -11,6 +11,9 @@ pathspec `. ":(exclude)evidence" ":(exclude)journal"`.
 | `review-1.json` | run 1, auto depth (effective: standard) | 57,776 B: first implementation, 161 tests | 2 findings, both `remediation_recommended`: e7cc6b40 (invalid UTF-8 accepted), 9f986931 (newline in the path forges error lines); coverage complete |
 | `red-round1.txt` | `npm test` after adding the tests for both findings, before the fix | same tree plus three tests | 3 failing, 161 passing |
 | `context-2.json` | context for run 2 | | adds the fix decisions and the fix round |
+| `pr21-review-1.json` | Qodo PR review of PR 21, read with Review Resolver | head `501f983` | completed at head; 1 `remediation_recommended` (fa44bb08), 1 `informational` (cf1c4585), both `pending` |
+| `red-pr-round1.txt` | `npm run check` after adding the test for fa44bb08, before the fix | `501f983` plus one test | 1 failing, 164 passing |
+| `pr21-review-2.json` | Qodo PR review after the fix commit | head `931d447` | completed at head; fa44bb08 `implemented`; cf1c4585 `pending` (Low, report-only) |
 | `review-2-deep.json` | run 2, `--deep` (effective: extended, two issue reviewers) | 61,683 B: after fix round 1, 164 tests | full review; 0 introduced, 0 still open, both findings `resolved` with `attribution_status: implemented`; two reviewer comments; coverage complete |
 
 `*.stderr.txt` files hold the CLI's scope line for each run (untracked files included, bytes
