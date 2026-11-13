@@ -41,7 +41,7 @@ flowchart TD
   BREV -. "planned" .-> PEND
   PEND --> HO{{"Gate 4, the human<br/>opens the pull request"}}
 
-  G4 --> G5A{"Gate 5a, enforced by GitHub<br/>branch protection requires, on the head:<br/>check on Linux, check on Windows, ticket-link"}:::taken
+  G4 --> G5A{"Gate 5a, enforced by GitHub<br/>except for an administrator bypass<br/>branch protection requires, on the head:<br/>check on Linux, check on Windows, ticket-link"}:::taken
   HO --> G5A
   G5A -- "a check is red" --> FIX["Fix test-first, new commit on the PR branch<br/>session: the agent commits on its own<br/>label lane: the human comments @claude,<br/>the bot pushes, agent/* branches only"]:::taken
   FIX -- "new head: checks and review run again" --> G5A
@@ -50,7 +50,7 @@ flowchart TD
   G5B -- "a finding needs a decision:<br/>dispute, dismissal, any Low" --> HP{{"Human decides per finding"}}
   HP -- "fix it" --> FIX
   HP -- "no code change: dismissed with a reason,<br/>or a Low left as it is" --> G5B
-  G5B -- "gate report says MET" --> HM{{"Human merges<br/>GitHub refuses a head that fails 5a<br/>5b rests on the gate report"}}:::taken
+  G5B -- "gate report says MET" --> HM{{"Human merges<br/>GitHub refuses a head that fails 5a,<br/>unless an administrator bypasses protection<br/>5b rests on the gate report"}}:::taken
   HM --> MAIN["main"]:::taken
   MAIN --> AFTER["After the merge<br/>GitHub closes the issue<br/>Qodo updates its copy of the rules<br/>observed on Nov 13, verified by no gate"]:::taken
 
@@ -67,7 +67,7 @@ flowchart TD
 | 2. Checks | `npm run check`: typecheck and tests. Code fixes start with a failing test. | Test output; the red run is kept under `evidence/`. | Back to implementation. The bot stops after three attempts and reports. | The agent. |
 | 3. Uncommitted code | The quality gate in `AGENTS.md`: every valid High and Medium finding fixed, at least one deep review, the last review covers the final tree including new files. | `qodo review` JSON: findings, `finding_state`, coverage; the gate report in the journal. | Fix test-first and review again, at most three rounds. Then stop with NOT MET. | The agent fixes. The human decides a disputed High or Medium and every Low. After a stop the human either sends the work back (redesign, smaller scope) or lets it go on as a recorded exception: the gate stays NOT MET and the open findings travel to the pull request. A stop never turns into a pass. |
 | 4. Commit and pull request | The human has read the gate report. | The gate report: one row per finding, the checks, the last review, `Quality gate: MET` or `NOT MET`. | — | The human makes the first commit and opens the pull request. On the label lane the bot has committed already and the human only opens it. |
-| 5a. Pull request head, enforced | `check (ubuntu-latest)`, `check (windows-latest)` and `ticket-link` are green on the head commit. | `gh pr checks`. | A fix on the PR branch moves the head and reruns everything. | GitHub: branch protection on `main` refuses the merge. Nobody has to remember this one. |
+| 5a. Pull request head, enforced | `check (ubuntu-latest)`, `check (windows-latest)` and `ticket-link` are green on the head commit. | `gh pr checks`. | A fix on the PR branch moves the head and reruns everything. | GitHub: branch protection on `main` refuses the merge, unless an administrator bypasses protection. The human is an administrator here, so for everyone else nobody has to remember this one, and for the human it is a warning to click through, not a wall. |
 | 5b. Pull request head, by procedure | Qodo's latest completed review is for the head commit (a skipped review counts only after Markdown-and-evidence-only commits) and no High or Medium finding is open. | The review session read with the Review Resolver skill: status, `commit_sha`, each finding's `attribution_status`. | Valid High or Medium: a fix, as in 5a. A dispute, a dismissal or a Low goes to the human, who either asks for a fix or settles it without a code change (a dismissal with a reason, a Low left as it is); the gate is then evaluated again. | The agent reports; the human decides. **Nothing in GitHub enforces 5b.** A pull request with an open High can be merged if the human ignores the gate report. |
 | Merge | 5a green and the gate report says MET. | The gate report. | — | The human. |
 
