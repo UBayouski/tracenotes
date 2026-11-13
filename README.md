@@ -8,11 +8,25 @@ in 30 Days". The tool is also the factory's own release-notes writer.
 
 ## Status
 
-Day 3 of 23. Current capabilities: parse a single Conventional Commits message into structured
-data (scope, breaking-change markers, footers, issue references, PR number from squash-merge
-subjects), and parse a whole `git log` stream into commits with SHA, author, and date.
+As of Day 10 of 23 (Nov 13). Working today, all from a `git log` stream on stdin:
 
-See `BACKLOG.md` for the plan and `journal/` for the daily log.
+- `parse`: one Conventional Commits message into structured data (scope, breaking-change
+  markers, footers, issue references, PR number from squash-merge subjects).
+- `log`: a whole log stream into commits with SHA, author and date; unreadable records are
+  listed, not dropped.
+- `group`: commits into release-note sections, with unclassified and ignored commits counted.
+- `render`: Markdown release notes where every entry carries its source, linked when
+  `--repo-url` is given; `--format json` prints the same notes as a document.
+- `version --current <x.y.z>`: the next version with the rule and the commits that produced it.
+- `--config <path>` on `group`, `render` and `version`: ignore patterns; ignored commits stay
+  counted and a breaking change is never ignored.
+
+Not yet: running git itself, selecting ranges by tag, writing `CHANGELOG.md`, the MCP server.
+`node src/cli.ts --help` prints the exact usage. The usage section below shows `parse` and
+`log` only.
+
+See `BACKLOG.md` for the plan, `journal/` for the daily log and `FACTORY.md` for how a change
+gets from a ticket to `main`.
 
 ## Usage
 

@@ -6,10 +6,10 @@ uncommitted, before the merge), with the paths back to a fix and the points that
 decision; then check the diagram against one small real ticket. (The plan said "Test your
 standards" for today; the thread is canonical.)
 
-Status: in progress. Two pieces of work are in the tree, both uncommitted: the gap fixes
-(local review gate stopped NOT MET after three fix rounds, then MET after a redesign the human
-chose) and T-028 (built, not yet reviewed). The diagram (`FACTORY.md`) and the post are still
-to do.
+Status: done. Two pieces of work were merged: the gap fixes (PR 22; the local review gate
+stopped NOT MET after three fix rounds, then was met after a redesign the human chose) and
+T-028 (PR 24), the ticket the diagram was checked against. The diagram is `FACTORY.md`. Read
+this note from the top for the order things happened in.
 
 ## Gaps the draft diagram exposed
 
@@ -284,6 +284,47 @@ the head, the latest completed review is for the head. The commit that adds this
 The diagram itself is `FACTORY.md`: the path, the gates with what must pass and the evidence,
 the stops, and a table of what T-028 actually went through.
 
+Final head `a2ac51e`: checks green, Qodo's run a skip (docs only), nothing open. The human
+merged PR 24 as `4d3062e`. GitHub closed issue #23 by itself (`CLOSED`, `COMPLETED`): the step
+that had to be done by hand after PR 21 now happens, and was checked before the merge. The
+`BACKLOG.md` row already said `done (PR 24)`. T-028 reached `main` through every gate on the
+session lane.
+
+## After the merges: the rules in Qodo
+
+The plan was to import the changed rules into Qodo by hand, as on Days 2 and 5. Reading the
+rule list first (`qodo read rules list`) showed it was already done: 19 active rules (15
+before), updated at 17:53 UTC, a minute after PR 22 merged, and at 18:37 UTC, after PR 24.
+Rule 4522070 now reads "within `src/`... do not apply this `src`-specific restriction to
+`scripts/`", which is the human's amendment. New: the entry-block rule for factory scripts, "do
+not expose Qodo credentials to the workflow agent", and two rules from rule 7 (represent
+invisible characters explicitly; use `String.fromCodePoint`). So the automatic import that did
+not run on Day 2 runs now, and the agent had told the human three times to do a step that was
+not needed.
+
+## A review of the diagram, after it was posted
+
+The human had `FACTORY.md` reviewed once more. Every point held up against the files:
+
+- The planned T-029 box sat on the label lane's only path, as if the bot could not reach
+  "gate pending" without it. It is now a dashed side path.
+- Every human decision on a PR finding led to a fix commit. A dismissal, or a Low left as it
+  is, changes no code; that route now goes back to the gate.
+- "Accept" after three fix rounds led back into implementation and read as if an unmet gate
+  could pass. It is now an explicit exception: the gate stays NOT MET, that is recorded, and
+  the open findings go on to the pull request.
+- One fix box hid two ways of working: in a session the agent commits on its own; on the
+  label lane a human `@claude` comment starts the bot, on `agent/*` branches only.
+- Gate 5 mixed what GitHub enforces with what is only procedure. It is now 5a (the three
+  required checks, enforced by branch protection) and 5b (the Qodo review at the head and its
+  findings, enforced by nobody). This is the important one: the diagram had suggested that
+  branch protection guards the whole gate.
+- Smaller: gate 4 (the human's commit) is now named, the rule import after the merge is marked
+  as observed rather than verified, and the README's status no longer says "Day 3".
+
+The diagram was drawn by the agent that had spent the day inside the process, and it drew the
+process as it had experienced it. A reader with only the files saw what the drawing claimed.
+
 ## What the agent missed
 
 - **A test that would have passed for the wrong reason.** While writing the test for 9fb45c26,
@@ -305,5 +346,7 @@ the stops, and a table of what T-028 actually went through.
 
 - Thread: https://github.com/orgs/qodo-hackathon/discussions/12
 - Evidence: `evidence/day10/`
-- PR: _TODO_
-- Post: _TODO_
+- PRs: https://github.com/UBayouski/tracenotes/pull/22 (gap fixes), https://github.com/UBayouski/tracenotes/pull/24 (T-028)
+- Issue: https://github.com/UBayouski/tracenotes/issues/23
+- Diagram: `FACTORY.md`
+- Post: https://github.com/orgs/qodo-hackathon/discussions/12#discussioncomment-19597506
