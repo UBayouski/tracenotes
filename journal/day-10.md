@@ -215,7 +215,7 @@ Human decision at gate 1: visible non-ASCII stays allowed ("agree"). Two more ch
 ticket are the agent's and not yet confirmed (fix the two marks in the same pull request; the
 detector lives in `scripts/`).
 
-## T-028 built (uncommitted, not yet reviewed)
+## T-028 built
 
 `scripts/source-hygiene.ts` (`findRawInvisible`, `describeRawInvisible`),
 `tests/source-hygiene.test.ts` (10 tests), the two byte order marks replaced with escapes, a
@@ -228,7 +228,36 @@ src/gitlog.ts:99:36 raw U+FEFF, write \uFEFF
 tests/gitlog.test.ts:122:33 raw U+FEFF, write \uFEFF
 ```
 
-Not done yet: rule 7 in `AGENTS.md` (criterion 1), the issue, the local review, the PR.
+After PR 22 merged, on local branch `t-028-source-hygiene` from `main` at `09c698f`: rule 7
+("Show the Invisible") written in `AGENTS.md`, issue #23 created from the ticket (no label), and
+the ticket's by-hand check done: a scratch file with a raw U+200B made the test fail with
+`tests/zz-scratch.ts:1:20 raw U+200B, write \u200B` (`evidence/day10/t028-criterion6-by-hand.txt`).
+
+## Gate 3 on T-028: Qodo local review of the uncommitted change
+
+Base `09c698f`, eight paths, issue #23 as `--ticket`, a context file with the decisions and who
+made each. Both reviews deep (extended, two reviewers), full, coverage complete.
+
+| Review | Findings | Result |
+|---|---|---|
+| 1 | 3, all `informational` | No High or Medium: the gate was met at the first review. |
+| 2, after the human chose to fix all three | 0 new | `resolved`: 719768a3, eff38ef9, 7cb5aca3 |
+
+| Finding | Severity | Decision | Evidence |
+|---|---|---|---|
+| 719768a3: invisible letters and marks still pass (Hangul fillers, variation selectors, braille blank) | Low | **Human: fix.** | Criterion 2 widened with the Unicode property Default_Ignorable_Code_Point and U+2800. A Hangul filler is a letter, valid in an identifier, and displayed as nothing: two variables could look the same. Seven new test cases, red first. |
+| eff38ef9: the rule told authors to use `String.fromCharCode` | Low | **Human: fix.** | It cuts a code point above U+FFFF to 16 bits. Rule 7 and the ticket now say `String.fromCodePoint`. |
+| 7cb5aca3: any read error was reported as invalid UTF-8 | Low | **Human: fix.** | Decoding moved into `sourceProblems(file, bytes)`, tested with invalid bytes and with a leading byte order mark; an unreadable file is reported with its error code. |
+
+Red run for the three: `evidence/day10/red-t028-3-lows.txt`. `npm run check`:
+`tests 225, pass 225, fail 0` (212 on `main`). The ticket gained decision D and issue #23 was
+updated to match.
+
+**Quality gate on T-028, local: MET.** No finding open, the checks pass, both reviews deep and
+complete, the last one covers the final tree. Fix rounds used: 1 of 3, and that one was for Lows
+the gate did not require. The contrast with the morning is the point of the day: the same gate,
+the same reviewer, a small ticket that had been checked against the code first, and the loop
+ended after one round instead of stopping after three.
 
 ## What the agent missed
 

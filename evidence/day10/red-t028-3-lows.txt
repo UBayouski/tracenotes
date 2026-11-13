@@ -1,0 +1,141 @@
+▶ findRawInvisible
+  ✖ criteria 2, 4, 7: each forbidden character is reported with its position and escape (2.2176ms)
+  ✔ criteria 2, 3, 7: tab, line feed, space and visible non-ASCII are allowed (0.1558ms)
+  ✔ criterion 4: several characters come back in order; columns count UTF-16 code units (0.0952ms)
+  ✔ criterion 2: a carriage return is reported; only the line feed ends a line (0.0986ms)
+  ✔ criterion 2: U+2028 does not start a new line for the position (0.1111ms)
+  ✔ criterion 4: a lone surrogate does not throw and is not reported (0.0844ms)
+✖ findRawInvisible (3.5426ms)
+▶ describeRawInvisible
+  ✔ criterion 6: one line with path, position, code point and the escape to write (0.2544ms)
+  ✖ criterion 6: the message itself contains no raw forbidden character (2.5923ms)
+✖ describeRawInvisible (3.043ms)
+▶ sourceProblems
+  ✖ criterion 5: bytes that are not valid UTF-8 give one problem with the path (0.1374ms)
+  ✖ criteria 5, 6: valid UTF-8 gives one line per raw character, or nothing (0.1042ms)
+  ✖ a byte order mark at the start of a file is reported, not swallowed by the decoder (0.0789ms)
+✖ sourceProblems (0.4539ms)
+▶ source hygiene of this repository
+  ✔ criterion 5: the walk finds the TypeScript sources, and no fixture (0.1246ms)
+  ✖ criteria 5, 6, 8: no .ts file under src/, tests/ or scripts/ has a raw invisible or control character (0.3105ms)
+✖ source hygiene of this repository (0.5158ms)
+ℹ tests 13
+ℹ suites 4
+ℹ pass 7
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 108.6426
+
+✖ failing tests:
+
+test at tests\source-hygiene.test.ts:14:3
+✖ criteria 2, 4, 7: each forbidden character is reported with its position and escape (2.2176ms)
+  AssertionError [ERR_ASSERTION]: \u3164
+  + actual - expected
+  
+  + []
+  - [
+  -   {
+  -     codePoint: 12644,
+  -     column: 4,
+  -     escape: '\\u3164',
+  -     line: 2
+  -   }
+  - ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:42:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at node:internal/test_runner/test:1903:71
+      at node:internal/per_context/primordials:504:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:478:3)
+      at node:internal/per_context/primordials:504:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ { line: 2, column: 4, codePoint: 12644, escape: '\\u3164' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\source-hygiene.test.ts:94:3
+✖ criterion 6: the message itself contains no raw forbidden character (2.5923ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(hit)
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:97:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1905:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests\source-hygiene.test.ts:107:3
+✖ criterion 5: bytes that are not valid UTF-8 give one problem with the path (0.1374ms)
+  Error: sourceProblems is not implemented
+      at sourceProblems (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:103:81)
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:108:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at node:internal/test_runner/test:1903:71
+      at node:internal/per_context/primordials:504:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:478:3)
+      at node:internal/per_context/primordials:504:9
+
+test at tests\source-hygiene.test.ts:112:3
+✖ criteria 5, 6: valid UTF-8 gives one line per raw character, or nothing (0.1042ms)
+  Error: sourceProblems is not implemented
+      at sourceProblems (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:103:81)
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:113:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1905:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests\source-hygiene.test.ts:119:3
+✖ a byte order mark at the start of a file is reported, not swallowed by the decoder (0.0789ms)
+  Error: sourceProblems is not implemented
+      at sourceProblems (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:103:81)
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:120:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests\source-hygiene.test.ts:142:3
+✖ criteria 5, 6, 8: no .ts file under src/, tests/ or scripts/ has a raw invisible or control character (0.3105ms)
+  Error: sourceProblems is not implemented
+      at sourceProblems (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:103:81)
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:155:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1905:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

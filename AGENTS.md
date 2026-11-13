@@ -79,6 +79,28 @@ a parser removes it.
   passed as a commit (PR 3). Each time the fixture had no such input, so no test caught it.
   Nothing Vanishes forbids dropping input; this rule forbids quietly accepting it.
 
+### 7. Show the Invisible
+In TypeScript sources, a character a reader cannot see is never written raw. Controls (other
+than tab and line feed), format characters (the byte order mark, zero-width and direction
+marks, the soft hyphen), every space other than the ordinary one, the line and paragraph
+separators, the characters Unicode lists as displayed as nothing (Hangul fillers, variation
+selectors, the combining grapheme joiner), the braille blank U+2800 and the replacement
+character U+FFFD are written as `\uXXXX` or `\u{XXXXX}` escapes, or built with
+`String.fromCodePoint` (not `String.fromCharCode`, which cuts a code point above U+FFFF down
+to 16 bits). A carriage return counts: sources use LF. Visible characters outside ASCII (a
+plus-minus sign, an em dash) may be written directly; an emoji that carries a variation
+selector needs that selector written as an escape.
+- Applies to: every `.ts` file under `src/`, `tests/` and `scripts/`. Not to fixtures, which
+  hold raw bytes on purpose, and not to Markdown or JSON.
+- Enforced by: `tests/source-hygiene.test.ts`, which fails with the file, line, column, code
+  point and the escape to write (`scripts/source-hygiene.ts`).
+- Why: an agent's file write turned an intended escape into the literal character four times
+  in two days, and a raw byte order mark sat in `src/gitlog.ts` from Nov 5 to Nov 13 through
+  every review. The tests passed each time, because the character means the same to
+  JavaScript, and a diff with an invisible character in it cannot be reviewed. Direction marks
+  can also make code read differently from what runs. Borrowed from pasokh's rule of the same
+  name; a written rule needs an enforcement point someone can watch fail.
+
 ## Code conventions
 
 - ESM TypeScript executed directly by Node. Import local modules with the `.ts` extension.
