@@ -1,0 +1,2 @@
+{"results":{"ee02db53-fcd1-41e6-8854-10500a28912f":{"status":"dismissed","reconciled":true,"failed_effects":[],"retryable":false,"reason":"intentional","explanation":"Addressed outside the diff with the repository owner's approval on Nov 13 2026: branch protection on main now requires check (ubuntu-latest), check (windows-latest) and ticket-link. Read back from the GitHub API after the change. It is a repository setting and cannot appear in the pull request's files.","detail":null}}}
+  trace 6eb642229d66ce14babb089225114805

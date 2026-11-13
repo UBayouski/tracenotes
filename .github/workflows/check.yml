@@ -1,0 +1,49 @@
+# Day 10: the factory's required check (FACTORY gate 5, AGENTS.md quality gate point 9).
+#
+# Until this file, nothing ran `npm run check` on a pull request: "green" was whatever the agent
+# or the human had run locally, on Windows only. This workflow runs typecheck + tests on Linux
+# and Windows, on every pull request and on every push to main. It needs no secret and no write
+# access.
+#
+# The paperwork check for ticket pull requests is a separate workflow, ticket-link.yml, so that
+# editing a pull request's title or body does not rerun or cancel these jobs.
+#
+# These become "required" only through branch protection on main (a repository setting):
+# contexts `check (ubuntu-latest)`, `check (windows-latest)` and `ticket-link`.
+name: Check
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.event.pull_request.number || github.sha }}
+  # A new push to a pull request replaces its running check. Runs on main have one group per
+  # commit and are never cancelled: two merges in a row must each get their own result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run check

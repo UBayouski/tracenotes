@@ -1,0 +1,167 @@
+▶ checkPrTicket
+  ✔ a ticket PR that closes its own issue and has the backlog row set passes (1.3765ms)
+  ✔ the PR 21 case: the title names a ticket and GitHub lists no issue to close (0.1427ms)
+  ✔ closing an issue that is not the ticket's is a problem (0.1299ms)
+  ✔ an issue is the ticket's own only when its title starts with the id and a colon (0.2478ms)
+  ✔ the ticket's issue among other closed issues is enough (0.0975ms)
+  ✔ a PR that closes a ticket's issue is a ticket PR even when its title has no id (0.1759ms)
+  ✔ a PR that names no ticket and closes no ticket's issue has nothing to check (0.083ms)
+  ✔ a ticket from the title and one from a closed issue are both checked (0.0927ms)
+  ✔ the backlog row must say done with this PR number (0.1164ms)
+  ✔ a ticket with no backlog row is a problem (0.1653ms)
+  ✔ two backlog rows for one ticket are a problem, whatever they say (0.1065ms)
+  ✔ two unfinished tickets in one title are both checked, each once (0.1234ms)
+  ✖ a ticket in the title that another PR already finished is a mention, not a claim (1.0651ms)
+  ✔ a finished ticket is still a claim when the pull request closes its issue (0.1312ms)
+  ✖ only the exact form "done (PR n)" with another number makes a mention (0.2961ms)
+  ✔ an id that is part of a longer token is not a ticket (0.1162ms)
+  ✔ CRLF line endings in BACKLOG.md are read as line endings (0.0914ms)
+  ✔ a status is compared as written: extra spaces or other text do not pass (0.0779ms)
+  ✔ control and invisible characters in a status are printed as escapes, on one line (0.1799ms)
+  ✔ a PR number that is not a positive integer is rejected (0.3905ms)
+✖ checkPrTicket (6.4485ms)
+▶ parseClosingIssues
+  ✔ reads number and title of each issue GitHub lists (0.221ms)
+  ✔ more issues than one page holds is an error, not a shorter list (0.0885ms)
+  ✔ a GraphQL error, a missing pull request or a malformed answer is an error (0.2337ms)
+  ✔ the message of a GraphQL error is passed on (0.0696ms)
+✔ parseClosingIssues (0.7519ms)
+▶ run (in process, with a fake lookup)
+  ✔ writes nothing itself: the result carries the exit code and both streams (0.5299ms)
+  ✔ GitHub is asked once, for this pull request (0.1674ms)
+  ✔ a PR without a ticket id that closes an ordinary issue has nothing to check (0.064ms)
+  ✔ a PR without a ticket id that closes a ticket's issue is checked (0.329ms)
+  ✔ a lookup that fails is an error, not a pass: exit 2, one line (0.1781ms)
+  ✔ an unreadable backlog path: exit 2 with one error line (0.2574ms)
+✔ run (in process, with a fake lookup) (1.7027ms)
+▶ pr-ticket-check as a child process
+  ✔ PR_NUMBER is validated as received: exit 2 (494.6537ms)
+  ✔ GITHUB_REPOSITORY must be owner/name: exit 2 (311.638ms)
+  ✔ a missing GITHUB_TOKEN is an error: exit 2 (93.4696ms)
+✔ pr-ticket-check as a child process (900.0148ms)
+▶ hasInvestigation
+  ✔ the ticket format's bold label at the start of a line counts (1.79ms)
+  ✔ a Markdown heading named Investigation counts (0.2219ms)
+  ✔ a body as GitHub sends it, with CRLF line endings, is read line by line (0.0947ms)
+  ✔ the word alone, mid-line, or in another form does not count (0.0836ms)
+  ✔ a section with nothing in it does not count (0.0879ms)
+  ✖ a heading section may start with a sub-heading or a bold phrase (0.6859ms)
+  ✔ a heading section ends at a heading of the same or a higher level (0.1039ms)
+  ✖ a line that starts with an inline triple-backtick span does not hide the ticket (0.2579ms)
+  ✔ the section inside an HTML comment or a code fence does not count (0.1454ms)
+  ✔ a ticket of this repository written before the section existed is refused (0.3802ms)
+✖ hasInvestigation (5.049ms)
+▶ ticket-ready as a child process
+  ✔ a ticket with an investigation: exit 0 (81.1924ms)
+  ✔ a ticket without one: exit 1, one line on stderr (85.7606ms)
+  ✔ an empty or missing body is a ticket without one: exit 1 (158.4285ms)
+✔ ticket-ready as a child process (325.655ms)
+ℹ tests 46
+ℹ suites 6
+ℹ pass 42
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1030.0582
+
+✖ failing tests:
+
+test at tests\pr-ticket-check.test.ts:144:3
+✖ a ticket in the title that another PR already finished is a mention, not a claim (1.0651ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   problems: [
+  +     'this pull request closes #39, but none of them is the issue for T-008: its title must start with "T-008:"',
+  +     'BACKLOG.md row for T-008 says "done (PR 21)", expected "done (PR 40)"'
+  +   ],
+  -   problems: [],
+      tickets: [
+        'T-027',
+  +     'T-008'
+      ]
+    }
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:148:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tickets: [ 'T-027', 'T-008' ], problems: [ 'this pull request closes #39, but none of them is the issue for T-008: its title must start with "T-008:"', 'BACKLOG.md row for T-008 says "done (PR 21)", expected "done (PR 40)"' ] },
+    expected: { tickets: [ 'T-027' ], problems: [] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:164:3
+✖ only the exact form "done (PR n)" with another number makes a mention (0.2961ms)
+  AssertionError [ERR_ASSERTION]: done (PR 21) on PR 22
+  + actual - expected
+  
+  + [
+  +   'T-008'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:169:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'T-008' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\ticket-ready.test.ts:59:3
+✖ a heading section may start with a sub-heading or a bold phrase (0.6859ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/ticket-ready.test.ts:60:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\ticket-ready.test.ts:73:3
+✖ a line that starts with an inline triple-backtick span does not hide the ticket (0.2579ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/ticket-ready.test.ts:74:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,4 @@
+Including 4 untracked file(s): .github/workflows/ticket-link.yml, scripts/markdown-text.ts, scripts/ticket-ready.ts, tests/ticket-ready.test.ts
+Reviewing UBayouski/tracenotes @ 6dc9a90e1 — 57925B of local changes (filtered to 11 paths) · deep depth (base cloned by the reviewer)
+Full review: no saved checkpoint is available.
+  trace e73c64a8214770d369fd855f67af2e5e

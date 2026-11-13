@@ -1,0 +1,12 @@
+Local simulation of the guard step in .github/workflows/agent-ticket.yml (PR 22 findings 842081ab, b791ae9e, 2569a9e5).
+The step's script was extracted from the workflow file and run with bash -e against stand-in gh and node commands.
+
+case | exit | calls made | annotations
+ready (guard exit 0) | 0 | issue view | none
+no investigation (guard exit 1) | 1 | issue view, issue edit (label off), issue comment | error: agent did not start
+guard crash (guard exit 13) | 1 | issue view | error: the ticket guard itself failed; label left on, nothing posted
+issue cannot be read | 1 | issue view | error: could not read issue; label left on
+comment fails | 1 | issue view, issue edit, issue comment | warning: comment not posted; error with the instruction
+label removal fails | 1 | issue view, issue edit, issue comment | error; comment says remove and re-add the label
+
+Not covered: the real gh and GitHub, and the step as GitHub Actions runs it.

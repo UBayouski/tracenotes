@@ -1,0 +1,4 @@
+Including 3 untracked file(s): scripts/markdown-text.ts, scripts/ticket-ready.ts, tests/ticket-ready.test.ts
+Reviewing UBayouski/tracenotes @ 6dc9a90e1 — 50529B of local changes (filtered to 10 paths) · deep depth (base cloned by the reviewer)
+Full review: no saved checkpoint is available.
+  trace 6dcca35b83d6bc354be2754bfbe86467

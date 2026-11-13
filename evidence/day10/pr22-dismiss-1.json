@@ -1,0 +1,2 @@
+{"results":{"282b3a84-b331-43b8-b1cb-6e1281683dbf":{"status":"dismissed","reconciled":true,"failed_effects":[],"retryable":false,"reason":"intentional","explanation":"Decided by the repository owner on Nov 13 2026. The ticket-link check is meant to catch slips, not deliberate bypass, and AGENTS.md says so. This is a single-maintainer repository where the owner reviews every pull request, including changes to the check itself. Running the validator from the base branch is noted as later hardening work.","detail":null}}}
+  trace 8d622ccffbb3862f7b1b7c1b4d3ffb9b

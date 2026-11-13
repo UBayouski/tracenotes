@@ -13,6 +13,15 @@
 #
 # Guard rails: one issue per run, --max-turns as the retry budget, a job timeout, and an explicit
 # instruction to stop and report when checks fail three times.
+#
+# Day 10: the run does not start unless the issue body has an Investigation section, the record
+# of the ticket checked against the code before the label (scripts/ticket-ready.ts).
+#
+# Still missing on this lane: a Qodo review before the bot commits. A first version gave the agent
+# a QODO_API_KEY so it could run `qodo review`; Qodo's own review of that change pointed out that
+# the key would then be readable by every test and command the agent runs for a ticket
+# (journal/day-10.md). It was taken out. The lane ends with "Implemented, gate pending" and the
+# quality gate is applied on the pull request.
 name: Agent picks up a ticket
 
 on:
@@ -36,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # An `issues` event runs the workflow and the checkout from the default branch, so the
+      # guard script below is the one on main, not something the issue can influence.
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -44,6 +55,50 @@ jobs:
         with:
           node-version: 24
           cache: npm
+
+      # FACTORY gate 1 on this lane. The bot does not investigate: the ticket must already carry
+      # the result of the Codebase Wisdom check made in a session before the label was added.
+      # The script checks that the section is there and not empty, not that it is good; the
+      # human who adds the label has read it. Its logic is tested in tests/ticket-ready.test.ts.
+      - name: The ticket carries its investigation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # The body as it is now, not as it was when the label was added: the job may have
+          # waited in a queue, and the agent reads the current ticket.
+          if ! ISSUE_BODY="$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json body --jq .body)"; then
+            echo "::error::Could not read issue $ISSUE_NUMBER; the ticket was not judged and the label was left on."
+            exit 1
+          fi
+          export ISSUE_BODY
+          status=0
+          node scripts/ticket-ready.ts || status=$?
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+          # Exit 1 is the guard's verdict. Anything else is the guard failing (Node, a module
+          # that does not load): that is not the ticket's fault, so the label stays and nothing
+          # is posted on the issue.
+          if [ "$status" -ne 1 ]; then
+            echo "::error::The ticket guard itself failed (exit $status); the ticket was not judged and the label was left on. See the log above."
+            exit 1
+          fi
+          # The label comes off so that adding it again is a new `labeled` event. If it stayed,
+          # the corrected ticket could not be started the way the comment says.
+          if gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label ready-for-agent; then
+            retry="then add the \`ready-for-agent\` label again (this run removed it)."
+          else
+            retry="then remove the \`ready-for-agent\` label and add it again (this run could not remove it)."
+          fi
+          # A comment that cannot be posted must not hide what happened: the same instruction
+          # goes to the job log either way, and the step still ends as a failure.
+          message="Not started: this ticket has no \`**Investigation.**\` section, or the section is empty. Check its requirements and assumptions against the code (Codebase Wisdom), add the result to the issue body, $retry"
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body "$message" \
+            || echo "::warning::The comment could not be posted on issue $ISSUE_NUMBER."
+          echo "::error::The agent did not start on issue $ISSUE_NUMBER. $message"
+          exit 1
 
       - run: npm ci
 
@@ -65,7 +120,10 @@ jobs:
 
             1. Read AGENTS.md completely. Its rules apply to everything you write.
             2. The issue above is the ticket. If its body names a ticket file under tickets/, read
-               that too. The ticket is the specification. Do not widen it.
+               that too. The ticket is the specification. Do not widen it. Its "Investigation"
+               section records what was checked against the code before this run. If the code
+               you find contradicts it, stop before implementing and report the contradiction
+               in your comment: the ticket needs a decision, not a workaround.
             3. Implement the change. Add tests for every acceptance criterion. Keep runtime
                dependencies at zero.
             4. Run `npm run check`. If it fails, fix and rerun. After three failed attempts, stop:
@@ -75,7 +133,10 @@ jobs:
                and push to your branch.
             6. In your final comment, list every acceptance criterion with met / not met and the
                test that proves it, the summary line of `npm run check`, and anything the ticket
-               left undefined that you decided yourself. Include the link to open the pull request.
+               left undefined that you decided yourself. Include the link to open the pull
+               request, and tell the human what the pull request needs for the ticket-link
+               check: the ticket id (T-NNN) in the title, `Closes #<issue number>` in the body,
+               and, once the PR number is known, the BACKLOG.md row set to `done (PR <number>)`.
             7. AGENTS.md has a "Quality gate" section. You cannot run a Qodo review in this job,
                so end your comment with the line "Implemented, gate pending": the gate is
                evaluated on the pull request after Qodo reviews it. Never write "done".

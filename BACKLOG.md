@@ -48,5 +48,9 @@ Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (su
 
 **Out of scope.** What this ticket does not do.
 
+**Investigation.** What was checked against the code before building (Codebase Wisdom or a
+command that was run), what was found, and what it changed in this ticket. Required: the label
+workflow does not start without it.
+
 **Verification.** Commands or tests that prove each criterion.
 ```
