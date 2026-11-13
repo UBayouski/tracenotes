@@ -67,11 +67,16 @@ npm test
 npm run typecheck
 ```
 
-Rules for contributors and agents are in `AGENTS.md`.
+Rules for contributors and agents are in `AGENTS.md`. How a ticket gets to `main`, with every
+verification gate on one diagram, is in `FACTORY.md`.
 
 ## Reuse and licensing
 
 - Conventional Commits specification 1.0.0 (CC BY 3.0) as the grammar reference.
+- AGENTS.md rule 7 ("Show the Invisible") and the idea of a source-hygiene test that prints the
+  escape to write are borrowed from [pasokh](https://github.com/TheNickRubin/pasokh) by
+  TheNickRubin, narrowed to invisible and control characters. The rule text and the code are
+  written for this project; nothing is copied.
 - No third-party code is vendored. Dev dependencies: `typescript`, `@types/node`.
 
 License: MIT.

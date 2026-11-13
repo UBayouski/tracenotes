@@ -1,0 +1,4 @@
+Including 3 untracked file(s): scripts/source-hygiene.ts, tests/source-hygiene.test.ts, tickets/T-028-source-hygiene.md
+Reviewing UBayouski/tracenotes @ 09c698fe2 — 21924B of local changes (filtered to 8 paths) · deep depth (base cloned by the reviewer)
+Full review: no saved checkpoint is available.
+  trace 603c4eaff8e209a41864c301c4b72848

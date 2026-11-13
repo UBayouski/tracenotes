@@ -96,7 +96,7 @@ export function parseGitLog(stream: string): GitLogResult {
 
   // Windows PowerShell 5.1 prepends a UTF-8 byte order mark when piping to a native process.
   // It is stream framing, not part of the first SHA, so it is removed once here.
-  const input = stream.startsWith('﻿') ? stream.slice(1) : stream;
+  const input = stream.startsWith('\uFEFF') ? stream.slice(1) : stream;
 
   for (const raw of input.split(RECORD_SEPARATOR)) {
     // The text after the final terminator is framing (usually "\n"), not a record.

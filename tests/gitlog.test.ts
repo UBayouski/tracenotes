@@ -119,7 +119,7 @@ describe('parseGitLog', () => {
   });
 
   test('a leading UTF-8 byte order mark (PowerShell pipes) is ignored', () => {
-    const result = parseGitLog(`﻿${basic}`);
+    const result = parseGitLog(`\uFEFF${basic}`);
     assert.equal(result.commits.length, 5);
     assert.equal(result.malformed.length, 1);
     assert.equal(result.commits[0]?.sha, SHA1);
