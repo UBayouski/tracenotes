@@ -67,7 +67,8 @@ npm test
 npm run typecheck
 ```
 
-Rules for contributors and agents are in `AGENTS.md`.
+Rules for contributors and agents are in `AGENTS.md`. How a ticket gets to `main`, with every
+verification gate on one diagram, is in `FACTORY.md`.
 
 ## Reuse and licensing
 

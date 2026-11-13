@@ -259,7 +259,37 @@ the gate did not require. The contrast with the morning is the point of the day:
 the same reviewer, a small ticket that had been checked against the code first, and the loop
 ended after one round instead of stopping after three.
 
+## PR 24: T-028 through the gate before the merge
+
+The human made the first commit (`3b09408`) and opened PR 24 with `Closes #23`.
+
+- **`ticket-link`, first real ticket.** Red on `3b09408`:
+  `BACKLOG.md row for T-028 says "planned", expected "done (PR 24)"`. The agent set the row
+  (`bb6c03e`); green: GitHub listed issue #23 as the one the pull request closes, and its title
+  starts with `T-028:`.
+- **Checks.** `check (ubuntu-latest)` and `check (windows-latest)` green on every head.
+- **Qodo PR review** at `bb6c03e` (`evidence/day10/pr24-review-1.json`): `completed`, complete,
+  one finding. 9fb45c26, Medium, Observability: a `.ts` file name with a line feed or a control
+  character is printed unchanged and can split or spoof the one-line report. Valid, and the same
+  mistake as Day 9's forged error lines, in a new place. Red first
+  (`evidence/day10/red-pr24-round1.txt`), then `showPath()`; `tests 227, pass 227, fail 0`.
+  Agent commit `85dffae`.
+- **Review at `85dffae`** (`evidence/day10/pr24-review-2.json`): `completed`, complete,
+  9fb45c26 `implemented`, set by Qodo; nothing else.
+
+**Quality gate on PR 24 at `85dffae`: MET.** No finding open, the three required checks pass on
+the head, the latest completed review is for the head. The commit that adds this section and
+`FACTORY.md` changes only Markdown and `evidence/`.
+
+The diagram itself is `FACTORY.md`: the path, the gates with what must pass and the evidence,
+the stops, and a table of what T-028 actually went through.
+
 ## What the agent missed
+
+- **A test that would have passed for the wrong reason.** While writing the test for 9fb45c26,
+  a shell quoting slip turned the expected text of an escape into the character itself, so the
+  expected value equaled the unfixed output. Caught because the red run showed one failure
+  where two were expected.
 
 - **Raw invisible characters, four times in one day.** The agent's file writes turned intended
   escapes into the literal characters: U+2028 in a new test, U+FEFF twice in the T-028 ticket
