@@ -162,6 +162,21 @@ The two workflow fixes cannot be tested by a test in `tests/`, so the guard step
 extracted from the workflow file and run locally against stand-in `gh` and `node` commands, six
 outcomes (`evidence/day10/guard-step-simulation.txt`). `tests 215, pass 215, fail 0`.
 
+The agent committed the four fixes as `435b12e` and pushed (the Day 9 rule: review fixes on an
+open PR, after the questions were answered). The four dismissals were recorded in Qodo with the
+human's reasons (`evidence/day10/pr22-dismiss-*.json`, each `dismissed`, `reconciled: true`).
+
+Qodo's next review (`evidence/day10/pr22-review-2.json`): `completed`, `review_complete: true`,
+`commit_sha` `435b12e` = head. No new finding. b6787850, 842081ab, 8f27403d and b791ae9e are
+`implemented`, set by Qodo itself; 282b3a84, ee02db53, 49bf2faa and e582e45f are `dismissed`;
+the three Lows are `pending`, reported and unchanged. All three required checks passed on
+`435b12e`, and GitHub reports the merge state as clean under the new branch protection.
+
+**Quality gate on the PR at `435b12e`: MET.** No High or Medium finding is open, the required
+checks pass on the head, and the latest completed review is for the head commit. The commit
+that adds this paragraph changes only Markdown and `evidence/`, so a skipped review at the new
+head counts (gate point 8); last completely reviewed commit: `435b12e`.
+
 ## Gate 1 on T-028: the ticket checked against the code
 
 Ticket `tickets/T-028-source-hygiene.md`, the rule borrowed from pasokh on Day 2. Investigated
