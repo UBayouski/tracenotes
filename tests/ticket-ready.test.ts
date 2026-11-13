@@ -55,6 +55,27 @@ describe('hasInvestigation', () => {
     assert.equal(hasInvestigation('**Investigation.**\nChecked the code.'), true);
   });
 
+  // Qodo PR review finding c51f36de.
+  test('a heading section may start with a sub-heading or a bold phrase', () => {
+    assert.equal(hasInvestigation('## Investigation\n\n### What was checked\n\nThe code.'), true);
+    assert.equal(hasInvestigation('## Investigation\n\n**Checked.** The code.'), true);
+    assert.equal(hasInvestigation('### Investigation\n\n#### Detail\ntext\n\n## Next'), true);
+  });
+
+  test('a heading section ends at a heading of the same or a higher level', () => {
+    assert.equal(hasInvestigation('### Investigation\n\n### Next\ntext'), false);
+    assert.equal(hasInvestigation('### Investigation\n\n## Higher\ntext'), false);
+    assert.equal(hasInvestigation('## Investigation\n   \n# Top\ntext'), false);
+  });
+
+  // Qodo PR review finding 641e42e4: three backticks followed by more backticks on the same
+  // line are inline code, not the start of a fence.
+  test('a line that starts with an inline triple-backtick span does not hide the ticket', () => {
+    assert.equal(hasInvestigation('```npm test``` passes\n\n**Investigation.** Checked.'), true);
+    assert.equal(hasInvestigation('```ts\nconst a = 1;\n```\n\n**Investigation.** Checked.'), true);
+    assert.equal(hasInvestigation('~~~ `x`\n**Investigation.** inside a tilde fence\n~~~'), false);
+  });
+
   test('the section inside an HTML comment or a code fence does not count', () => {
     assert.equal(hasInvestigation('<!--\n**Investigation.** template text\n-->'), false);
     assert.equal(hasInvestigation('```\n**Investigation.** example\n```'), false);

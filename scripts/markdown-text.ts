@@ -2,7 +2,9 @@
 // ticket guard needs to understand. An issue body is text someone else wrote; what sits in an
 // HTML comment or in a fenced code block is a template or an example, not the ticket.
 
-const FENCE_OPEN = /^ {0,3}(`{3,}|~{3,})/;
+// A backtick fence may not have a backtick after its opening run: "```npm test``` passes" is
+// inline code. A tilde fence has no such limit.
+const FENCE_OPEN = /^ {0,3}(?:(`{3,})[^`]*$|(~{3,}))/;
 const FENCE_CLOSE = /^ {0,3}(`{3,}|~{3,})[ \t]*$/;
 
 /**
@@ -30,7 +32,8 @@ export function visibleLines(markdown: string): string[] {
       continue;
     }
     if (!inComment) {
-      const open = FENCE_OPEN.exec(line)?.[1];
+      const match = FENCE_OPEN.exec(line);
+      const open = match?.[1] ?? match?.[2];
       if (open !== undefined) {
         fence = { character: open.charAt(0), length: open.length };
         lines.push('');

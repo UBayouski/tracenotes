@@ -36,8 +36,10 @@ export interface PrTicketInput {
 
 export interface PrTicketResult {
   /**
-   * The tickets the pull request is for: the ids named in its title, then the tickets of the
-   * issues it closes, without duplicates.
+   * The tickets the pull request claims to finish: the ids named in its title, then the tickets
+   * of the issues it closes, without duplicates. A title id whose single backlog row says
+   * `done (PR <another number>)` is a mention of finished work and is left out, unless the
+   * pull request closes that ticket's issue.
    */
   tickets: string[];
   /** One message per unmet requirement. Empty means the check passes. */
@@ -76,9 +78,34 @@ function issueTicket(issue: ClosingIssue): string | undefined {
   return ISSUE_TICKET.exec(issue.title)?.[1];
 }
 
-function ticketsOf(title: string, closingIssues: readonly ClosingIssue[]): string[] {
+// The status of a ticket that a pull request finished.
+const DONE_BY_PR = /^done \(PR ([1-9]\d*)\)$/;
+
+/**
+ * The tickets a pull request claims to finish: every ticket whose issue it closes, and every
+ * ticket named in its title, except one that another pull request already finished. A title
+ * such as `(T-027, split from T-008)` mentions T-008; its single backlog row `done (PR 21)`
+ * is history and must not have to change. Title ids come first, without duplicates.
+ */
+function claimedTickets(
+  title: string,
+  closingIssues: readonly ClosingIssue[],
+  statuses: ReadonlyMap<string, string[]>,
+  pullRequestNumber: number,
+): string[] {
   const fromIssues = closingIssues.flatMap(issue => issueTicket(issue) ?? []);
-  return [...new Set([...(title.match(TICKET_ID) ?? []), ...fromIssues])];
+  const fromTitle = (title.match(TICKET_ID) ?? []).filter(ticket => {
+    if (fromIssues.includes(ticket)) return true;
+    const rows = statuses.get(ticket) ?? [];
+    const finishedBy = rows.length === 1 ? DONE_BY_PR.exec(rows[0] ?? '')?.[1] : undefined;
+    return finishedBy === undefined || Number(finishedBy) === pullRequestNumber;
+  });
+  return [...new Set([...fromTitle, ...fromIssues])];
+}
+
+/** Whether the title or a closed issue names any ticket at all, claimed or only mentioned. */
+function namesATicket(title: string, closingIssues: readonly ClosingIssue[]): boolean {
+  return (title.match(TICKET_ID) ?? []).length > 0 || closingIssues.some(issue => issueTicket(issue) !== undefined);
 }
 
 /**
@@ -105,8 +132,8 @@ function backlogStatuses(backlog: string): Map<string, string[]> {
  * Checks that a pull request for a ticket closes that ticket's issue and has updated the backlog.
  *
  * Input: the pull request's title and number, the text of BACKLOG.md at its head, and the
- * issues GitHub lists as closed by it. Output: the tickets the pull request is for and a list
- * of problems. For each ticket: one of the closed issues must have a title that starts with
+ * issues GitHub lists as closed by it. Output: the tickets the pull request claims to finish
+ * (see `PrTicketResult.tickets`) and a list of problems. For each ticket: one of the closed issues must have a title that starts with
  * `<id>:`, and BACKLOG.md must have exactly one row for it, with the status
  * `done (PR <number>)`. A pull request that names no ticket in its title and closes no ticket's
  * issue gives no tickets and no problems: docs and factory pull requests have nothing to link.
@@ -116,7 +143,8 @@ export function checkPrTicket(input: PrTicketInput): PrTicketResult {
   if (!Number.isSafeInteger(input.number) || input.number < 1) {
     throw new RangeError('the pull request number must be a positive integer');
   }
-  const tickets = ticketsOf(input.title, input.closingIssues);
+  const statuses = backlogStatuses(input.backlog);
+  const tickets = claimedTickets(input.title, input.closingIssues, statuses, input.number);
   const problems: string[] = [];
   if (tickets.length === 0) return { tickets, problems };
 
@@ -136,7 +164,6 @@ export function checkPrTicket(input: PrTicketInput): PrTicketResult {
     }
   }
 
-  const statuses = backlogStatuses(input.backlog);
   const expected = `done (PR ${input.number})`;
   for (const ticket of tickets) {
     const rows = statuses.get(ticket) ?? [];
@@ -273,7 +300,7 @@ export async function run(
     return errorLine(`cannot ask GitHub which issues pull request ${number} closes: ${detailOf(error)}`);
   }
 
-  if (ticketsOf(title, closingIssues).length === 0) {
+  if (!namesATicket(title, closingIssues)) {
     return {
       code: 0,
       stdout: 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n',
@@ -294,6 +321,13 @@ export async function run(
     result = checkPrTicket({ title, number, backlog, closingIssues });
   } catch (error) {
     return errorLine(detailOf(error));
+  }
+  if (result.tickets.length === 0) {
+    return {
+      code: 0,
+      stdout: 'ticket-link: the PR title only mentions tickets that another pull request finished; nothing to check\n',
+      stderr: '',
+    };
   }
   if (result.problems.length > 0) {
     return { code: 1, stdout: '', stderr: result.problems.map(problem => `ticket-link: ${problem}\n`).join('') };

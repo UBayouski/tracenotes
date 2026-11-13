@@ -129,13 +129,44 @@ describe('checkPrTicket', () => {
     ]);
   });
 
-  test('two tickets in one title are both checked, each once', () => {
-    const result = check('feat: x (T-007, T-008) T-007', [issue18], 19);
+  test('two unfinished tickets in one title are both checked, each once', () => {
+    const open = backlog.replace('| done (PR 21) |', '| planned |');
+    const result = check('feat: x (T-007, T-008) T-007', [issue18], 19, open);
     assert.deepEqual(result.tickets, ['T-007', 'T-008']);
     assert.deepEqual(result.problems, [
       'this pull request closes #18, but none of them is the issue for T-008: its title must start with "T-008:"',
-      'BACKLOG.md row for T-008 says "done (PR 21)", expected "done (PR 19)"',
+      'BACKLOG.md row for T-008 says "planned", expected "done (PR 19)"',
     ]);
+  });
+
+  // Qodo PR review finding d2451e51: "(T-027, split from T-008)" mentions T-008, which PR 21
+  // finished. Its history row must not have to be rewritten for the new pull request to pass.
+  test('a ticket in the title that another PR already finished is a mention, not a claim', () => {
+    const withT027 = `${backlog}| T-027 | Config: custom section names | spare | done (PR 40) |
+`;
+    const issue39: ClosingIssue = { number: 39, title: 'T-027: Config: custom section names' };
+    assert.deepEqual(check('feat(config): custom section names (T-027, split from T-008)', [issue39], 40, withT027), {
+      tickets: ['T-027'],
+      problems: [],
+    });
+    assert.deepEqual(check('feat: x (T-007, T-008) T-007', [issue18], 19), { tickets: ['T-007'], problems: [] });
+    assert.deepEqual(check('docs: what T-008 taught us', [], 50), { tickets: [], problems: [] });
+  });
+
+  test('a finished ticket is still a claim when the pull request closes its issue', () => {
+    // A wrong number typed into the row must not turn the ticket into a mention.
+    const typo = backlog.replace('| done (PR 21) |', '| done (PR 12) |');
+    assert.deepEqual(check('feat: x (T-008)', [issue20], 21, typo).problems, [
+      'BACKLOG.md row for T-008 says "done (PR 12)", expected "done (PR 21)"',
+    ]);
+  });
+
+  test('only the exact form "done (PR n)" with another number makes a mention', () => {
+    for (const status of ['done', 'done (issue #20)', 'done (PR 021)', 'done (PR 22) ', 'planned']) {
+      const other = backlog.replace('| done (PR 21) |', `| ${status} |`);
+      assert.deepEqual(check('feat: x (T-008)', [], 22, other).tickets, ['T-008'], status);
+    }
+    assert.deepEqual(check('feat: x (T-008)', [], 22).tickets, [], 'done (PR 21) on PR 22');
   });
 
   test('an id that is part of a longer token is not a ticket', () => {
@@ -253,6 +284,15 @@ describe('run (in process, with a fake lookup)', () => {
     const other = await run([backlogPath], env('feat(render): JSON output (#18)', '20'), closes(issue18));
     assert.equal(other.code, 1);
     assert.equal(other.stderr, 'ticket-link: BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 20)"\n');
+  });
+
+  test('a title that only mentions a ticket another PR finished: exit 0 and says so', async () => {
+    // The fixture says "done (PR 19)" for T-007.
+    assert.deepEqual(await run([backlogPath], env('docs: what T-007 taught us', '50'), closes()), {
+      code: 0,
+      stdout: 'ticket-link: the PR title only mentions tickets that another pull request finished; nothing to check\n',
+      stderr: '',
+    });
   });
 
   test('a lookup that fails is an error, not a pass: exit 2, one line', async () => {

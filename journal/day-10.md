@@ -172,6 +172,22 @@ Qodo's next review (`evidence/day10/pr22-review-2.json`): `completed`, `review_c
 the three Lows are `pending`, reported and unchanged. All three required checks passed on
 `435b12e`, and GitHub reports the merge state as clean under the new branch protection.
 
+**The three Lows, on the human's decision.** With the gate met, the human saw the three
+informational findings still listed on the PR and chose to fix them rather than merge with them
+or dismiss them. Test-first (`evidence/day10/red-pr22-lows.txt`, 4 failing of 46):
+
+- 641e42e4: a backtick fence may not have a backtick after its opening run, so a line like
+  three backticks, `npm test`, three backticks, "passes" is inline code and no longer hides the
+  rest of a ticket from the guard.
+- c51f36de: an Investigation written as a heading ends only at a heading of the same or a
+  higher level, so it may start with a sub-heading or a bold phrase.
+- d2451e51: a ticket named in the PR title is a mention, not a claim, when its single backlog
+  row says another pull request finished it, unless the pull request closes that ticket's issue.
+  `(T-027, split from T-008)` no longer forces T-008's history row to be rewritten.
+
+`tests 222, pass 222, fail 0`. The real lookup was run again read-only: PR 19 passes, PR 21
+fails, PR 22 has nothing to check. The result of the review of that commit is in the PR.
+
 **Quality gate on the PR at `435b12e`: MET.** No High or Medium finding is open, the required
 checks pass on the head, and the latest completed review is for the head commit. The commit
 that adds this paragraph changes only Markdown and `evidence/`, so a skipped review at the new

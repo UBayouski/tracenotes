@@ -14,26 +14,37 @@ import { visibleLines } from './markdown-text.ts';
 
 // The two ways a ticket names the section: the ticket format's bold label, or a heading.
 const LABEL = /^\*\*Investigation\.\*\*(.*)$/;
-const HEADING = /^#{1,6} Investigation[ \t]*$/;
-// Where the section ends: the next bold label of the ticket format, or the next heading.
-const NEXT_SECTION = /^(?:\*\*[^*\n]+\.\*\*|#{1,6} )/;
+const HEADING = /^(#{1,6}) Investigation[ \t]*$/;
+const ANY_HEADING = /^(#{1,6}) /;
+// Where a section written with the bold label ends: the next bold label of the ticket format,
+// or any heading. A section written as a heading ends only at a heading of the same or a
+// higher level, so it may hold sub-headings and bold phrases.
+const NEXT_LABEL = /^\*\*[^*\n]+\.\*\*/;
 
 /**
  * Tells whether a ticket body has an Investigation section with something in it.
  *
  * Input: the issue body as Markdown (LF or CRLF). Output: `true` when a line starts with
  * `**Investigation.**` or is a heading `## Investigation` (any level), outside HTML comments
- * and fenced code blocks, and the section has at least one non-blank character before the next
- * section starts. Failure: none; any string is accepted.
+ * and fenced code blocks, and the section has at least one non-blank character before it ends.
+ * A bold-label section ends at the next line that starts with a bold label or a heading; a
+ * heading section ends at a heading of the same or a higher level. Failure: none; any string is
+ * accepted.
  */
 export function hasInvestigation(body: string): boolean {
   const lines = visibleLines(body);
   for (const [index, line] of lines.entries()) {
     const label = LABEL.exec(line);
-    if (label === null && !HEADING.test(line)) continue;
+    const level = HEADING.exec(line)?.[1]?.length;
+    if (label === null && level === undefined) continue;
     if (label !== null && /\S/.test(label[1] ?? '')) return true;
     for (const next of lines.slice(index + 1)) {
-      if (NEXT_SECTION.test(next)) break;
+      const nextLevel = ANY_HEADING.exec(next)?.[1]?.length;
+      const ends =
+        level === undefined
+          ? nextLevel !== undefined || NEXT_LABEL.test(next)
+          : nextLevel !== undefined && nextLevel <= level;
+      if (ends) break;
       if (/\S/.test(next)) return true;
     }
   }

@@ -107,8 +107,9 @@ backlog is `BACKLOG.md`.
   ticket's own when its title starts with the id and a colon (`T-008: Config file ...`); write
   issue titles that way. The `ticket-link` check (`scripts/pr-ticket-check.ts`) enforces this
   for every ticket named in the pull request title and for every ticket whose issue the pull
-  request closes. It does not read the body: it asks GitHub which issues the pull request will
-  close. The check is red on a new ticket pull request until a follow-up commit sets the
+  request closes. A ticket in the title that another pull request already finished (its row
+  says `done (PR <other number>)`) is a mention and is not checked. The check does not read the
+  body: it asks GitHub which issues the pull request will close. The check is red on a new ticket pull request until a follow-up commit sets the
   backlog row, because the number is not known earlier. It catches slips, not intent: a pull
   request that neither names a ticket nor closes a ticket's issue is not checked, and a pull
   request can change the check itself, which the human reviewing it sees.
