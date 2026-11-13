@@ -83,7 +83,7 @@ a parser removes it.
 
 - ESM TypeScript executed directly by Node. Import local modules with the `.ts` extension.
 - Only erasable TypeScript syntax: no `enum`, no `namespace`, no parameter properties, no `const enum`. `tsconfig.json` enforces this with `erasableSyntaxOnly`.
-- `src/cli.ts` is the only module that may touch `process.stdout`, `process.stderr`, or `process.exitCode`. Library code returns values or throws.
+- Under `src/`, `cli.ts` is the only module that may touch `process.stdout`, `process.stderr`, or `process.exitCode`. Library code returns values or throws. Factory scripts under `scripts/` are entry points of their own: each touches the process only in its entry block at the end of the file, and every function in it returns values (for a command, the exit code and the text for each stream) or throws.
 - The CLI is tested as a child process in `tests/cli.test.ts`. Any change to argument handling, stdin reading, exit codes, or the direct-invocation check adds or updates a case there. Function-level tests of what the CLI calls do not count as CLI coverage. (Day 1 review lesson: an entry-point bug passed every unit test and would have made the CLI a no-op on Linux.)
 - Prefer small pure functions. Keep I/O at the edges.
 - Public functions have a doc comment stating inputs, outputs, and failure behavior.
@@ -94,6 +94,24 @@ a parser removes it.
 Work items live in `tickets/` as `T-NNN-<slug>.md`, each with acceptance criteria. When
 implementing a ticket, restate each criterion and show how the change satisfies it. The ordered
 backlog is `BACKLOG.md`.
+
+- **Investigate before building.** Before a ticket is implemented, its requirements and its
+  claims about the existing code are checked against the code (Codebase Wisdom, or by running
+  the command the ticket describes), and the result is written into the ticket as an
+  `**Investigation.**` section: what was checked, what was found, what changed in the ticket.
+  The label workflow refuses an issue whose body has no such section, or an empty one
+  (`scripts/ticket-ready.ts`).
+- **A ticket pull request finishes its own paperwork.** Its body closes the ticket's own issue
+  with a closing keyword (`Closes #20`; a bare `(#20)` closes nothing), and `BACKLOG.md` has
+  one row for the ticket that says `done (PR <number>)` before the merge. An issue is a
+  ticket's own when its title starts with the id and a colon (`T-008: Config file ...`); write
+  issue titles that way. The `ticket-link` check (`scripts/pr-ticket-check.ts`) enforces this
+  for every ticket named in the pull request title and for every ticket whose issue the pull
+  request closes. It does not read the body: it asks GitHub which issues the pull request will
+  close. The check is red on a new ticket pull request until a follow-up commit sets the
+  backlog row, because the number is not known earlier. It catches slips, not intent: a pull
+  request that neither names a ticket nor closes a ticket's issue is not checked, and a pull
+  request can change the check itself, which the human reviewing it sees.
 
 ## Quality gate
 
@@ -144,12 +162,18 @@ type together with Qodo's own `category`, unchanged.
    `evidence/`, nothing under `src/`, `tests/` or `.github/` and no package or config file. The
    gate report then names the last completely reviewed commit and lists the files changed since.
    This file is Markdown, so a rule change can pass without a review; the human reads those.
+9. **Required checks pass on the head commit.** Before a merge, the workflows `check.yml` and
+   `ticket-link.yml` have succeeded for the pull request's head: `check` on Linux and on
+   Windows, and `ticket-link`. A local `npm run check` does not replace it; the tests
+   had only ever run on Windows. A red or missing check sends the pull request back to a fix.
 
 **Not done.** The agent reports the task as NOT DONE, and says why, when any of these is true: a
-valid or disputed High or Medium finding is open; `npm run check` fails; the last review does not
+valid or disputed High or Medium finding is open; `npm run check` fails; on a pull request, a
+required check is red or has not run for the head commit; the last review does not
 cover the final code; the review failed, was partial, or could not run; three fix rounds did not
 clear the gate; a label could not be mapped. An agent that cannot run a Qodo review reports
-"implemented, gate pending", never "done".
+"implemented, gate pending", never "done". The workflow agent is in that position: it has no
+Qodo credentials, on purpose, because every command it runs for a ticket could read them.
 
 **Gate report.** One row per finding: id, type and `category`, `action_level` and severity,
 decision (fixed, disputed, reported, fixed with reviewer stale), evidence. Then the checks run

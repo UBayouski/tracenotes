@@ -1,0 +1,54 @@
+# Day 10: the paperwork check for ticket pull requests (FACTORY gate 5).
+#
+# A pull request for a ticket (its title names T-NNN, or it closes a ticket's issue) must close
+# that ticket's own issue and carry the BACKLOG.md row `done (PR <n>)`. Both were missed on
+# PR 21 and found only after the merge (journal/day-09.md). The logic and its tests are in
+# scripts/pr-ticket-check.ts and tests/pr-ticket-check.test.ts.
+#
+# The script does not read the pull request body. It asks GitHub which issues the pull request
+# will close (GraphQL closingIssuesReferences): one request, at most 20 issues.
+#
+# It runs on `edited` too, so that fixing the title or body reruns it. It is a separate workflow
+# from check.yml so that such an edit does not rerun the Linux and Windows test jobs.
+#
+# The PR title reaches the script through an environment variable, never through shell
+# interpolation, and the script prints none of the title or the issue titles back.
+name: Ticket link
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+# Read access only, on a public repository: the token can read nothing that a signed-in visitor
+# cannot. GraphQL does not answer anonymous requests, so the job token is needed. Keeping the
+# token away from the script would not protect it: on a `pull_request` event this workflow file
+# itself comes from the pull request, so its author decides what runs with the token either
+# way. GitHub's answer to that is the read-only token, which is all this job asks for. If this
+# repository ever becomes private or the job needs a write scope, this has to be redesigned.
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+concurrency:
+  group: ticket-link-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  ticket-link:
+    name: ticket-link
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: A ticket PR closes its own issue and has updated the backlog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/pr-ticket-check.ts BACKLOG.md

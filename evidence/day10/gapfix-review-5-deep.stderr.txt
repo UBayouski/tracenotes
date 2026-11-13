@@ -1,0 +1,3 @@
+Including 4 untracked file(s): .github/workflows/ticket-link.yml, scripts/markdown-text.ts, scripts/ticket-ready.ts, tests/ticket-ready.test.ts
+Reviewing UBayouski/tracenotes @ 6dc9a90e1 — 55824B of local changes (filtered to 11 paths) · deep depth (base cloned by the reviewer)
+  trace 30fdf7e7f8a40fecf0404e70092b4003

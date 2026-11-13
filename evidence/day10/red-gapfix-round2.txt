@@ -1,0 +1,149 @@
+▶ closingIssueNumbers
+  ✔ every GitHub closing keyword counts, in any case, with or without a colon (1.3628ms)
+  ✔ a keyword inside another word, or without an issue number, does not count (0.1212ms)
+  ✔ several references come back in order, each once (0.1025ms)
+  ✖ a keyword inside an HTML comment does not count (0.9044ms)
+  ✖ a keyword inside a fenced code block does not count (0.2545ms)
+  ✖ a keyword inside an inline code span does not count (0.172ms)
+✖ closingIssueNumbers (3.8824ms)
+▶ checkPrTicket
+  ✔ a ticket PR that closes its own issue and has the backlog row set passes (0.576ms)
+  ✔ the PR 21 case: "(#20)" without a closing keyword is a problem (0.2431ms)
+  ✔ closing an issue that is not the ticket's is a problem (0.161ms)
+  ✔ a closed reference that is a pull request or does not exist is not the ticket's issue (0.1926ms)
+  ✔ the ticket's issue among other closed issues is enough (0.1005ms)
+  ✔ an issue title must name the ticket as a whole id (0.0779ms)
+  ✔ the backlog row must say done with this PR number (0.1356ms)
+  ✔ a ticket with no backlog row is a problem (0.0634ms)
+  ✔ two backlog rows for one ticket are a problem, whatever they say (0.0715ms)
+  ✔ a PR whose title names no ticket has nothing to check (0.0736ms)
+  ✔ two tickets in one title are both checked, each once (0.0567ms)
+  ✔ an id that is part of a longer token is not a ticket (0.0586ms)
+  ✔ CRLF line endings in BACKLOG.md are read as line endings (0.0619ms)
+  ✔ a status is compared as written: extra spaces or other text do not pass (0.0474ms)
+  ✔ control and invisible characters in a status are printed as escapes, on one line (0.1279ms)
+  ✔ a PR number that is not a positive integer is rejected (0.2961ms)
+✔ checkPrTicket (2.7493ms)
+▶ run (in process, with a fake issue lookup)
+  ✔ writes nothing itself: the result carries the exit code and both streams (0.52ms)
+  ✔ only the issues the body closes are looked up, each once (0.2889ms)
+  ✔ a PR with no ticket in its title asks GitHub nothing (0.0741ms)
+  ✔ a lookup that fails is an error, not a pass: exit 2, one line (0.2621ms)
+✔ run (in process, with a fake issue lookup) (1.2651ms)
+▶ pr-ticket-check as a child process
+  ✔ no ticket in the title: exit 0 and says so (80.3653ms)
+  ✔ a problem: exit 1, one line per problem on stderr (79.7802ms)
+  ✔ PR_NUMBER is validated as received: exit 2 (461.9931ms)
+  ✔ an unreadable backlog path: exit 2 with one error line (95.1082ms)
+  ✔ a closing reference without GITHUB_REPOSITORY is an error before any request: exit 2 (309.793ms)
+✔ pr-ticket-check as a child process (1027.3264ms)
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\Projects\Qodo\dark_factory\scripts\ticket-ready.ts' imported from D:\Projects\Qodo\dark_factory\tests\ticket-ready.test.ts
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///D:/Projects/Qodo/dark_factory/scripts/ticket-ready.ts'
+}
+
+Node.js v24.22.1
+✖ tests\ticket-ready.test.ts (79.0928ms)
+ℹ tests 32
+ℹ suites 4
+ℹ pass 28
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1149.0071
+
+✖ failing tests:
+
+test at tests\pr-ticket-check.test.ts:61:3
+✖ a keyword inside an HTML comment does not count (0.9044ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   20
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:62:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 20 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:68:3
+✖ a keyword inside a fenced code block does not count (0.2545ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   20
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:69:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 20 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:77:3
+✖ a keyword inside an inline code span does not count (0.172ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   20
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:78:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 20 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\ticket-ready.test.ts:1:1
+✖ tests\ticket-ready.test.ts (79.0928ms)
+  'test failed'

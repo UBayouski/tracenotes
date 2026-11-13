@@ -1,0 +1,361 @@
+▶ closingIssueNumbers
+  ✔ every GitHub closing keyword counts, in any case, with or without a colon (1.4469ms)
+  ✔ a keyword inside another word, or without an issue number, does not count (0.125ms)
+  ✔ several references come back in order, each once (0.0874ms)
+  ✔ a keyword inside an HTML comment does not count (0.1445ms)
+  ✔ a keyword inside a fenced code block does not count (0.1869ms)
+  ✖ a keyword on a line indented as code (four spaces or a tab) does not count (0.7939ms)
+  ✔ a keyword inside an inline code span does not count (0.1137ms)
+✖ closingIssueNumbers (3.704ms)
+▶ checkPrTicket
+  ✔ a ticket PR that closes its own issue and has the backlog row set passes (0.5102ms)
+  ✔ the PR 21 case: "(#20)" without a closing keyword is a problem (0.2228ms)
+  ✖ closing an issue that is not the ticket's is a problem (0.3521ms)
+  ✖ a closed reference that is a pull request or does not exist is not the ticket's issue (0.1818ms)
+  ✔ the ticket's issue among other closed issues is enough (0.0857ms)
+  ✖ an issue is the ticket's own only when its title starts with the id and a colon (0.2376ms)
+  ✖ a PR that closes a ticket's issue is a ticket PR even when its title has no id (0.2739ms)
+  ✔ closing an issue that names no ticket does not make a ticket PR (0.0826ms)
+  ✖ a ticket from the title and one from a closed issue are both checked (0.1922ms)
+  ✔ the backlog row must say done with this PR number (0.1363ms)
+  ✔ a ticket with no backlog row is a problem (0.0677ms)
+  ✔ two backlog rows for one ticket are a problem, whatever they say (0.0616ms)
+  ✔ a PR whose title names no ticket has nothing to check (0.0374ms)
+  ✖ two tickets in one title are both checked, each once (0.1309ms)
+  ✔ an id that is part of a longer token is not a ticket (0.0566ms)
+  ✔ CRLF line endings in BACKLOG.md are read as line endings (0.0527ms)
+  ✔ a status is compared as written: extra spaces or other text do not pass (0.045ms)
+  ✔ control and invisible characters in a status are printed as escapes, on one line (0.1359ms)
+  ✔ a PR number that is not a positive integer is rejected (0.2909ms)
+✖ checkPrTicket (3.6131ms)
+▶ run (in process, with a fake issue lookup)
+  ✖ writes nothing itself: the result carries the exit code and both streams (0.636ms)
+  ✔ only the issues the body closes are looked up, each once (0.3338ms)
+  ✖ a PR that names no ticket and closes nothing asks GitHub nothing (0.2275ms)
+  ✖ a PR without a ticket id that closes an ordinary issue has nothing to check (0.2204ms)
+  ✖ a PR without a ticket id that closes a ticket's issue is checked (0.1527ms)
+  ✔ a lookup that fails is an error, not a pass: exit 2, one line (0.3292ms)
+✖ run (in process, with a fake issue lookup) (2.1532ms)
+▶ pr-ticket-check as a child process
+  ✖ no ticket in the title: exit 0 and says so (85.4898ms)
+  ✔ a problem: exit 1, one line per problem on stderr (77.8744ms)
+  ✔ PR_NUMBER is validated as received: exit 2 (521.6017ms)
+  ✔ an unreadable backlog path: exit 2 with one error line (89.5741ms)
+  ✔ a closing reference without GITHUB_REPOSITORY is an error before any request: exit 2 (332.0524ms)
+✖ pr-ticket-check as a child process (1106.92ms)
+ℹ tests 37
+ℹ suites 4
+ℹ pass 25
+ℹ fail 12
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1231.2598
+
+✖ failing tests:
+
+test at tests\pr-ticket-check.test.ts:78:3
+✖ a keyword on a line indented as code (four spaces or a tab) does not count (0.7939ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   20
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:79:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 20 ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:113:3
+✖ closing an issue that is not the ticket's is a problem (0.3521ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'the PR body closes #1, but none of them is the issue for T-008: its title must name T-008'
+  -   'the PR body closes #1, but none of them is the issue for T-008: its title must start with "T-008:"'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:114:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'the PR body closes #1, but none of them is the issue for T-008: its title must name T-008' ],
+    expected: [ 'the PR body closes #1, but none of them is the issue for T-008: its title must start with "T-008:"' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:119:3
+✖ a closed reference that is a pull request or does not exist is not the ticket's issue (0.1818ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'the PR body closes #19, but none of them is the issue for T-007: its title must name T-007'
+  -   'the PR body closes #19, but none of them is the issue for T-007: its title must start with "T-007:"'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:120:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'the PR body closes #19, but none of them is the issue for T-007: its title must name T-007' ],
+    expected: [ 'the PR body closes #19, but none of them is the issue for T-007: its title must start with "T-007:"' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:136:3
+✖ an issue is the ticket's own only when its title starts with the id and a colon (0.2376ms)
+  AssertionError [ERR_ASSERTION]: 5
+  + actual - expected
+  
+  + 'the PR body closes #5, but none of them is the issue for T-008: its title must name T-008'
+  - 'the PR body closes #5, but none of them is the issue for T-008: its title must start with "T-008:"'
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:146:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'the PR body closes #5, but none of them is the issue for T-008: its title must name T-008',
+    expected: 'the PR body closes #5, but none of them is the issue for T-008: its title must start with "T-008:"',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:156:3
+✖ a PR that closes a ticket's issue is a ticket PR even when its title has no id (0.2739ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   problems: [],
+  +   tickets: []
+  -   problems: [
+  -     'BACKLOG.md row for T-009 says "planned", expected "done (PR 31)"'
+  -   ],
+  -   tickets: [
+  -     'T-009'
+  -   ]
+    }
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:159:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tickets: [], problems: [] },
+    expected: { tickets: [ 'T-009' ], problems: [ 'BACKLOG.md row for T-009 says "planned", expected "done (PR 31)"' ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:171:3
+✖ a ticket from the title and one from a closed issue are both checked (0.1922ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      problems: [
+  +     'the PR body closes #18, but none of them is the issue for T-008: its title must name T-008'
+  -     'the PR body closes #18, but none of them is the issue for T-008: its title must start with "T-008:"',
+  -     'BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 21)"'
+      ],
+      tickets: [
+        'T-008',
+  -     'T-007'
+      ]
+    }
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:174:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tickets: [ 'T-008' ], problems: [ 'the PR body closes #18, but none of them is the issue for T-008: its title must name T-008' ] },
+    expected: { tickets: [ 'T-008', 'T-007' ], problems: [ 'the PR body closes #18, but none of them is the issue for T-008: its title must start with "T-008:"', 'BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 21)"' ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:211:3
+✖ two tickets in one title are both checked, each once (0.1309ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'the PR body closes #18, but none of them is the issue for T-008: its title must name T-008',
+  -   'the PR body closes #18, but none of them is the issue for T-008: its title must start with "T-008:"',
+      'BACKLOG.md row for T-008 says "done (PR 21)", expected "done (PR 19)"'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:214:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'the PR body closes #18, but none of them is the issue for T-008: its title must name T-008', 'BACKLOG.md row for T-008 says "done (PR 21)", expected "done (PR 19)"' ],
+    expected: [ 'the PR body closes #18, but none of them is the issue for T-008: its title must start with "T-008:"', 'BACKLOG.md row for T-008 says "done (PR 21)", expected "done (PR 19)"' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:257:3
+✖ writes nothing itself: the result carries the exit code and both streams (0.636ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'ticket-link: the PR body closes #1, but none of them is the issue for T-001: its title must name T-001',
+  -   'ticket-link: the PR body closes #1, but none of them is the issue for T-001: its title must start with "T-001:"',
+      'ticket-link: BACKLOG.md row for T-001 says "done", expected "done (PR 999999)"'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:262:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1905:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'ticket-link: the PR body closes #1, but none of them is the issue for T-001: its title must name T-001', 'ticket-link: BACKLOG.md row for T-001 says "done", expected "done (PR 999999)"' ],
+    expected: [ 'ticket-link: the PR body closes #1, but none of them is the issue for T-001: its title must start with "T-001:"', 'ticket-link: BACKLOG.md row for T-001 says "done", expected "done (PR 999999)"' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:281:3
+✖ a PR that names no ticket and closes nothing asks GitHub nothing (0.2275ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      code: 0,
+      stderr: '',
+  +   stdout: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n'
+  -   stdout: 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n'
+    }
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:283:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { code: 0, stdout: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n', stderr: '' },
+    expected: { code: 0, stdout: 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n', stderr: '' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:286:3
+✖ a PR without a ticket id that closes an ordinary issue has nothing to check (0.2204ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      code: 0,
+      stderr: '',
+  +   stdout: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n'
+  -   stdout: 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n'
+    }
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:287:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { code: 0, stdout: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n', stderr: '' },
+    expected: { code: 0, stdout: 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n', stderr: '' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:290:3
+✖ a PR without a ticket id that closes a ticket's issue is checked (0.1527ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      code: 0,
+      stderr: '',
+  +   stdout: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n'
+  -   stdout: 'ticket-link: T-007: closes its issue, BACKLOG.md says done (PR 19)\n'
+    }
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:293:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { code: 0, stdout: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n', stderr: '' },
+    expected: { code: 0, stdout: 'ticket-link: T-007: closes its issue, BACKLOG.md says done (PR 19)\n', stderr: '' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:318:3
+✖ no ticket in the title: exit 0 and says so (85.4898ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n'
+  - 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n'
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:321:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at node:internal/test_runner/test:1903:71
+      at node:internal/per_context/primordials:504:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:478:3)
+      at node:internal/per_context/primordials:504:9
+      at Array.map (<anonymous>) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ticket-link: the PR title names no ticket (T-NNN); nothing to check\n',
+    expected: 'ticket-link: neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
