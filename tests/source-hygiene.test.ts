@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { describeRawInvisible, findRawInvisible, sourceProblems } from '../scripts/source-hygiene.ts';
+import { describeRawInvisible, findRawInvisible, showPath, sourceProblems } from '../scripts/source-hygiene.ts';
 
 // tickets/T-028-source-hygiene.md, AGENTS.md rule 7 (Show the Invisible).
 // Every character under test is built from its code point, so this file passes its own check.
@@ -91,6 +91,25 @@ describe('describeRawInvisible', () => {
     assert.equal(describeRawInvisible('tests/a.test.ts', astral), 'tests/a.test.ts:1:1 raw U+E0001, write \\u{E0001}');
   });
 
+  // Qodo PR review finding 9fb45c26: a path is printed inside a one-line report, so the
+  // characters the rule forbids, and tab and line feed, are shown as escapes there too.
+  test('criterion 6: a path with control or invisible characters cannot split or spoof the line', () => {
+    const [hit] = findRawInvisible(cp(0xfeff));
+    assert.ok(hit);
+    const odd = `src/a${cp(0x0a)}b${cp(0x09)}c${cp(0x202e)}d${cp(0x1b)}.ts`;
+    const line = describeRawInvisible(odd, hit);
+    assert.equal(line, 'src/a\\u000Ab\\u0009c\\u202Ed\\u001B.ts:1:1 raw U+FEFF, write \\uFEFF');
+    assert.deepEqual(findRawInvisible(line), []);
+    assert.equal(line.includes(cp(0x0a)), false);
+    assert.equal(showPath('src/plain-name.test.ts'), 'src/plain-name.test.ts');
+    assert.equal(showPath(`src/caf${cp(0xe9)}.ts`), `src/caf${cp(0xe9)}.ts`, 'visible non-ASCII stays');
+  });
+
+  test('criterion 5: the not-valid-UTF-8 line shows such a path the same way', () => {
+    const odd = `tests/x${cp(0x0a)}error: forged.ts`;
+    assert.deepEqual(sourceProblems(odd, new Uint8Array([0xff])), ['tests/x\\u000Aerror: forged.ts: not valid UTF-8']);
+  });
+
   test('criterion 6: the message itself contains no raw forbidden character', () => {
     for (const codePoint of [0xfeff, 0x2028, 0x0d, 0x1b, 0xe0001, 0x3164]) {
       const [hit] = findRawInvisible(cp(codePoint));
@@ -148,7 +167,7 @@ describe('source hygiene of this repository', () => {
         // A file that cannot be read is its own problem, not an encoding problem
         // (Qodo local review finding 7cb5aca3).
         const code = error instanceof Error && 'code' in error ? String(error.code) : 'unknown error';
-        problems.push(`${file}: cannot be read (${code})`);
+        problems.push(`${showPath(file)}: cannot be read (${code})`);
         continue;
       }
       problems.push(...sourceProblems(file, bytes));

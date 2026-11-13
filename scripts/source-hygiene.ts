@@ -75,18 +75,18 @@ export function findRawInvisible(text: string): RawInvisible[] {
  * Formats one finding as a single line: `<path>:<line>:<column> raw U+XXXX, write <escape>`.
  *
  * Input: the file's path as it should be shown (relative, forward slashes) and a finding from
- * `findRawInvisible`. Output: the line, without a trailing newline. The path is printed as
- * given. Failure: none.
+ * `findRawInvisible`. Output: the line, without a trailing newline. The path goes through
+ * `showPath`, so the line stays one line whatever the file is called. Failure: none.
  */
 export function describeRawInvisible(file: string, hit: RawInvisible): string {
-  return `${file}:${hit.line}:${hit.column} raw U+${hex(hit.codePoint).padStart(4, '0')}, write ${hit.escape}`;
+  return `${showPath(file)}:${hit.line}:${hit.column} raw U+${hex(hit.codePoint).padStart(4, '0')}, write ${hit.escape}`;
 }
 
 /**
  * Checks the bytes of one source file.
  *
  * Input: the file's path as it should be shown and its raw bytes. Output: one line per problem:
- * `<path>: not valid UTF-8` when the bytes do not decode, otherwise one `describeRawInvisible`
+ * `<path>: not valid UTF-8` (the path through `showPath`) when the bytes do not decode, otherwise one `describeRawInvisible`
  * line per raw forbidden character. A byte order mark at the start of the file is kept and
  * reported like any other. Failure: none.
  */
@@ -95,7 +95,25 @@ export function sourceProblems(file: string, bytes: Uint8Array): string[] {
   try {
     text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
   } catch {
-    return [`${file}: not valid UTF-8`];
+    return [`${showPath(file)}: not valid UTF-8`];
   }
   return findRawInvisible(text).map(hit => describeRawInvisible(file, hit));
+}
+
+/**
+ * Makes a file path safe to print inside a one-line report.
+ *
+ * Input: a path, taken from the file system as it is. Output: the same path with every
+ * character that `findRawInvisible` forbids, and tab and line feed, replaced by the text of
+ * its escape. A file name is not source text: a line feed in it would split the report, and a
+ * direction mark would reorder it. Visible characters, ASCII or not, are kept. Failure: none.
+ */
+export function showPath(file: string): string {
+  let shown = '';
+  for (const character of file) {
+    const codePoint = character.codePointAt(0) ?? 0;
+    const hide = codePoint === TAB || codePoint === LINE_FEED || isForbidden(codePoint, character);
+    shown += hide ? escapeFor(codePoint) : character;
+  }
+  return shown;
 }

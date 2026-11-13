@@ -1,0 +1,83 @@
+▶ findRawInvisible
+  ✔ criteria 2, 4, 7: each forbidden character is reported with its position and escape (1.4646ms)
+  ✔ criteria 2, 3, 7: tab, line feed, space and visible non-ASCII are allowed (0.138ms)
+  ✔ criterion 4: several characters come back in order; columns count UTF-16 code units (0.0924ms)
+  ✔ criterion 2: a carriage return is reported; only the line feed ends a line (0.0853ms)
+  ✔ criterion 2: U+2028 does not start a new line for the position (0.0868ms)
+  ✔ criterion 4: a lone surrogate does not throw and is not reported (0.0558ms)
+✔ findRawInvisible (2.6637ms)
+▶ describeRawInvisible
+  ✔ criterion 6: one line with path, position, code point and the escape to write (0.2069ms)
+  ✖ criterion 6: a path with control or invisible characters cannot split or spoof the line (0.7028ms)
+  ✖ criterion 5: the not-valid-UTF-8 line shows such a path the same way (0.4045ms)
+  ✔ criterion 6: the message itself contains no raw forbidden character (0.1643ms)
+✖ describeRawInvisible (1.6871ms)
+▶ sourceProblems
+  ✔ criterion 5: bytes that are not valid UTF-8 give one problem with the path (0.1359ms)
+  ✔ criteria 5, 6: valid UTF-8 gives one line per raw character, or nothing (0.1117ms)
+  ✔ a byte order mark at the start of a file is reported, not swallowed by the decoder (0.0561ms)
+✔ sourceProblems (0.4105ms)
+▶ source hygiene of this repository
+  ✔ criterion 5: the walk finds the TypeScript sources, and no fixture (0.1485ms)
+  ✔ criteria 5, 6, 8: no .ts file under src/, tests/ or scripts/ has a raw invisible or control character (8.2757ms)
+✔ source hygiene of this repository (8.5848ms)
+ℹ tests 15
+ℹ suites 4
+ℹ pass 13
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109.5408
+
+✖ failing tests:
+
+test at tests\source-hygiene.test.ts:96:3
+✖ criterion 6: a path with control or invisible characters cannot split or spoof the line (0.7028ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'src/a\nb\tc‮d\x1B.ts:1:1 raw U+FEFF, write \\uFEFF'
+  - 'src/a\\u000Ab\\u0009c\\u202Ed\\u001B.ts:1:1 raw U+FEFF, write \\uFEFF'
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:101:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1905:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'src/a\nb\tc‮d\x1B.ts:1:1 raw U+FEFF, write \\uFEFF',
+    expected: 'src/a\\u000Ab\\u0009c\\u202Ed\\u001B.ts:1:1 raw U+FEFF, write \\uFEFF',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\source-hygiene.test.ts:108:3
+✖ criterion 5: the not-valid-UTF-8 line shows such a path the same way (0.4045ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'tests/x\nerror: forged.ts: not valid UTF-8'
+  -   'tests/x\\u000Aerror: forged.ts: not valid UTF-8'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/source-hygiene.test.ts:110:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'tests/x\nerror: forged.ts: not valid UTF-8' ],
+    expected: [ 'tests/x\\u000Aerror: forged.ts: not valid UTF-8' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
