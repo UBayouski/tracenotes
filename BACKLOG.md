@@ -33,7 +33,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-025 | Self-hosting: tracenotes generates its own CHANGELOG on tag | 21 Nov 30 | planned |
 | T-026 | Print usage instead of blocking when stdin is a terminal | 04 Nov 05 | done |
 | T-027 | Config: custom section names (split from T-008) | spare | planned |
-| T-028 | Source hygiene: no raw invisible or control characters in `.ts` files under `src/`, `tests/` and `scripts/`, rule in AGENTS.md plus a test that prints the escape to use (borrowed from pasokh, Day 2 reply) | 10 Nov 13 (built in session, checked against the factory diagram) | planned |
+| T-028 | Source hygiene: no raw invisible or control characters in `.ts` files under `src/`, `tests/` and `scripts/`, rule in AGENTS.md plus a test that prints the escape to use (borrowed from pasokh, Day 2 reply) | 10 Nov 13 (built in session, checked against the factory diagram) | done (PR 24) |
 | T-029 | Label lane: Qodo review of the agent's branch before a pull request is opened, in a separate job that never runs ticket-written code and so can hold the Qodo key (the in-job version was removed on Day 10, journal/day-10.md) | 16 Nov 23 | planned |
 
 Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (submission).
