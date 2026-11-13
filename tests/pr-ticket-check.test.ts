@@ -213,7 +213,9 @@ describe('parseClosingIssues', () => {
 });
 
 describe('run (in process, with a fake lookup)', () => {
-  const backlogPath = path.join(repoRoot, 'BACKLOG.md');
+  // A fixture, not the repository's BACKLOG.md: a backlog cleanup must not fail these tests
+  // (Qodo PR review finding b6787850).
+  const backlogPath = path.join(repoRoot, 'tests', 'fixtures', 'backlog.md');
   const closes = (...issues: ClosingIssue[]): ClosingIssuesLookup => async () => issues;
   const env = (title: string, number: string) => ({ PR_TITLE: title, PR_NUMBER: number });
   const nothingToCheck = {
@@ -223,7 +225,7 @@ describe('run (in process, with a fake lookup)', () => {
   };
 
   test('writes nothing itself: the result carries the exit code and both streams', async () => {
-    // T-001 is done in the real BACKLOG.md with the plain status "done".
+    // T-001 has the plain status "done" in the fixture.
     const result = await run([backlogPath], env('feat: x (T-001)', '999999'), closes(issue1));
     assert.equal(result.code, 1);
     assert.equal(result.stdout, '');
@@ -245,7 +247,7 @@ describe('run (in process, with a fake lookup)', () => {
   });
 
   test('a PR without a ticket id that closes a ticket\'s issue is checked', async () => {
-    // Issue 18 is T-007's; the real BACKLOG.md says "done (PR 19)" for it.
+    // Issue 18 is T-007's; the fixture says "done (PR 19)" for it.
     const result = await run([backlogPath], env('feat(render): JSON output (#18)', '19'), closes(issue18));
     assert.deepEqual(result, { code: 0, stdout: 'ticket-link: T-007: closes its issue, BACKLOG.md says done (PR 19)\n', stderr: '' });
     const other = await run([backlogPath], env('feat(render): JSON output (#18)', '20'), closes(issue18));

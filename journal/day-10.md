@@ -133,6 +133,35 @@ Not verified by any of this: no workflow has run, and nobody knows how soon
 - **Three full reviews instead of incremental ones.** Adding files to the path list each round
   changed the review scope, so Qodo could not reuse its checkpoint and reviewed everything again.
 
+## PR 22: the gate before the merge
+
+The human committed the gap fixes as `1433e3d` and opened PR 22.
+
+**Required checks, first real run.** `check (ubuntu-latest)` passed in 15 s: the first time these
+tests ran on Linux. `check (windows-latest)` passed in 44 s. `ticket-link` passed in 5 s with
+`neither the PR title nor an issue it closes names a ticket (T-NNN); nothing to check`, so the
+GraphQL lookup works with the job token.
+
+**Qodo PR review** at head `1433e3d`, read with the Review Resolver skill
+(`evidence/day10/pr22-review-1.json`): `completed`, `review_complete: true`, 11 findings, all
+open. Five local reviews had ended with nothing new; the PR review still found 3 Highs and
+5 Mediums. **Quality gate on the PR at `1433e3d`: NOT MET.**
+
+| Finding | Severity | Decision | Evidence |
+|---|---|---|---|
+| 282b3a84: a PR author can edit the script or workflow so that `ticket-link` passes | High | **Human: dismiss as intentional.** | `AGENTS.md` already says the check catches slips, not intent; the human reads every PR. Hardening (run the script from `main`) is material for Day 20. |
+| ee02db53: nothing makes the checks required | High | **Human approved branch protection now**; the agent turned it on. | Read back from the API: required contexts `check (ubuntu-latest)`, `check (windows-latest)`, `ticket-link`; admin bypass on; force pushes and deletions off. A repository setting, so no diff. |
+| 49bf2faa, e582e45f: script entry blocks touch process streams | High, Medium | **Human: dismiss both as intentional.** | The rule was amended in this PR; Qodo's copy changes only when the rules are imported from `main` after the merge. |
+| b6787850: the tests read the live `BACKLOG.md` | Medium | fixed | `tests/fixtures/backlog.md`; a backlog cleanup can no longer fail `npm test`. |
+| 8f27403d: `ticket-link` read `BACKLOG.md` from the merge commit | Medium | fixed | The job checks out the pull request's head commit. |
+| 842081ab: the guard judged the issue body from the label event | Medium | fixed | The step reads the current body with `gh issue view`. |
+| b791ae9e: a guard crash was reported as a missing investigation | Medium | fixed | Exit 1 is the verdict; any other exit leaves the label on and posts nothing. This was Low fb5e3784 in the local review, left alone as the gate says, and came back as a Medium. |
+| 641e42e4, c51f36de, d2451e51 | Low | reported, unchanged | A line that starts with three backticks and continues hides the rest of a ticket; sub-headings inside the section; a title that mentions an earlier ticket. |
+
+The two workflow fixes cannot be tested by a test in `tests/`, so the guard step's script was
+extracted from the workflow file and run locally against stand-in `gh` and `node` commands, six
+outcomes (`evidence/day10/guard-step-simulation.txt`). `tests 215, pass 215, fail 0`.
+
 ## Gate 1 on T-028: the ticket checked against the code
 
 Ticket `tickets/T-028-source-hygiene.md`, the rule borrowed from pasokh on Day 2. Investigated

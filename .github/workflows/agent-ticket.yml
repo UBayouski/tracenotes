@@ -63,12 +63,27 @@ jobs:
       - name: The ticket carries its investigation
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
         run: |
-          if node scripts/ticket-ready.ts; then
+          # The body as it is now, not as it was when the label was added: the job may have
+          # waited in a queue, and the agent reads the current ticket.
+          if ! ISSUE_BODY="$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json body --jq .body)"; then
+            echo "::error::Could not read issue $ISSUE_NUMBER; the ticket was not judged and the label was left on."
+            exit 1
+          fi
+          export ISSUE_BODY
+          status=0
+          node scripts/ticket-ready.ts || status=$?
+          if [ "$status" -eq 0 ]; then
             exit 0
+          fi
+          # Exit 1 is the guard's verdict. Anything else is the guard failing (Node, a module
+          # that does not load): that is not the ticket's fault, so the label stays and nothing
+          # is posted on the issue.
+          if [ "$status" -ne 1 ]; then
+            echo "::error::The ticket guard itself failed (exit $status); the ticket was not judged and the label was left on. See the log above."
+            exit 1
           fi
           # The label comes off so that adding it again is a new `labeled` event. If it stayed,
           # the corrected ticket could not be started the way the comment says.

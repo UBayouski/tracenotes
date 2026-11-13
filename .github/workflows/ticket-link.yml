@@ -40,7 +40,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The head commit, not the default merge commit: the check is about the BACKLOG.md the
+      # pull request itself carries, whatever main has done since.
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: actions/setup-node@v5
         with:
