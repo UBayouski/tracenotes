@@ -7,7 +7,12 @@ or dismiss with a reason), and add the scan to the Day 10 diagram. A completed s
 findings is a valid result. A fix is optional. (The plan said "Wire up the factory" for today;
 the thread is canonical. T-015 and T-029 move to a free slot.)
 
-Status: done except the post. T-035 (PR 36) and T-037 (PR 38) merged; Arnica: 5 findings resolved automatically, 3 dismissed with a reason, none open.
+Status: done and posted. T-035 (PR 36) and T-037 (PR 38) merged; Arnica: 5 findings resolved
+automatically, 3 dismissed with a reason, none open.
+
+- Reply in the thread (Nov 23): https://github.com/orgs/qodo-hackathon/discussions/18#discussioncomment-19840343
+- Pull requests: https://github.com/UBayouski/tracenotes/pull/36 and https://github.com/UBayouski/tracenotes/pull/38
+- Scanned copy: https://github.com/IoT-Forge-Labs/tracenotes
 
 ## Setup constraint
 
@@ -369,9 +374,6 @@ goes back to the top as a new ticket. Arnica checks on the pull request are dash
 the repository itself in an organization. A gate-table row, a "Checked against the Arnica scan
 and T-035" section and two new known gaps: the scan sees a copy, after the merge, when a person
 syncs it; and the agent action's own write token is in reach of ticket-written tests (T-036).
-
-Status line at the top of this file: the scan, the investigation and the fix are done; the
-pull request, the follow-up Arnica read and the post are not.
 
 ## What I missed
 
