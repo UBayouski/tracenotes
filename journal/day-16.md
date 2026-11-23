@@ -7,7 +7,7 @@ or dismiss with a reason), and add the scan to the Day 10 diagram. A completed s
 findings is a valid result. A fix is optional. (The plan said "Wire up the factory" for today;
 the thread is canonical. T-015 and T-029 move to a free slot.)
 
-Status: T-035 merged (`1a6f865`), follow-up scan read (four Mediums resolved automatically). T-037 built, gate pending a human decision. Open: post, Arnica dismissals, the agent-workflow runs.
+Status: done except the post. T-035 (PR 36) and T-037 (PR 38) merged; Arnica: 5 findings resolved automatically, 3 dismissed with a reason, none open.
 
 ## Setup constraint
 
@@ -318,6 +318,39 @@ byte-identical reports on the three saved input sets (`evidence/day16/pr38/audit
 The fix for a scanner's "non literal regexp" finding had put a slow path into the fixed
 expression that replaced it; the next reviewer found it. The review of the head that carries
 this section is read after the push and recorded on `main` with the merge note.
+
+## After the merge of pull request 38
+
+The fix commit `62fd843` (agent) went through the same gate: checks green, Qodo run 2120687
+(standard) completed for the head, both Lows `implemented`, nothing new. Qodo removed the
+"Qodo approved" label when the commit arrived (20:11:44 UTC) and added it again after the review
+(20:13:11 UTC). Gate MET at `62fd843`. The human merged pull request 38 as `f453e5b` at 20:16:06
+UTC; issue #37 closed; `Check` green on `main`; the fork synced to the same commit and tree
+(`96f949a`). Evidence: `evidence/day16/pr38/`.
+
+Arnica, read at about 20:21 UTC (`evidence/day16/10-arnica-final-secrets.png`,
+`11-arnica-final-code.png`) and, after the human dismissed the two secret findings, at about
+20:25 UTC (`12-arnica-secrets-dismissed.png`):
+
+| Finding | Arnica severity | Final status | How |
+|---|---|---|---|
+| Checkout keeps the token, 4 workflows | Medium | Resolved Automatically | T-035, pull request 36 |
+| Non-literal regexp, audit script | Low | Resolved Automatically | T-037, pull request 38 |
+| Non-literal regexp, `src/config.ts#L30` | Low | Dismissed | the human, as intentional: user-written ignore patterns are the feature |
+| Credentials in URL, `tests/remote.test.ts#L106` | Info | Dismissed | the human: not a secret, a made-up fixture |
+| Credentials in URL, `journal/day-16.md#L121` | Info | Dismissed | the human: not a secret; see below |
+
+The journal finding did not clear by itself, although `main` no longer holds the value (the line
+was reworded in `8e15dc9`; `git grep` on `main` finds it only in the tests). At the 20:21 read
+Arnica still showed it Open and "Present in HEAD"; at the 20:25 read that mark was gone, but
+the finding had stayed open until it was dismissed by hand. The value is in the history of `main` (commit `fae957a`), and a secret
+that was once committed stays a finding until someone rules on it: for a real secret that is
+the right behaviour, since rewording the file would not un-leak it. Code findings resolve when
+the code changes; secret findings do not.
+
+Day 16 in numbers: 7 findings from the first scan, 1 more caused by this journal. 5 resolved by
+two pull requests, 3 dismissed by the human with a reason (one intended behaviour, two made-up
+values). Nothing is open. None of the eight was a real secret.
 
 ## Predictions against the result
 
