@@ -1,0 +1,403 @@
+{
+ "story": [
+  {
+   "id": "brief",
+   "kind": "brief",
+   "title": "A version bump that names its rule",
+   "lede": "A new version command recommends the next semantic version from a commit range and names the rule and the commits behind it.",
+   "paragraphs": [
+    {
+     "label": "Today",
+     "text": "The tool groups and renders release notes but says nothing about the next version number."
+    },
+    {
+     "label": "Why",
+     "text": "A bump is only reviewable if it names its rule and the commits that triggered it, and every input commit stays accounted for."
+    },
+    {
+     "label": "What",
+     "text": "Four rules in a fixed order: breaking, feature, fix, none. A breaking change in a 0.x version bumps the minor part, not the major one, under its own rule id. Entries that match a lower rule are counted, not listed as triggers."
+    },
+    {
+     "label": "How",
+     "text": "A pure function over the grouped release sections, plus a CLI command that prints the recommendation as JSON."
+    }
+   ],
+   "contributions": [
+    {
+     "pr": "UBayouski/tracenotes#16",
+     "adds": "Adds the recommender, its CLI command and tests; the second commit pins trigger order and amends the ticket after a review finding."
+    }
+   ],
+   "assets": [
+    {
+     "kind": "tickets",
+     "url": "https://github.com/UBayouski/tracenotes/issues/15",
+     "title": "Issue 15: T-005 ticket"
+    },
+    {
+     "kind": "prd",
+     "url": "https://github.com/UBayouski/tracenotes/blob/3e538a2c2c057964f010b4b28eb5e0020a1daac9/tickets/T-005-recommend-next-version.md",
+     "title": "T-005 acceptance criteria at the PR head"
+    }
+   ]
+  },
+  {
+   "id": "flow",
+   "kind": "flow",
+   "title": "One pure function behind one command",
+   "lede": "The command reads a log stream, groups it with the existing grouper and passes the groups to the recommender.",
+   "skip": "Only one in-process call chain changes: parse, group, recommend, print. No service, store or external boundary is crossed.",
+   "answers": [
+    {
+     "q": "What does the version command answer?",
+     "a": "Given the current version and a commit range, it prints the next version, the rule that decided it and the commits that triggered that rule."
+    },
+    {
+     "q": "What happens to a breaking change before 1.0?",
+     "a": "In a 0.x version a breaking change raises the minor part, under its own rule id, as the ticket asks. A plain feature in the same range is counted, not listed as a trigger."
+    },
+    {
+     "q": "Is every commit accounted for?",
+     "a": "Yes. Each entry is either a trigger or counted as not triggering; merge commits are counted as ignored."
+    }
+   ]
+  },
+  {
+   "id": "pre-1-0",
+   "kind": "question",
+   "title": "Breaking changes before 1.0",
+   "lede": "In a 0.x version a breaking change and a plain feature both raise the minor part, but only the breaking commit is named as the reason.",
+   "ask": "Is it right that, in a 0.x range with a breaking commit and a feature, the feature is counted as not triggering although it alone would give the same next version?",
+   "options": [
+    "Accept: the rule that wins is the reason, as the ticket says",
+    "Request a change: list every entry that would give the same bump",
+    "Ask the product owner"
+   ]
+  }
+ ],
+ "context": {
+  "sources": [
+   {
+    "url": "https://github.com/UBayouski/tracenotes/issues/15",
+    "title": "T-005: Recommend the next version with the rule that produced it",
+    "kind": "ticket",
+    "summary": "Original ticket, created before the factory workflow built the PR. Criterion 3 gives the bump rules in order and the breaking-pre-1.0 case (breaking in major 0 bumps minor, SemVer item 4). Criterion 4 says entries that match a lower rule are not triggers. Criterion 5 counts them as notTriggering.",
+    "prs": [
+     "UBayouski/tracenotes#16"
+    ]
+   },
+   {
+    "url": "https://github.com/UBayouski/tracenotes/blob/3e538a2c2c057964f010b4b28eb5e0020a1daac9/tickets/T-005-recommend-next-version.md",
+    "title": "T-005 ticket file at the PR head",
+    "kind": "spec",
+    "summary": "The same ticket committed in the PR. Criterion 4 was amended on Day 7 after Qodo finding 06d9643f (trigger order); criteria 3 and the lower-rule sentence are unchanged from issue 15.",
+    "prs": [
+     "UBayouski/tracenotes#16"
+    ]
+   }
+  ]
+ },
+ "prs": {
+  "UBayouski/tracenotes#16": {
+   "summary": "Adds recommendVersion and the version command. The decision logic is from the factory bot's commit b2910fe; the head commit 3e538a2 only changes comments in version.ts, pins trigger order in a test and amends the ticket.",
+   "risk": "Low for existing commands: version is a new command and recommendVersion a new export. The open question is the meaning of triggers in a 0.x range.",
+   "layers": [
+    {
+     "id": "contract",
+     "title": "The recommendation contract",
+     "summary": "Types, rule ids, version parsing and the index export first, so the decision branches read against them.",
+     "ranges": [
+      {
+       "path": "src/version.ts",
+       "side": "new",
+       "from": 1,
+       "to": 80
+      },
+      {
+       "path": "src/index.ts",
+       "side": "new",
+       "from": 6,
+       "to": 10
+      }
+     ]
+    },
+    {
+     "id": "rules",
+     "title": "The rule order and the 0.x branch",
+     "summary": "Breaking is checked first; inside it, major 0 picks breaking-pre-1.0 and a minor bump. Only the winning rule's entries become triggers.",
+     "ranges": [
+      {
+       "path": "src/version.ts",
+       "side": "new",
+       "from": 81,
+       "to": 141
+      }
+     ],
+     "depends_on": [
+      "contract"
+     ]
+    },
+    {
+     "id": "tests",
+     "title": "The tests for each rule",
+     "summary": "The pre-1.0 test uses a breaking feat plus a plain feat and expects one trigger.",
+     "ranges": [
+      {
+       "path": "tests/version.test.ts",
+       "side": "new",
+       "from": 1,
+       "to": 144
+      }
+     ],
+     "depends_on": [
+      "rules"
+     ]
+    },
+    {
+     "id": "cli",
+     "title": "The version command",
+     "summary": "The version command validates --current before reading stdin and prints the JSON; its CLI tests cover the exit codes.",
+     "ranges": [
+      {
+       "path": "src/cli.ts",
+       "side": "new",
+       "from": 14,
+       "to": 20
+      },
+      {
+       "path": "src/cli.ts",
+       "side": "new",
+       "from": 30,
+       "to": 42
+      },
+      {
+       "path": "src/cli.ts",
+       "side": "new",
+       "from": 163,
+       "to": 220
+      },
+      {
+       "path": "tests/cli.test.ts",
+       "side": "new",
+       "from": 120,
+       "to": 160
+      },
+      {
+       "path": "tests/cli.test.ts",
+       "side": "new",
+       "from": 218,
+       "to": 237
+      }
+     ],
+     "depends_on": [
+      "rules"
+     ]
+    }
+   ],
+   "decisions": [
+    {
+     "id": "pre-1-0-minor",
+     "status": "planned",
+     "source": "ticket",
+     "kind": "product",
+     "text": "A breaking change in a 0.x version bumps minor under rule breaking-pre-1.0; a feature in the same range is not a trigger",
+     "plan": "Issue 15 criterion 3: when the current major is 0 the bump is minor and the rule id is breaking-pre-1.0. Criterion 4: entries that match a lower rule are not triggers.",
+     "why": "Two different rules give the same next version in 0.x, but the output names only the breaking commit. A reader could expect the feature too.",
+     "effects": [
+      "contract",
+      "ux"
+     ],
+     "notice": "In the JSON, the feature commit appears only in counts.notTriggering, not in triggers.",
+     "refs": [
+      "https://github.com/UBayouski/tracenotes/issues/15"
+     ],
+     "ev": [
+      {
+       "path": "src/version.ts",
+       "side": "new",
+       "from": 94,
+       "to": 106
+      }
+     ]
+    }
+   ],
+   "stances": {
+    "q-UBayouski-tracenotes-16-06d9643f-3950-413b-9c6d-b81f96c4c07d": {
+     "stance": "partial",
+     "why": "The order did differ from the first ticket text; the human chose section order on Day 7 and amended the ticket. Not the decision investigated here."
+    },
+    "q-UBayouski-tracenotes-16-e5462b0d-6996-448c-8486-b8b0eb6830ce": {
+     "stance": "partial",
+     "why": "Accurate that the ticket was amended to match the code; that was a recorded human decision. Not the decision investigated here."
+    }
+   },
+   "quality": {
+    "summary": "12 version tests pass at 3e538a2. The pre-1.0 test checks the rule, bump, next version and one trigger; notTriggering is implied by the shared invariant check, not asserted directly.",
+    "tests": [
+     {
+      "path": "tests/version.test.ts",
+      "verdict": "fine",
+      "why": "Each rule id has a test, including breaking-pre-1.0 with a feature in the same range; it is listed because it proves the investigated decision."
+     },
+     {
+      "path": "src/index.ts",
+      "verdict": "fine",
+      "why": "Two re-export lines; the criterion 1 test asserts api.recommendVersion is the same function."
+     }
+    ]
+   },
+   "attention": [
+    {
+     "path": "evidence/day07/findings-1-extended.json",
+     "tier": "skip",
+     "why": "Saved Qodo review JSON, evidence not code."
+    },
+    {
+     "path": "tickets/T-005-recommend-next-version.md",
+     "tier": "skim",
+     "why": "The ticket; its criteria are cited as the source."
+    }
+   ]
+  }
+ },
+ "behavior": {
+  "headline": "The version command recommends the next version and names the rule and its commits.",
+  "capabilities": [
+   {
+    "id": "bump",
+    "title": "Recommend the next version",
+    "summary": "A caller gets next, bump, rule and triggers from a log stream and the current version.",
+    "prs": [
+     "UBayouski/tracenotes#16"
+    ]
+   }
+  ],
+  "files": [
+   {
+    "pr": "UBayouski/tracenotes#16",
+    "path": "src/version.ts",
+    "headline": "Rule order with a 0.x branch for breaking changes.",
+    "hunks": [
+     {
+      "cap": "bump",
+      "title": "Rules",
+      "lines": [
+       {
+        "k": "+",
+        "kind": "behavior",
+        "text": "A breaking change bumps major; in a 0.x version it bumps minor under rule breaking-pre-1.0.",
+        "ev": [
+         {
+          "side": "new",
+          "from": 94,
+          "to": 106
+         }
+        ]
+       },
+       {
+        "k": "+",
+        "kind": "behavior",
+        "text": "Only the winning rule's entries are triggers; every other entry counts as notTriggering.",
+        "ev": [
+         {
+          "side": "new",
+          "from": 127,
+          "to": 140
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "pr": "UBayouski/tracenotes#16",
+    "path": "tests/version.test.ts",
+    "headline": "A test for each rule id.",
+    "hunks": [
+     {
+      "cap": "bump",
+      "title": "Pre-1.0",
+      "lines": [
+       {
+        "k": "+",
+        "kind": "proof",
+        "text": "A breaking feat plus a plain feat at 0.3.7 gives breaking-pre-1.0, 0.4.0 and one trigger.",
+        "ev": [
+         {
+          "side": "new",
+          "from": 52,
+          "to": 58
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "pr": "UBayouski/tracenotes#16",
+    "path": "src/cli.ts",
+    "headline": "A version command that prints the recommendation as JSON.",
+    "hunks": [
+     {
+      "cap": "bump",
+      "title": "Command",
+      "lines": [
+       {
+        "k": "+",
+        "kind": "interface",
+        "text": "tracenotes version --current x.y.z reads a log stream from stdin and prints the recommendation as JSON.",
+        "ev": [
+         {
+          "side": "new",
+          "from": 163,
+          "to": 220
+         }
+        ]
+       },
+       {
+        "k": "+",
+        "kind": "interface",
+        "text": "The usage text lists the version command.",
+        "ev": [
+         {
+          "side": "new",
+          "from": 30,
+          "to": 42
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "pr": "UBayouski/tracenotes#16",
+    "path": "src/index.ts",
+    "headline": "The recommender is exported.",
+    "hunks": [
+     {
+      "cap": "bump",
+      "title": "Export",
+      "lines": [
+       {
+        "k": "+",
+        "kind": "interface",
+        "text": "recommendVersion and its types are exported from the package index.",
+        "ev": [
+         {
+          "side": "new",
+          "from": 6,
+          "to": 10
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

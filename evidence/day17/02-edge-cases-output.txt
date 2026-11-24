@@ -1,0 +1,13 @@
+### case footer, --current 0.4.2
+breaking-pre-1.0 0.5.0 triggers: aaaaaaa fix notTriggering: 1
+exit 0
+### case revert, --current 0.4.2
+breaking-pre-1.0 0.5.0 triggers: aaaaaaa feat notTriggering: 1
+exit 0
+### case plain, --current 0.9007199254740991.0
+error: cannot bump "0.9007199254740991.0": result would exceed Number.MAX_SAFE_INTEGER
+exit 2
+### case plain, --current 0.4.9007199254740991
+feat 0.5.0 triggers: bbbbbbb feat notTriggering: 0
+exit 0
+breaking-pre-1.0 0.5.0 [{"sha":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","shortSha":"aaaaaaa","type":"chore","subject":"bump deps"},{"sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","shortSha":"bbbbbbb","type":null,"subject":"update stuff"}] {"total":2,"triggering":2,"notTriggering":0,"ignored":0,"malformed":0}
