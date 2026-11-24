@@ -6,8 +6,10 @@ observable consequence with code references and real output, and conclude: accep
 correction, or ask for more information. (The plan said "Add judgment", T-016/T-017, for today;
 the thread is canonical. Those move to a free slot.)
 
-Status: investigation complete, decision **accepted**, one question recorded for the product
-owner. No code change. Not yet posted.
+Status: done and posted. Investigation complete, decision **accepted**, three questions recorded
+for the product owner. No code change.
+
+- Reply in the thread (Nov 24): https://github.com/orgs/qodo-hackathon/discussions/19#discussioncomment-19867903
 
 ## PR and source
 
