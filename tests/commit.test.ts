@@ -68,6 +68,29 @@ describe('header', () => {
     assert.equal(parseCommit('feat(parser ): x').conventional, false);
   });
 
+  // T-039 (was T-030): rule 6, the header is matched as received; only trailing whitespace is
+  // framing. Qodo PR review finding 88effe66 found the old `.trim()` let these pass.
+  test('a header with leading whitespace is not conventional (rule 6)', () => {
+    for (const header of ['  feat: x', '\tfeat: x', '\u00a0feat: x', '\ufefffeat: x', ' fix(parser)!: y']) {
+      const c = parseCommit(header);
+      assert.equal(c.conventional, false, JSON.stringify(header));
+      assert.equal(c.type, null, JSON.stringify(header));
+      assert.equal(c.breaking, false, JSON.stringify(header));
+    }
+  });
+
+  test('a header with leading whitespace keeps its text in subject and raw', () => {
+    const c = parseCommit('  feat: x\n\nBody.');
+    assert.equal(c.subject, 'feat: x');
+    assert.equal(c.raw, '  feat: x\n\nBody.');
+  });
+
+  test('trailing whitespace after the header is still framing (rule 6 list)', () => {
+    for (const message of ['feat: x  ', 'feat: x\t', 'feat: x\r\n', 'feat: x (#12)  ']) {
+      assert.equal(parseCommit(message).conventional, true, JSON.stringify(message));
+    }
+  });
+
   test('accepts a scope with an inner space', () => {
     const c = parseCommit('feat(release notes): x');
     assert.equal(c.conventional, true);

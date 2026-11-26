@@ -72,13 +72,21 @@ at the end of a line, blank lines at the start or end of a whole message, and, i
 or strip a field and then validate what is left, and never let normalization turn an invalid
 value into a valid-looking one. A new kind of framing is added to this list, with a test, before
 a parser removes it.
-- Applies to: `src/commit.ts`, `src/gitlog.ts`, `src/remote.ts`, and every future parser of commit
-  messages, git output, config files, or MCP tool input.
+- Applies to: `src/commit.ts`, `src/gitlog.ts`, `src/remote.ts`, every future parser of commit
+  messages, git output, config files, or MCP tool input, and every check that reads such input:
+  the scripts in `scripts/` and `.claude/skills/*/scripts/` (workflow files, backlog rows, CLI
+  output). A check that normalizes before it validates passes what it should reject.
 - Why: three of the first nine review findings were this one mistake. A scope of `( )` was trimmed
   to empty and accepted (PR 1). A paragraph `.trim()` deleted the indentation of a code block
   (PR 1). All leading whitespace was stripped before the SHA check, so junk before the hash
   passed as a commit (PR 3). Each time the fixture had no such input, so no test caught it.
   Nothing Vanishes forbids dropping input; this rule forbids quietly accepting it.
+- What happened next (Day 19, from Qodo's findings Nov 6 to 26): new parser code in the files
+  named above had no real violation. Two did reach a pull request, both at the rule's edges: a
+  header `.trim()` in `src/commit.ts` older than the rule, never swept, so `  feat: x` passed
+  `check` (PR 28, 88effe66; fixed in T-039); and a `.trim()` before the pin check in
+  `scripts/action-pins.ts`, a file the rule did not name (PR 34, 28bcc7c0). Hence the wider
+  "Applies to" and the sweep rule under Process rules.
 
 ### 7. Show the Invisible
 In TypeScript sources, a character a reader cannot see is never written raw. Controls (other
@@ -235,6 +243,11 @@ human, and one line: `Quality gate: MET` or `Quality gate: NOT MET`, with the re
   commits under the second exception and first commits under the third) name the agent in a
   trailer.
 - One ticket per pull request where possible.
+- A project rule that is added or widened comes with a sweep: the same pull request reads the
+  code the rule applies to, fixes what breaks it or opens a ticket for each case, and says in its
+  evidence what was searched and what was found. A rule written without a sweep describes new
+  code only (Day 19: rule 6 was written on Day 5 and the header `.trim()` it forbade stayed in
+  `src/commit.ts` until T-039).
 - Actions in `.github/workflows/` are pinned by full commit SHA, with the release in a comment
   (`uses: owner/repo@<40 hex> # v1.2.3`). GitHub enforces it: the repository setting
   `sha_pinning_required` is on, so an unpinned action does not run. `tests/action-pins.test.ts`

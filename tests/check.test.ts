@@ -34,8 +34,8 @@ describe('checkGitLog (T-009)', () => {
     assert.equal(result.commits[0]!.header, 'Journl day 11 update');
   });
 
-  // Qodo PR review finding 88effe66: parseCommit() decides `conventional` on a trimmed header
-  // (src/commit.ts:128), so check looks at the raw first line itself (rule 6).
+  // Qodo PR review finding 88effe66: a header with leading whitespace must fail. Since T-039 the
+  // parser itself decides on the header as received (rule 6); this test keeps the CLI behaviour.
   test('a header with leading whitespace fails (finding 88effe66)', () => {
     for (const header of ['  feat: x', '\tfeat: x', '\u00a0feat: x']) {
       const commit = check(record(sha('1'), `${header}\n`)).commits[0]!;
