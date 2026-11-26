@@ -1,0 +1,174 @@
+ticket-link	UNKNOWN STEP	﻿2026-11-23T20:02:47.9736154Z Current runner version: '2.338.2'
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9760220Z ##[group]Runner Image Provisioner
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9761094Z Hosted Compute Agent
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9761653Z Version: 20261111.635
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9762384Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9763107Z Build Date: 2026-11-11T01:49:01Z
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9763808Z Worker ID: {aefe29da-1856-4905-8631-23a3b76474cf}
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9764530Z Region: southcentralus
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9765090Z Cloud: Azure
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9765709Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9767449Z ##[group]Operating System
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9768153Z Ubuntu
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9768680Z 26.04.1
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9769178Z LTS
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9769760Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9770307Z ##[group]Runner Image
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9770888Z Image: ubuntu-26.04
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9771509Z Version: 20261116.202.1
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9772780Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261116.202/images/ubuntu/Ubuntu2604-Readme.md
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9774426Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261116.202
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9775370Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9776892Z ##[group]GITHUB_TOKEN Permissions
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9778764Z Contents: read
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9779509Z Issues: read
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9780088Z Metadata: read
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9780705Z PullRequests: read
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9781271Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9783671Z Secret source: Actions
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9784676Z Cache mode: write
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:47.9785564Z Prepare workflow directory
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.0124246Z Prepare all required actions
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.0195102Z Getting action download info
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.2807185Z Download action repository 'actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.3717111Z Download action repository 'actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444' (SHA:a0853c24544627f65ddf259abe73b1d18a591444)
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.5707951Z Complete job name: ticket-link
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6641249Z ##[group]Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6642346Z with:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6642853Z   ref: 8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6643480Z   persist-credentials: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6644022Z   repository: UBayouski/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6647950Z   token: ***
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6648400Z   ssh-strict: true
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6648851Z   ssh-user: git
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6649282Z   clean: true
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6649745Z   sparse-checkout-cone-mode: true
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6650278Z   fetch-depth: 1
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6650715Z   fetch-tags: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6651164Z   show-progress: true
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6651617Z   lfs: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6652031Z   submodules: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6652492Z   set-safe-directory: true
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6652996Z   allow-unsafe-pr-checkout: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.6653792Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9615894Z Syncing repository: UBayouski/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9618416Z ##[group]Getting Git version info
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9619623Z Working directory is '/home/runner/work/tracenotes/tracenotes'
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9621210Z [command]/usr/bin/git version
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9642686Z git version 2.56.1
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9668930Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9685183Z Temporarily overriding HOME='/home/runner/work/_temp/952e5167-02c8-4d1c-a43e-a799d6cd7ba2' before making global git config changes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9688222Z Adding repository directory to the temporary git global config as a safe directory
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9691263Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tracenotes/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9761772Z Deleting the contents of '/home/runner/work/tracenotes/tracenotes'
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9764657Z ##[group]Initializing the repository
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9770614Z [command]/usr/bin/git init /home/runner/work/tracenotes/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9884505Z hint: Using 'master' as the name for the initial branch. This default branch name
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9887194Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9889656Z hint: to use in all of your new repositories, which will suppress this warning,
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9891596Z hint: call:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9892725Z hint:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9894036Z hint: 	git config --global init.defaultBranch <name>
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9895491Z hint:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9897140Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9899770Z hint: 'development'. The just-created branch can be renamed via this command:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9903153Z hint:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9904552Z hint: 	git branch -m <name>
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9905962Z hint:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9908954Z hint: Disable this message with "git config set advice.defaultBranchName false"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9911801Z Initialized empty Git repository in /home/runner/work/tracenotes/tracenotes/.git/
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9916808Z [command]/usr/bin/git remote add origin https://github.com/UBayouski/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:48.9999380Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0001563Z ##[group]Disabling automatic garbage collection
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0009941Z [command]/usr/bin/git config --local gc.auto 0
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0054247Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0055864Z ##[group]Setting up auth
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0066027Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0114299Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0657781Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0693700Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.0972607Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.1008839Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.1281593Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.1321332Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.1322212Z ##[group]Fetching the repository
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:49.1331285Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0007502Z From https://github.com/UBayouski/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0010692Z  * branch            8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf -> FETCH_HEAD
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0013851Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0015045Z ##[group]Determining the checkout info
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0016332Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0017491Z [command]/usr/bin/git sparse-checkout disable
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0075038Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0104891Z ##[group]Checking out the ref
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0108176Z [command]/usr/bin/git checkout --progress --force 8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0674974Z Note: switching to '8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf'.
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0676023Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0677096Z You are in 'detached HEAD' state. You can look around, make experimental
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0678992Z changes and commit them, and you can discard any commits you make in this
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0680831Z state without impacting any branches by switching back to a branch.
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0681909Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0683417Z If you want to create a new branch to retain commits you create, you may
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0686163Z do so (now or later) by using -c with the switch command. Example:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0688063Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0688902Z   git switch -c <new-branch-name>
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0690029Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0690842Z Or undo this operation with:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0692119Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0692943Z   git switch -
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0693980Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0695500Z Turn off this advice by setting config variable advice.detachedHead to false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0697745Z 
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0698707Z HEAD is now at 8e15dc9 Fixing Arnica findings
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0703671Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0738767Z [command]/usr/bin/git log -1 --format=%H
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0764059Z 8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0775178Z ##[group]Removing auth
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0779110Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.0813423Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1084669Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1108153Z http.https://github.com/.extraheader
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1117223Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1154823Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1417939Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1451394Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.1713597Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2181510Z ##[group]Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2183270Z with:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2184146Z   node-version: 24
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2185114Z   always-auth: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2186105Z   check-latest: false
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2196410Z   token: ***
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2197548Z   package-manager-cache: true
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.2198676Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.3729081Z Found in cache @ /opt/hostedtoolcache/node/24.22.3/x64
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.3734626Z (node:2512) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.3738091Z (Use `node --trace-deprecation ...` to show where the warning was created)
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.3740548Z ##[group]Environment details
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.7870186Z node: v24.22.3
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.7870455Z npm: 11.19.1
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.7870658Z yarn: 1.22.22
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.7871485Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8042565Z ##[group]Run node scripts/pr-ticket-check.ts BACKLOG.md
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8043045Z ^[[36;1mnode scripts/pr-ticket-check.ts BACKLOG.md^[[0m
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8086868Z shell: /usr/bin/bash -e {0}
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8087152Z env:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8089849Z   GITHUB_TOKEN: ***
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8090095Z   PR_TITLE: Fixing Arnica findings
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8090359Z   PR_NUMBER: 38
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:50.8090573Z ##[endgroup]
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.2333763Z ticket-link: BACKLOG.md row for T-037 says "planned", expected "done (PR 38)"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.2837952Z ##[error]Process completed with exit code 1.
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.2995041Z Post job cleanup.
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.3834856Z [command]/usr/bin/git version
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.3910685Z git version 2.56.1
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.3948598Z Temporarily overriding HOME='/home/runner/work/_temp/0052820f-0482-4f50-b1bc-c73e5af2b105' before making global git config changes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.3950235Z Adding repository directory to the temporary git global config as a safe directory
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.3953349Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tracenotes/tracenotes
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.3993950Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.4049102Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.4327991Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.4383971Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.4777983Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.4815053Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+ticket-link	UNKNOWN STEP	2026-11-23T20:02:51.5263246Z Cleaning up orphan processes

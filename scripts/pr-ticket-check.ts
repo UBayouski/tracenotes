@@ -179,6 +179,39 @@ export function checkPrTicket(input: PrTicketInput): PrTicketResult {
   return { tickets, problems };
 }
 
+/**
+ * The next step for each checked ticket whose single BACKLOG.md row has the wrong status (T-038).
+ * The status problem alone says what is wrong; this says why the ticket is checked, what to
+ * write, and, when the row is not yet a `done (PR n)`, that the failure is expected on a ticket
+ * pull request's first commit, when its number does not exist yet. Every failed CI run up to
+ * Day 18 was that case.
+ *
+ * Input: the same input `checkPrTicket` got, and its result. Output: one line per such ticket,
+ * in the result's ticket order. It names only the ticket id, an issue number and the expected
+ * status, never a title. A ticket with no row or several rows gets no line: that is a different
+ * fix, which its problem line already names.
+ */
+export function nextSteps(input: PrTicketInput, result: PrTicketResult): string[] {
+  const expected = `done (PR ${input.number})`;
+  const statuses = backlogStatuses(input.backlog);
+  const lines: string[] = [];
+  for (const ticket of result.tickets) {
+    const rows = statuses.get(ticket) ?? [];
+    if (rows.length !== 1 || rows[0] === expected) continue;
+    const issue = input.closingIssues.find(closing => issueTicket(closing) === ticket);
+    const reason = issue === undefined
+      ? 'the pull request title names it'
+      : `this pull request closes #${issue.number}`;
+    // A row that already names a pull request was written when a number was known: a slip, not
+    // the first-commit case (Qodo local review finding a3c7163b).
+    const firstCommit = DONE_BY_PR.test(rows[0] ?? '')
+      ? ''
+      : ' On the first commit of a ticket pull request this is expected: the number did not exist yet.';
+    lines.push(`${ticket} is checked because ${reason}; set its BACKLOG.md row to "${expected}" in a commit on this branch.${firstCommit}`);
+  }
+  return lines;
+}
+
 const CLOSING_ISSUES_QUERY = `query ($owner: String!, $name: String!, $number: Int!, $first: Int!) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $number) {
@@ -316,9 +349,10 @@ export async function run(
     return errorLine(`cannot read ${visible(backlogPath)}: ${detailOf(error)}`);
   }
 
+  const input: PrTicketInput = { title, number, backlog, closingIssues };
   let result: PrTicketResult;
   try {
-    result = checkPrTicket({ title, number, backlog, closingIssues });
+    result = checkPrTicket(input);
   } catch (error) {
     return errorLine(detailOf(error));
   }
@@ -330,7 +364,8 @@ export async function run(
     };
   }
   if (result.problems.length > 0) {
-    return { code: 1, stdout: '', stderr: result.problems.map(problem => `ticket-link: ${problem}\n`).join('') };
+    const lines = [...result.problems, ...nextSteps(input, result)];
+    return { code: 1, stdout: '', stderr: lines.map(line => `ticket-link: ${line}\n`).join('') };
   }
   return {
     code: 0,

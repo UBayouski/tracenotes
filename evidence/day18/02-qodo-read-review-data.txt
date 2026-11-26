@@ -1,0 +1,12 @@
+# qodo read codebase read-review-data, PR 38, revision from get-change-context (head 62fd843), 2026-11-26T06:54:12Z
+
+### --kind jobs --run-id 45255214509
+{"error":{"code":"MT-VALIDATION","message":"Review read arguments or budgets cannot be satisfied; inspect upstream_code and correct the query.","tool":"litegit-read-review-data","metadata":{"upstream_stage":"litegit_internal","upstream_status":409,"upstream_code":"CI_REVISION_MISMATCH","reset_at":null}}}
+
+
+### --kind logs --job-id 137975120905
+{"error":{"code":"MT-VALIDATION","message":"Review read arguments or budgets cannot be satisfied; inspect upstream_code and correct the query.","tool":"litegit-read-review-data","metadata":{"upstream_stage":"litegit_internal","upstream_status":422,"upstream_code":"READ_ARGUMENT_REQUIRED","reset_at":null}}}
+
+
+### --kind checks
+
