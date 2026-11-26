@@ -43,7 +43,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-035 | Every `actions/checkout` step sets `persist-credentials: false`, with a test that fails on a checkout step without it (Arnica, 4 Medium findings) | 16 Nov 23 (Day 16, inside the approval guard) | done (PR 36) |
 | T-036 | Label lane: the agent action's own write token sits in the remote URL while ticket-written tests run; decide whether to split the push into a step the agent's commands cannot reach (found while investigating T-035) | spare | planned |
 | T-037 | Audit script: find commit links with a fixed pattern and compare the base as text, no expression built from the repository URL (Arnica Low finding, Day 16) | 16 Nov 23 (Day 16) | done (PR 38) |
-| T-038 | `ticket-link`: on a wrong backlog status, also print why the ticket is checked and the next step (7 of 7 failed CI runs are this by-design red; Day 18) | 18 Nov 25 (Day 18) | planned |
+| T-038 | `ticket-link`: on a wrong backlog status, also print why the ticket is checked and the next step (7 of 7 failed CI runs are this by-design red; Day 18) | 18 Nov 25 (Day 18) | done (PR 40) |
 
 Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (submission).
 
