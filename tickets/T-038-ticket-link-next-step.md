@@ -36,11 +36,13 @@ the 7 failed runs (`gh run view --log-failed`).
 1. `nextSteps(input, result)` in `scripts/pr-ticket-check.ts`, pure, exported. For each ticket in
    `result.tickets` whose `BACKLOG.md` has exactly one row and that row is not
    `done (PR <number>)`, one line:
-   `<T-NNN> is checked because this pull request closes #<n>; set its BACKLOG.md row to "done (PR <number>)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.`
+   `<T-NNN> is checked because this pull request closes #<n>; set its BACKLOG.md row to "done (PR <number>)" in a commit on this branch. If this is the pull request's first commit, this is expected: its number did not exist yet.`
    When no closing issue belongs to the ticket, the reason is `because the pull request title names it`.
    When the row is already a `done (PR <other n>)`, the last sentence is left out: the number
    was known, so that is a slip, not the first-commit case. *(Added Nov 26 after Qodo local
-   review finding a3c7163b.)*
+   review finding a3c7163b.)* The sentence is conditional because the script cannot tell the first
+   commit from a later one. *(Changed Nov 26 after Qodo PR review finding df3ba3d9; the first
+   version stated it as a fact.)*
    No line for a ticket with no row or with several rows (a different fix), and none for a
    ticket whose row is right.
 2. `run()` prints those lines to stderr after the problem lines, each prefixed `ticket-link: `.

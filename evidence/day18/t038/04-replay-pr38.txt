@@ -1,4 +1,4 @@
 exit 1
 --- stderr
 ticket-link: BACKLOG.md row for T-037 says "planned", expected "done (PR 38)"
-ticket-link: T-037 is checked because this pull request closes #37; set its BACKLOG.md row to "done (PR 38)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.
+ticket-link: T-037 is checked because this pull request closes #37; set its BACKLOG.md row to "done (PR 38)" in a commit on this branch. If this is the pull request's first commit, this is expected: its number did not exist yet.

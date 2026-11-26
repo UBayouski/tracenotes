@@ -250,7 +250,7 @@ describe('nextSteps', () => {
     const input = { title, number, backlog: backlogText, closingIssues };
     return nextSteps(input, checkPrTicket(input));
   };
-  const expectedLater = 'On the first commit of a ticket pull request this is expected: the number did not exist yet.';
+  const expectedLater = "If this is the pull request's first commit, this is expected: its number did not exist yet.";
 
   test('a ticket whose issue the PR closes: names the issue and the row to write', () => {
     assert.deepEqual(steps('Fixing things', [issue30], 31), [
@@ -306,7 +306,7 @@ describe('run (in process, with a fake lookup)', () => {
     assert.deepEqual(result.stderr.trimEnd().split('\n'), [
       'ticket-link: this pull request closes #1, but none of them is the issue for T-001: its title must start with "T-001:"',
       'ticket-link: BACKLOG.md row for T-001 says "done", expected "done (PR 999999)"',
-      'ticket-link: T-001 is checked because the pull request title names it; set its BACKLOG.md row to "done (PR 999999)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.',
+      'ticket-link: T-001 is checked because the pull request title names it; set its BACKLOG.md row to "done (PR 999999)" in a commit on this branch. If this is the pull request\'s first commit, this is expected: its number did not exist yet.',
     ]);
   });
 

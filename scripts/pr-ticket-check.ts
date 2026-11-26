@@ -182,8 +182,8 @@ export function checkPrTicket(input: PrTicketInput): PrTicketResult {
 /**
  * The next step for each checked ticket whose single BACKLOG.md row has the wrong status (T-038).
  * The status problem alone says what is wrong; this says why the ticket is checked, what to
- * write, and, when the row is not yet a `done (PR n)`, that the failure is expected on a ticket
- * pull request's first commit, when its number does not exist yet. Every failed CI run up to
+ * write, and, when the row is not yet a `done (PR n)`, that the failure is expected if this is
+ * the pull request's first commit, when its number does not exist yet. Every failed CI run up to
  * Day 18 was that case.
  *
  * Input: the same input `checkPrTicket` got, and its result. Output: one line per such ticket,
@@ -203,10 +203,12 @@ export function nextSteps(input: PrTicketInput, result: PrTicketResult): string[
       ? 'the pull request title names it'
       : `this pull request closes #${issue.number}`;
     // A row that already names a pull request was written when a number was known: a slip, not
-    // the first-commit case (Qodo local review finding a3c7163b).
+    // the first-commit case (Qodo local review finding a3c7163b). Otherwise the script cannot tell
+    // the first commit from a later one, so the sentence is conditional and true either way
+    // (Qodo PR review finding df3ba3d9).
     const firstCommit = DONE_BY_PR.test(rows[0] ?? '')
       ? ''
-      : ' On the first commit of a ticket pull request this is expected: the number did not exist yet.';
+      : " If this is the pull request's first commit, this is expected: its number did not exist yet.";
     lines.push(`${ticket} is checked because ${reason}; set its BACKLOG.md row to "${expected}" in a commit on this branch.${firstCommit}`);
   }
   return lines;
