@@ -6,7 +6,9 @@ hand the checked evidence to a coding agent, take the next step and record the f
 (The plan said "Delegate verification", T-018, for today; the thread is canonical. T-018 moves to
 a free slot.) Done Nov 26.
 
-Status: complete. Post draft: `docs/posts/day-18.md` (not posted yet).
+Status: complete and posted.
+
+- Reply in the thread (Nov 26): https://github.com/orgs/qodo-hackathon/discussions/20#discussioncomment-19931777
 
 ## The failed job
 
