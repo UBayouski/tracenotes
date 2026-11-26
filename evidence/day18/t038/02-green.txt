@@ -1,0 +1,57 @@
+▶ checkPrTicket
+  ✔ a ticket PR that closes its own issue and has the backlog row set passes (3.8643ms)
+  ✔ the PR 21 case: the title names a ticket and GitHub lists no issue to close (1.0161ms)
+  ✔ closing an issue that is not the ticket's is a problem (0.5428ms)
+  ✔ an issue is the ticket's own only when its title starts with the id and a colon (0.7386ms)
+  ✔ the ticket's issue among other closed issues is enough (0.713ms)
+  ✔ a PR that closes a ticket's issue is a ticket PR even when its title has no id (0.5744ms)
+  ✔ a PR that names no ticket and closes no ticket's issue has nothing to check (0.3719ms)
+  ✔ a ticket from the title and one from a closed issue are both checked (0.4041ms)
+  ✔ the backlog row must say done with this PR number (0.3464ms)
+  ✔ a ticket with no backlog row is a problem (0.5809ms)
+  ✔ two backlog rows for one ticket are a problem, whatever they say (0.2561ms)
+  ✔ two unfinished tickets in one title are both checked, each once (0.187ms)
+  ✔ a ticket in the title that another PR already finished is a mention, not a claim (0.2673ms)
+  ✔ a finished ticket is still a claim when the pull request closes its issue (0.2726ms)
+  ✔ only the exact form "done (PR n)" with another number makes a mention (0.3683ms)
+  ✔ an id that is part of a longer token is not a ticket (0.1837ms)
+  ✔ CRLF line endings in BACKLOG.md are read as line endings (0.1635ms)
+  ✔ a status is compared as written: extra spaces or other text do not pass (0.1536ms)
+  ✔ control and invisible characters in a status are printed as escapes, on one line (0.4075ms)
+  ✔ a PR number that is not a positive integer is rejected (0.7344ms)
+✔ checkPrTicket (15.7536ms)
+▶ parseClosingIssues
+  ✔ reads number and title of each issue GitHub lists (0.6628ms)
+  ✔ more issues than one page holds is an error, not a shorter list (0.3273ms)
+  ✔ a GraphQL error, a missing pull request or a malformed answer is an error (0.6747ms)
+  ✔ the message of a GraphQL error is passed on (0.1605ms)
+✔ parseClosingIssues (2.2074ms)
+▶ nextSteps
+  ✔ a ticket whose issue the PR closes: names the issue and the row to write (0.4725ms)
+  ✔ a ticket only the title names: says so (0.1884ms)
+  ✔ a row that names another pull request gets the same next step (0.1249ms)
+  ✔ no line when the row is right, missing, or duplicated (0.2614ms)
+  ✔ prints no title: neither the pull request's nor the issue's (0.278ms)
+✔ nextSteps (1.5758ms)
+▶ run (in process, with a fake lookup)
+  ✔ writes nothing itself: the result carries the exit code and both streams (2.3582ms)
+  ✔ GitHub is asked once, for this pull request (0.2901ms)
+  ✔ a PR without a ticket id that closes an ordinary issue has nothing to check (0.1271ms)
+  ✔ a PR without a ticket id that closes a ticket's issue is checked (4.0114ms)
+  ✔ a title that only mentions a ticket another PR finished: exit 0 and says so (2.6462ms)
+  ✔ a lookup that fails is an error, not a pass: exit 2, one line (1.0766ms)
+  ✔ an unreadable backlog path: exit 2 with one error line (0.8007ms)
+✔ run (in process, with a fake lookup) (12.0433ms)
+▶ pr-ticket-check as a child process
+  ✔ PR_NUMBER is validated as received: exit 2 (1242.3514ms)
+  ✔ GITHUB_REPOSITORY must be owner/name: exit 2 (543.4846ms)
+  ✔ a missing GITHUB_TOKEN is an error: exit 2 (116.5688ms)
+✔ pr-ticket-check as a child process (1902.6834ms)
+ℹ tests 39
+ℹ suites 5
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2247.403
