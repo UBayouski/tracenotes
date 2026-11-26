@@ -44,7 +44,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-036 | Label lane: the agent action's own write token sits in the remote URL while ticket-written tests run; decide whether to split the push into a step the agent's commands cannot reach (found while investigating T-035) | spare | planned |
 | T-037 | Audit script: find commit links with a fixed pattern and compare the base as text, no expression built from the repository URL (Arnica Low finding, Day 16) | 16 Nov 23 (Day 16) | done (PR 38) |
 | T-038 | `ticket-link`: on a wrong backlog status, also print why the ticket is checked and the next step (7 of 7 failed CI runs are this by-design red; Day 18) | 18 Nov 25 (Day 18) | done (PR 40) |
-| T-039 | Rule 6 learns from its findings: "Applies to" names the check scripts, a rule added or widened comes with a sweep, and the parser matches the header as received (takes over T-030) | 19 Nov 26 (Day 19) | planned |
+| T-039 | Rule 6 learns from its findings: "Applies to" names the check scripts, a rule added or widened comes with a sweep, and the parser matches the header as received (takes over T-030) | 19 Nov 26 (Day 19) | done (PR 42) |
 | T-040 | Git log reader: a whitespace-only record between separators is dropped silently; report it as malformed like any other junk (rule 6 sweep in T-039, `src/gitlog.ts:103`) | spare | planned |
 
 Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (submission).
