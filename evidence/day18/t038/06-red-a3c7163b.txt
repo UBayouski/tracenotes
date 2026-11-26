@@ -1,0 +1,106 @@
+▶ checkPrTicket
+  ✔ a ticket PR that closes its own issue and has the backlog row set passes (1.4992ms)
+  ✔ the PR 21 case: the title names a ticket and GitHub lists no issue to close (0.1987ms)
+  ✔ closing an issue that is not the ticket's is a problem (0.139ms)
+  ✔ an issue is the ticket's own only when its title starts with the id and a colon (0.2328ms)
+  ✔ the ticket's issue among other closed issues is enough (0.1058ms)
+  ✔ a PR that closes a ticket's issue is a ticket PR even when its title has no id (0.1632ms)
+  ✔ a PR that names no ticket and closes no ticket's issue has nothing to check (0.0766ms)
+  ✔ a ticket from the title and one from a closed issue are both checked (0.126ms)
+  ✔ the backlog row must say done with this PR number (0.1206ms)
+  ✔ a ticket with no backlog row is a problem (0.1278ms)
+  ✔ two backlog rows for one ticket are a problem, whatever they say (0.0903ms)
+  ✔ two unfinished tickets in one title are both checked, each once (0.0846ms)
+  ✔ a ticket in the title that another PR already finished is a mention, not a claim (0.0792ms)
+  ✔ a finished ticket is still a claim when the pull request closes its issue (0.0709ms)
+  ✔ only the exact form "done (PR n)" with another number makes a mention (0.1252ms)
+  ✔ an id that is part of a longer token is not a ticket (0.0728ms)
+  ✔ CRLF line endings in BACKLOG.md are read as line endings (0.0495ms)
+  ✔ a status is compared as written: extra spaces or other text do not pass (0.0467ms)
+  ✔ control and invisible characters in a status are printed as escapes, on one line (0.1407ms)
+  ✔ a PR number that is not a positive integer is rejected (0.3087ms)
+✔ checkPrTicket (5.0302ms)
+▶ parseClosingIssues
+  ✔ reads number and title of each issue GitHub lists (0.1793ms)
+  ✔ more issues than one page holds is an error, not a shorter list (0.0728ms)
+  ✔ a GraphQL error, a missing pull request or a malformed answer is an error (0.2069ms)
+  ✔ the message of a GraphQL error is passed on (0.0599ms)
+✔ parseClosingIssues (0.6299ms)
+▶ nextSteps
+  ✔ a ticket whose issue the PR closes: names the issue and the row to write (0.2758ms)
+  ✔ a ticket only the title names: says so (0.1029ms)
+  ✖ a row that names another pull request: the next step, without calling it expected (0.9436ms)
+  ✔ no line when the row is right, missing, or duplicated (0.149ms)
+  ✔ prints no title: neither the pull request's nor the issue's (0.1088ms)
+✖ nextSteps (1.7569ms)
+▶ run (in process, with a fake lookup)
+  ✔ writes nothing itself: the result carries the exit code and both streams (1.43ms)
+  ✔ GitHub is asked once, for this pull request (0.1391ms)
+  ✔ a PR without a ticket id that closes an ordinary issue has nothing to check (0.0636ms)
+  ✖ a PR without a ticket id that closes a ticket's issue is checked (1.2911ms)
+  ✔ a title that only mentions a ticket another PR finished: exit 0 and says so (0.4859ms)
+  ✔ a lookup that fails is an error, not a pass: exit 2, one line (0.2331ms)
+  ✔ an unreadable backlog path: exit 2 with one error line (0.2467ms)
+✖ run (in process, with a fake lookup) (4.1011ms)
+▶ pr-ticket-check as a child process
+  ✔ PR_NUMBER is validated as received: exit 2 (999.8104ms)
+  ✔ GITHUB_REPOSITORY must be owner/name: exit 2 (587.1621ms)
+  ✔ a missing GITHUB_TOKEN is an error: exit 2 (158.7607ms)
+✔ pr-ticket-check as a child process (1745.9708ms)
+ℹ tests 39
+ℹ suites 5
+ℹ pass 37
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1911.0443
+
+✖ failing tests:
+
+test at tests\pr-ticket-check.test.ts:269:3
+✖ a row that names another pull request: the next step, without calling it expected (0.9436ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.'
+  -   'T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch.'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:270:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.' ],
+    expected: [ 'T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch.' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\pr-ticket-check.test.ts:324:3
+✖ a PR without a ticket id that closes a ticket's issue is checked (1.2911ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'ticket-link: BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 20)"',
+  +   'ticket-link: T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.'
+  -   'ticket-link: T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch.'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/pr-ticket-check.test.ts:330:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'ticket-link: BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 20)"', 'ticket-link: T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.' ],
+    expected: [ 'ticket-link: BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 20)"', 'ticket-link: T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch.' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

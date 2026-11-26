@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { checkPrTicket, parseClosingIssues, run } from '../scripts/pr-ticket-check.ts';
+import { checkPrTicket, nextSteps, parseClosingIssues, run } from '../scripts/pr-ticket-check.ts';
 import type { ClosingIssue, ClosingIssuesLookup } from '../scripts/pr-ticket-check.ts';
 
 // The factory's ticket-link check (FACTORY gate 5). It exists because of PR 21: the body said
@@ -243,6 +243,49 @@ describe('parseClosingIssues', () => {
   });
 });
 
+// T-038 (Day 18): every failed CI run in this repository was this by-design red, and the job's
+// output never said so. The next-step line says why the ticket is checked and what to do.
+describe('nextSteps', () => {
+  const steps = (title: string, closingIssues: ClosingIssue[], number: number, backlogText = backlog) => {
+    const input = { title, number, backlog: backlogText, closingIssues };
+    return nextSteps(input, checkPrTicket(input));
+  };
+  const expectedLater = "If this is the pull request's first commit, this is expected: its number did not exist yet.";
+
+  test('a ticket whose issue the PR closes: names the issue and the row to write', () => {
+    assert.deepEqual(steps('Fixing things', [issue30], 31), [
+      `T-009 is checked because this pull request closes #30; set its BACKLOG.md row to "done (PR 31)" in a commit on this branch. ${expectedLater}`,
+    ]);
+  });
+
+  test('a ticket only the title names: says so', () => {
+    assert.deepEqual(steps('feat(check): add check (T-009)', [], 31), [
+      `T-009 is checked because the pull request title names it; set its BACKLOG.md row to "done (PR 31)" in a commit on this branch. ${expectedLater}`,
+    ]);
+  });
+
+  // Qodo local review finding a3c7163b: a row that already names a pull request is not the
+  // first-commit case (the number was known), so it must not be called expected.
+  test('a row that names another pull request: the next step, without calling it expected', () => {
+    assert.deepEqual(steps('feat: x', [issue18], 20), [
+      'T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch.',
+    ]);
+  });
+
+  test('no line when the row is right, missing, or duplicated', () => {
+    assert.deepEqual(steps('feat: x (T-008)', [issue20], 21), []);
+    assert.deepEqual(steps('feat: x (T-099)', [], 21), []);
+    const twice = `${backlog}| T-009 | again | 10 Nov 13 | planned |\n`;
+    assert.deepEqual(steps('feat: x (T-009)', [issue30], 31, twice), []);
+  });
+
+  test('prints no title: neither the pull request\'s nor the issue\'s', () => {
+    const forged: ClosingIssue = { number: 30, title: 'T-009: ::error::forged' };
+    const [line] = steps('::warning::title (T-009)', [forged], 31);
+    assert.ok(line !== undefined && !line.includes('::'));
+  });
+});
+
 describe('run (in process, with a fake lookup)', () => {
   // A fixture, not the repository's BACKLOG.md: a backlog cleanup must not fail these tests
   // (Qodo PR review finding b6787850).
@@ -263,6 +306,7 @@ describe('run (in process, with a fake lookup)', () => {
     assert.deepEqual(result.stderr.trimEnd().split('\n'), [
       'ticket-link: this pull request closes #1, but none of them is the issue for T-001: its title must start with "T-001:"',
       'ticket-link: BACKLOG.md row for T-001 says "done", expected "done (PR 999999)"',
+      'ticket-link: T-001 is checked because the pull request title names it; set its BACKLOG.md row to "done (PR 999999)" in a commit on this branch. If this is the pull request\'s first commit, this is expected: its number did not exist yet.',
     ]);
   });
 
@@ -283,7 +327,10 @@ describe('run (in process, with a fake lookup)', () => {
     assert.deepEqual(result, { code: 0, stdout: 'ticket-link: T-007: closes its issue, BACKLOG.md says done (PR 19)\n', stderr: '' });
     const other = await run([backlogPath], env('feat(render): JSON output (#18)', '20'), closes(issue18));
     assert.equal(other.code, 1);
-    assert.equal(other.stderr, 'ticket-link: BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 20)"\n');
+    assert.deepEqual(other.stderr.trimEnd().split('\n'), [
+      'ticket-link: BACKLOG.md row for T-007 says "done (PR 19)", expected "done (PR 20)"',
+      'ticket-link: T-007 is checked because this pull request closes #18; set its BACKLOG.md row to "done (PR 20)" in a commit on this branch.',
+    ]);
   });
 
   test('a title that only mentions a ticket another PR finished: exit 0 and says so', async () => {

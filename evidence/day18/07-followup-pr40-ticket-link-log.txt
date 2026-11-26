@@ -1,0 +1,175 @@
+ticket-link	Set up job	﻿2026-11-26T07:29:23.0162604Z Current runner version: '2.338.2'
+ticket-link	Set up job	2026-11-26T07:29:23.0185004Z ##[group]Runner Image Provisioner
+ticket-link	Set up job	2026-11-26T07:29:23.0186012Z Hosted Compute Agent
+ticket-link	Set up job	2026-11-26T07:29:23.0186495Z Version: 20261111.635
+ticket-link	Set up job	2026-11-26T07:29:23.0187064Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+ticket-link	Set up job	2026-11-26T07:29:23.0187662Z Build Date: 2026-11-11T01:49:01Z
+ticket-link	Set up job	2026-11-26T07:29:23.0188223Z Worker ID: {7860666b-c4b9-4f96-ba15-4ea2e45e1d90}
+ticket-link	Set up job	2026-11-26T07:29:23.0188835Z Region: eastus2
+ticket-link	Set up job	2026-11-26T07:29:23.0189291Z Cloud: Azure
+ticket-link	Set up job	2026-11-26T07:29:23.0189750Z ##[endgroup]
+ticket-link	Set up job	2026-11-26T07:29:23.0190974Z ##[group]Operating System
+ticket-link	Set up job	2026-11-26T07:29:23.0191471Z Ubuntu
+ticket-link	Set up job	2026-11-26T07:29:23.0191943Z 26.04.1
+ticket-link	Set up job	2026-11-26T07:29:23.0192372Z LTS
+ticket-link	Set up job	2026-11-26T07:29:23.0192807Z ##[endgroup]
+ticket-link	Set up job	2026-11-26T07:29:23.0193297Z ##[group]Runner Image
+ticket-link	Set up job	2026-11-26T07:29:23.0193790Z Image: ubuntu-26.04
+ticket-link	Set up job	2026-11-26T07:29:23.0194269Z Version: 20261116.202.1
+ticket-link	Set up job	2026-11-26T07:29:23.0195329Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261116.202/images/ubuntu/Ubuntu2604-Readme.md
+ticket-link	Set up job	2026-11-26T07:29:23.0196815Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261116.202
+ticket-link	Set up job	2026-11-26T07:29:23.0197595Z ##[endgroup]
+ticket-link	Set up job	2026-11-26T07:29:23.0198695Z ##[group]GITHUB_TOKEN Permissions
+ticket-link	Set up job	2026-11-26T07:29:23.0200484Z Contents: read
+ticket-link	Set up job	2026-11-26T07:29:23.0201043Z Issues: read
+ticket-link	Set up job	2026-11-26T07:29:23.0201539Z Metadata: read
+ticket-link	Set up job	2026-11-26T07:29:23.0202000Z PullRequests: read
+ticket-link	Set up job	2026-11-26T07:29:23.0202514Z ##[endgroup]
+ticket-link	Set up job	2026-11-26T07:29:23.0204372Z Secret source: Actions
+ticket-link	Set up job	2026-11-26T07:29:23.0205303Z Cache mode: write
+ticket-link	Set up job	2026-11-26T07:29:23.0205909Z Prepare workflow directory
+ticket-link	Set up job	2026-11-26T07:29:23.0581354Z Prepare all required actions
+ticket-link	Set up job	2026-11-26T07:29:23.0637511Z Getting action download info
+ticket-link	Set up job	2026-11-26T07:29:23.2439669Z Download action repository 'actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+ticket-link	Set up job	2026-11-26T07:29:23.3597308Z Download action repository 'actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444' (SHA:a0853c24544627f65ddf259abe73b1d18a591444)
+ticket-link	Set up job	2026-11-26T07:29:23.5577547Z Complete job name: ticket-link
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	﻿2026-11-26T07:29:23.6278879Z ##[group]Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6279730Z with:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6280126Z   ref: aa962990137a99683bb19458aed2de3e91d5d13a
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6280611Z   persist-credentials: false
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6281029Z   repository: UBayouski/tracenotes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6283961Z   token: ***
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6284319Z   ssh-strict: true
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6284672Z   ssh-user: git
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6285025Z   clean: true
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6285758Z   sparse-checkout-cone-mode: true
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6286373Z   fetch-depth: 1
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6286898Z   fetch-tags: false
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6287427Z   show-progress: true
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6287791Z   lfs: false
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6288124Z   submodules: false
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6288492Z   set-safe-directory: true
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6288898Z   allow-unsafe-pr-checkout: false
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.6289611Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8788956Z Syncing repository: UBayouski/tracenotes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8791772Z ##[group]Getting Git version info
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8792902Z Working directory is '/home/runner/work/tracenotes/tracenotes'
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8794429Z [command]/usr/bin/git version
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8795460Z git version 2.56.1
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8806671Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8816818Z Temporarily overriding HOME='/home/runner/work/_temp/6344abd6-c4f5-4ce2-b155-8fcfc526c672' before making global git config changes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8836366Z Adding repository directory to the temporary git global config as a safe directory
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8838152Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tracenotes/tracenotes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8936578Z Deleting the contents of '/home/runner/work/tracenotes/tracenotes'
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8939441Z ##[group]Initializing the repository
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.8944232Z [command]/usr/bin/git init /home/runner/work/tracenotes/tracenotes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9083207Z hint: Using 'master' as the name for the initial branch. This default branch name
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9084790Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9086292Z hint: to use in all of your new repositories, which will suppress this warning,
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9087343Z hint: call:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9087903Z hint:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9088414Z hint: 	git config --global init.defaultBranch <name>
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9089061Z hint:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9089660Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9090540Z hint: 'development'. The just-created branch can be renamed via this command:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9091274Z hint:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9091697Z hint: 	git branch -m <name>
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9092324Z hint:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9093249Z hint: Disable this message with "git config set advice.defaultBranchName false"
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9094807Z Initialized empty Git repository in /home/runner/work/tracenotes/tracenotes/.git/
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9105572Z [command]/usr/bin/git remote add origin https://github.com/UBayouski/tracenotes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9151459Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9152194Z ##[group]Disabling automatic garbage collection
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9154859Z [command]/usr/bin/git config --local gc.auto 0
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9186368Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9187653Z ##[group]Setting up auth
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9206790Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9241336Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9682934Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9711584Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9966610Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:23.9998143Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.0242288Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.0282467Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.0283742Z ##[group]Fetching the repository
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.0291890Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin aa962990137a99683bb19458aed2de3e91d5d13a
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7859122Z From https://github.com/UBayouski/tracenotes
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7866593Z  * branch            aa962990137a99683bb19458aed2de3e91d5d13a -> FETCH_HEAD
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7870066Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7871194Z ##[group]Determining the checkout info
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7872462Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7873593Z [command]/usr/bin/git sparse-checkout disable
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7918761Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7947996Z ##[group]Checking out the ref
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.7950205Z [command]/usr/bin/git checkout --progress --force aa962990137a99683bb19458aed2de3e91d5d13a
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8483192Z Note: switching to 'aa962990137a99683bb19458aed2de3e91d5d13a'.
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8484392Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8485299Z You are in 'detached HEAD' state. You can look around, make experimental
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8486754Z changes and commit them, and you can discard any commits you make in this
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8488110Z state without impacting any branches by switching back to a branch.
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8488887Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8490127Z If you want to create a new branch to retain commits you create, you may
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8491823Z do so (now or later) by using -c with the switch command. Example:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8492808Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8493230Z   git switch -c <new-branch-name>
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8493866Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8494347Z Or undo this operation with:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8495284Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8495840Z   git switch -
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8496599Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8497616Z Turn off this advice by setting config variable advice.detachedHead to false
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8499042Z 
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8500329Z HEAD is now at aa96299 feat(ci): ticket-link says why a ticket is checked and what to do next (T-038)
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8505398Z ##[endgroup]
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8541606Z [command]/usr/bin/git log -1 --format=%H
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8564268Z aa962990137a99683bb19458aed2de3e91d5d13a
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8573502Z ##[group]Removing auth
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8577158Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8606688Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8847590Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8868443Z http.https://github.com/.extraheader
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8874895Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.8903750Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.9137986Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.9166107Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+ticket-link	Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:24.9398120Z ##[endgroup]
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	﻿2026-11-26T07:29:24.9803706Z ##[group]Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9805073Z with:
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9805995Z   node-version: 24
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9806777Z   always-auth: false
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9807572Z   check-latest: false
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9814874Z   token: ***
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9815801Z   package-manager-cache: true
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:24.9816701Z ##[endgroup]
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.1100921Z Found in cache @ /opt/hostedtoolcache/node/24.22.3/x64
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.1106439Z (node:2289) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.1109927Z (Use `node --trace-deprecation ...` to show where the warning was created)
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.1112654Z ##[group]Environment details
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.4710113Z node: v24.22.3
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.4710600Z npm: 11.19.1
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.4710950Z yarn: 1.22.22
+ticket-link	Run actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444	2026-11-26T07:29:25.4711611Z ##[endgroup]
+ticket-link	A ticket PR closes its own issue and has updated the backlog	﻿2026-11-26T07:29:25.4851733Z ##[group]Run node scripts/pr-ticket-check.ts BACKLOG.md
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4852169Z ^[[36;1mnode scripts/pr-ticket-check.ts BACKLOG.md^[[0m
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4891929Z shell: /usr/bin/bash -e {0}
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4892178Z env:
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4894124Z   GITHUB_TOKEN: ***
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4894452Z   PR_TITLE: feat(ci): ticket-link says why a ticket is checked and what to do next (T-038)
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4894803Z   PR_NUMBER: 40
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.4894995Z ##[endgroup]
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.9734179Z ticket-link: BACKLOG.md row for T-038 says "planned", expected "done (PR 40)"
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:25.9736285Z ticket-link: T-038 is checked because this pull request closes #39; set its BACKLOG.md row to "done (PR 40)" in a commit on this branch. On the first commit of a ticket pull request this is expected: the number did not exist yet.
+ticket-link	A ticket PR closes its own issue and has updated the backlog	2026-11-26T07:29:26.0099882Z ##[error]Process completed with exit code 1.
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	﻿2026-11-26T07:29:26.0228128Z Post job cleanup.
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.0924044Z [command]/usr/bin/git version
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.0962121Z git version 2.56.1
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.0993516Z Temporarily overriding HOME='/home/runner/work/_temp/b3ac9907-832d-488f-b75c-c866caec4522' before making global git config changes
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.0994444Z Adding repository directory to the temporary git global config as a safe directory
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.0998365Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tracenotes/tracenotes
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.1038320Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.1075556Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.1333689Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.1366081Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.1629173Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+ticket-link	Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09	2026-11-26T07:29:26.1691351Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+ticket-link	Complete job	﻿2026-11-26T07:29:26.2083054Z Cleaning up orphan processes
