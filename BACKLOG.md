@@ -35,7 +35,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-027 | Config: custom section names (split from T-008) | spare | planned |
 | T-028 | Source hygiene: no raw invisible or control characters in `.ts` files under `src/`, `tests/` and `scripts/`, rule in AGENTS.md plus a test that prints the escape to use (borrowed from pasokh, Day 2 reply) | 10 Nov 13 (built in session, checked against the factory diagram) | done (PR 24) |
 | T-029 | Label lane: Qodo review of the agent's branch before a pull request is opened, in a separate job that never runs ticket-written code and so can hold the Qodo key (the in-job version was removed on Day 10, journal/day-10.md) | 16 Nov 23 | planned |
-| T-030 | Parser: decide `conventional` on the raw header, no `.trim()` before the match (rule 6; `src/commit.ts:128`); found by Qodo on PR 28 (88effe66), worked around in `check` only | spare | planned |
+| T-030 | Parser: decide `conventional` on the raw header, no `.trim()` before the match (rule 6; `src/commit.ts:128`); found by Qodo on PR 28 (88effe66), worked around in `check` only | spare | moved to T-039 |
 | T-031 | Escape every user-supplied value in usage errors with `oneLine()`: unknown option and command in all commands, and the `--format`, `--repo-url`, `--current` messages (only `check` did, PR 28 finding 731e5dee) | 14 Nov 19 (Day 14 outside-guard PR) | done (PR 33) |
 | T-032 | Skill `release-notes-audit`: render a git range and prove every commit is accounted for once and linked | 13 Nov 18 (issue #29; built in session) | done (PR 30) |
 | T-033 | Skill `pr-gate-check`: the quality gate at a PR head from Qodo's review session, findings and checks (split from T-032 on Day 13 with three open local findings) | spare | planned |
@@ -44,6 +44,8 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-036 | Label lane: the agent action's own write token sits in the remote URL while ticket-written tests run; decide whether to split the push into a step the agent's commands cannot reach (found while investigating T-035) | spare | planned |
 | T-037 | Audit script: find commit links with a fixed pattern and compare the base as text, no expression built from the repository URL (Arnica Low finding, Day 16) | 16 Nov 23 (Day 16) | done (PR 38) |
 | T-038 | `ticket-link`: on a wrong backlog status, also print why the ticket is checked and the next step (7 of 7 failed CI runs are this by-design red; Day 18) | 18 Nov 25 (Day 18) | done (PR 40) |
+| T-039 | Rule 6 learns from its findings: "Applies to" names the check scripts, a rule added or widened comes with a sweep, and the parser matches the header as received (takes over T-030) | 19 Nov 26 (Day 19) | done (PR 42) |
+| T-040 | Git log reader: a whitespace-only record between separators is dropped silently; report it as malformed like any other junk (rule 6 sweep in T-039, `src/gitlog.ts:103`) | spare | planned |
 
 Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (submission).
 

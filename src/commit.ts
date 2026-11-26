@@ -125,7 +125,10 @@ function extractIssueNumbers(value: string): number[] {
 export function parseCommit(message: string): ParsedCommit {
   const raw = normalize(message);
   const newline = raw.indexOf('\n');
-  const headerLine = (newline === -1 ? raw : raw.slice(0, newline)).trim();
+  // The header is matched as received (AGENTS.md rule 6): normalize() already removed the framing
+  // the rule allows, trailing whitespace included. A header that starts with whitespace is not
+  // conventional (T-039; Qodo PR review finding 88effe66 found the earlier `.trim()`).
+  const headerLine = newline === -1 ? raw : raw.slice(0, newline);
   const rest = newline === -1 ? '' : raw.slice(newline + 1);
 
   // Pull request number from a trailing "(#123)".

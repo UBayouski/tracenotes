@@ -1,0 +1,144 @@
+▶ header
+  ✔ parses type and subject (0.9374ms)
+  ✔ parses scope (0.2061ms)
+  ✔ lower-cases the type but keeps the subject as written (0.108ms)
+  ✔ bang marks a breaking change (0.1078ms)
+  ✔ extracts a trailing PR number from squash merges (0.0855ms)
+  ✔ does not treat a PR-like token in the middle of the subject as the PR number (0.0637ms)
+  ✔ requires a space after the colon (0.0704ms)
+  ✔ rejects an empty scope (0.066ms)
+  ✔ rejects a whitespace-only scope (0.0978ms)
+  ✔ rejects a scope with leading or trailing whitespace (0.1274ms)
+  ✖ a header with leading whitespace is not conventional (rule 6) (0.8295ms)
+  ✖ a header with leading whitespace keeps its text in subject and raw (0.3079ms)
+  ✔ trailing whitespace after the header is still framing (rule 6 list) (0.0968ms)
+  ✔ accepts a scope with an inner space (0.0698ms)
+  ✔ rejects an empty description (0.0402ms)
+✖ header (5.0633ms)
+▶ non-conventional messages
+  ✔ are kept with the header as subject (0.1101ms)
+  ✔ still get PR number, body and footers (0.6508ms)
+  ✔ empty input yields an empty, non-conventional commit (0.0619ms)
+✔ non-conventional messages (0.9386ms)
+▶ body
+  ✔ is null when absent (0.0796ms)
+  ✔ keeps multiple paragraphs (0.0482ms)
+  ✔ keeps leading indentation inside a paragraph (0.0342ms)
+  ✔ a paragraph that looks like prose is not a footer (0.1758ms)
+✔ body (0.434ms)
+▶ footers
+  ✔ parses "Token: value" and "Token #value" forms (0.167ms)
+  ✔ BREAKING CHANGE footer marks breaking and records the note (0.0822ms)
+  ✔ BREAKING-CHANGE is a synonym (0.0572ms)
+  ✔ multi-line footer values are joined (0.0938ms)
+  ✔ collects several issue numbers from one footer and dedupes (0.0882ms)
+  ✔ issue tokens are matched case-insensitively (0.0806ms)
+  ✔ footers separated by blank lines are all collected and body stays separate (0.0716ms)
+✔ footers (0.7904ms)
+▶ normalization
+  ✔ handles CRLF line endings (0.0841ms)
+  ✔ trims trailing whitespace and blank lines (0.0422ms)
+✔ normalization (0.185ms)
+▶ groupCommits
+  ✔ criterion 1: fixed section order, empty sections omitted (1.0621ms)
+  ✔ criterion 1: full ordering of known and unknown types (0.2761ms)
+  ✔ criterion 2: entry fields (0.3665ms)
+  ✔ criterion 3: breaking commit only under Breaking changes, with notes (0.2712ms)
+  ✔ criterion 4: merge commits are ignored with a reason (0.155ms)
+  ✔ criterion 5: totals add up on every fixture (1.5256ms)
+  ✔ criterion 6: order inside a section is input order (0.3487ms)
+  ✔ criterion 7: JSON round trip is lossless (0.4094ms)
+  ✔ criterion 9: only merge commits (0.3038ms)
+  ✔ criterion 9: feat! without footer has empty notes (0.3991ms)
+  ✔ criterion 9: unseen type gets its own section (0.2695ms)
+  ✔ a conventional commit whose subject starts with Merge is not ignored (0.1583ms)
+  ✔ rule 6: an indented "Merge " header is not a merge commit; it stays visible as Unclassified (0.1695ms)
+  ✖ rule 6 (T-039): an indented conventional header is Unclassified, not a feature (1.3109ms)
+✖ groupCommits (8.6682ms)
+▶ groupCommits with ignore patterns
+  ✔ criterion 3: without options, and with an empty list, the result is unchanged (0.3028ms)
+  ✔ criterion 5: a match goes to ignored with the first matching pattern, as written (0.132ms)
+  ✔ criterion 4: a merge commit keeps its reason even when a pattern matches it (0.1871ms)
+  ✔ criterion 4: a breaking commit is never ignored by a pattern (0.186ms)
+  ✔ criterion 5: nothing vanishes with merges, matches and a matching breaking commit (0.0706ms)
+  ✔ criterion 3: the pattern sees the first line only, untrimmed, case-sensitive, u flag only (0.3216ms)
+  ✔ criterion 3: the same pattern list gives the same result twice (no regex state) (0.1066ms)
+  ✔ an invalid or empty pattern given to the library throws RangeError (0.3818ms)
+✔ groupCommits with ignore patterns (1.9424ms)
+ℹ tests 53
+ℹ suites 7
+ℹ pass 50
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 251.9897
+
+✖ failing tests:
+
+test at tests\commit.test.ts:73:3
+✖ a header with leading whitespace is not conventional (rule 6) (0.8295ms)
+  AssertionError [ERR_ASSERTION]: "  feat: x"
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///<repo>/tests/commit.test.ts:76:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\commit.test.ts:82:3
+✖ a header with leading whitespace keeps its text in subject and raw (0.3079ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'x' !== 'feat: x'
+  
+      at TestContext.<anonymous> (file:///<repo>/tests/commit.test.ts:84:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'x',
+    expected: 'feat: x',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\group.test.ts:115:3
+✖ rule 6 (T-039): an indented conventional header is Unclassified, not a feature (1.3109ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'Features'
+  -   'Unclassified'
+    ]
+  
+      at TestContext.<anonymous> (file:///<repo>/tests/group.test.ts:117:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'Features' ],
+    expected: [ 'Unclassified' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

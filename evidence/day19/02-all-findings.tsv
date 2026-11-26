@@ -1,0 +1,64 @@
+# qodo read pr-review-session findings --extended --json, every PR of UBayouski/tracenotes, read 2026-11-26
+pr	id	action_level	status	category	git_sha	file	title
+1	427dfc4b	action_required	implemented	Correctness	81eb447	src/cli.ts	Direct CLI calls silently produce no output
+1	1e1fa382	remediation_recommended	implemented	Correctness	81eb447	src/commit.ts	Body code blocks lose their first indent
+1	d76dd4f9	remediation_recommended	implemented	Correctness	81eb447	src/commit.ts	Blank scopes pass as valid commits
+2	b3b3cdfb	remediation_recommended	implemented	Maintainability	3af11aa	AGENTS.md	Journal promises a CLI testing rule missing from AGENTS.md
+2	5c693540	informational	dismissed	Maintainability	3af11aa	.gitattributes	Existing CRLF files stay mixed after the LF policy
+3	3912dcc7	remediation_recommended	implemented	Correctness	db554e5	src/gitlog.ts	Malformed hashes enter the commit list
+5	0b653a54	remediation_recommended	implemented	Correctness	71fb0c8	.github/workflows/agent-fix.yml	Bot fixes can land on human branches
+7	cc2fc9dc	remediation_recommended	implemented	Maintainability	8a5c41a	tests/cli.test.ts	Test file patches process streams instead of injected io
+8	15f874f9	remediation_recommended	implemented	Correctness	200e023	.pr_agent.toml	Bot-push review override may be silently ignored
+9	842c078a	remediation_recommended	implemented	Reliability	e12a599	AGENTS.md	Ticket agents may stop before pushing
+9	cd584e42	remediation_recommended	implemented	Maintainability	e12a599	AGENTS.md	Valid commit messages fail the new rule
+12	e7e44ef3	remediation_recommended	dismissed	Correctness	d3b0d31	src/group.ts	Indented merge commits enter release notes
+14	7e444126	action_required	implemented	Correctness	7f7af10	src/cli.ts	Empty-stdin render error lacks usage
+14	636a05fd	action_required	implemented	Correctness	7f7af10	src/render.ts	A trailing newline breaks source links
+14	05df2462	remediation_recommended	implemented	Correctness	7f7af10	src/render.ts	Large commit references link to wrong pulls
+14	b801ce91	remediation_recommended	implemented	Reliability	7f7af10	src/cli.ts	Invalid URLs wait for the full git log
+14	eb3b7a8d	remediation_recommended	implemented	Correctness	7f7af10	src/render.ts	Invalid ports produce unusable links
+16	e5462b0d	remediation_recommended	dismissed	Maintainability	3e538a2	tickets/T-005-recommend-next-version.md	Ticket now ratifies the out-of-spec trigger order
+16	06d9643f	remediation_recommended	dismissed	Correctness	b2910fe	src/version.ts	Fix-rule triggers list in section order, not input order
+19	83cdca80	informational	implemented	Maintainability	3673123	src/render.ts	JSON field doc overstates what total counts
+19	75293ebe	informational	implemented	Maintainability	3673123	BACKLOG.md	Backlog shows T-007 as uncommitted after merge
+21	fa44bb08	remediation_recommended	implemented	Observability	501f983	src/cli.ts	Config path can still break the one-line error
+21	cf1c4585	informational	implemented	Maintainability	501f983	BACKLOG.md	Backlog marks T-008 done before it is merged
+22	282b3a84	action_required	dismissed	Security	1433e3d	.github/workflows/ticket-link.yml	PR authors can bypass the ticket gate
+22	ee02db53	action_required	dismissed	Correctness	1433e3d	.github/workflows/check.yml	Failing checks do not block merges
+22	49bf2faa	action_required	dismissed	Maintainability	1433e3d	scripts/pr-ticket-check.ts	Script output and exit code are set outside src/cli.ts
+22	b6787850	remediation_recommended	implemented	Maintainability	1433e3d	tests/pr-ticket-check.test.ts	Backlog edits can break both test jobs
+22	842081ab	remediation_recommended	implemented	Reliability	1433e3d	.github/workflows/agent-ticket.yml	An edited ticket can pass on stale text
+22	8f27403d	remediation_recommended	implemented	Correctness	1433e3d	.github/workflows/ticket-link.yml	Ticket results can reflect the wrong tree
+22	b791ae9e	remediation_recommended	implemented	Reliability	1433e3d	.github/workflows/agent-ticket.yml	Guard failures blame a valid ticket
+22	e582e45f	remediation_recommended	dismissed	Maintainability	1433e3d	scripts/pr-ticket-check.ts	Script output bypasses the cli-only rule
+22	641e42e4	informational	implemented	Correctness	1433e3d	scripts/markdown-text.ts	A one-line triple-backtick span hides the rest of a ticket
+22	c51f36de	informational	implemented	Correctness	1433e3d	scripts/ticket-ready.ts	Investigations written with sub-headings are refused
+22	d2451e51	informational	implemented	Correctness	1433e3d	scripts/pr-ticket-check.ts	Titles naming an earlier ticket stay red
+24	9fb45c26	remediation_recommended	implemented	Observability	bb6c03e	scripts/source-hygiene.ts	Odd filenames corrupt hygiene reports
+26	69b1fa82	action_required	dismissed	Correctness	272cc47	src/remote.ts	Malformed remotes produce release links
+26	039c99ec	remediation_recommended	implemented	Security	03d4a17	src/cli.ts	A git.exe in the working folder runs on Windows
+26	69a37c33	remediation_recommended	implemented	Maintainability	03d4a17	BACKLOG.md	The delivered ticket remains in progress
+26	cb45117f	remediation_recommended	implemented	Reliability	03d4a17	tests/cli.test.ts	Git settings can break origin tests
+26	56942752	informational	implemented	Observability	e211fe7	src/cli.ts	Every origin read failure gets the same vague error
+28	15aa08e5	action_required	implemented	Correctness	ef866b2	src/cli.ts	Check output drops the merge-commit skip lines
+28	88effe66	action_required	implemented	Correctness	ef866b2	src/check.ts	Malformed headers pass the commit check
+28	731e5dee	remediation_recommended	implemented	Security	ef866b2	src/cli.ts	Invalid options can forge error lines
+28	9ef963f7	remediation_recommended	implemented	Security	ef866b2	src/cli.ts	Invisible characters hide in failed headers
+28	f6bbf647	remediation_recommended	implemented	Reliability	ef866b2	AGENTS.md	Agents can publish before gate review
+30	234d5143	action_required	implemented	Correctness	37b35aa	.claude/skills/release-notes-audit/scripts/audit.ts	Missing commits can pass the notes audit
+30	8f818660	action_required	implemented	Correctness	cc014f9	.claude/skills/release-notes-audit/scripts/audit.ts	Breaking change details vanish undetected
+30	91a3c1c4	action_required	implemented	Security	73f8a1e	.claude/skills/release-notes-audit/SKILL.md	Audit requests can run shell commands
+30	e1492647	remediation_recommended	implemented	Security	4ad7bdd	.claude/skills/release-notes-audit/scripts/audit.ts	A token in the stated repo URL is printed
+30	633aace6	remediation_recommended	implemented	Correctness	4ad7bdd	.claude/skills/release-notes-audit/scripts/audit.ts	Wrong text after a subject passes the audit
+30	be79ef1c	remediation_recommended	implemented	Correctness	4ad7bdd	.claude/skills/release-notes-audit/scripts/audit.ts	Wrong Markdown footer counts go unnoticed
+30	dc9d9e47	remediation_recommended	implemented	Reliability	4ad7bdd	.claude/skills/release-notes-audit/SKILL.md	Moving branches change the audited range
+30	f9b538b4	remediation_recommended	implemented	Correctness	4ad7bdd	.claude/skills/release-notes-audit/scripts/audit.ts	Misclassified notes pass the audit
+30	2f938c17	remediation_recommended	implemented	Correctness	4ad7bdd	tickets/T-032-release-notes-audit-skill.md	The real-range audit run is not saved with the PR
+30	2a84cc4a	informational	implemented	Reliability	4ad7bdd	.claude/skills/release-notes-audit/scripts/audit.ts	Error line can carry bidi or line-separator text
+30	9d61dab6	informational	implemented	Correctness	4ad7bdd	.claude/skills/release-notes-audit/scripts/audit.ts	Some malformed JSON throws TypeError, not RangeError
+34	28bcc7c0	action_required	implemented	Correctness	024a686	scripts/action-pins.ts	A pin with a hidden trailing character passes the check
+34	2dab9c1b	remediation_recommended	implemented	Security	024a686	scripts/action-pins.ts	A flow-sequence step escapes the pin check
+34	3a2670fe	remediation_recommended	implemented	Security	024a686	scripts/action-pins.ts	An explicit-key step still slips past the pin check
+38	2d187faa	informational	implemented	Performance	6ab70d6	.claude/skills/release-notes-audit/scripts/audit.ts	Commit-link scan can backtrack quadratically on long lines
+38	af1da7c7	informational	implemented	Correctness	6ab70d6	.claude/skills/release-notes-audit/scripts/audit.ts	Hand-edited link lines get a new detail text, same verdict
+40	df3ba3d9	remediation_recommended	implemented	Correctness	aa96299	scripts/pr-ticket-check.ts	Red CI message claims the number was unknown when it was known

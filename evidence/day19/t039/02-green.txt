@@ -1,0 +1,75 @@
+▶ header
+  ✔ parses type and subject (2.5251ms)
+  ✔ parses scope (0.3468ms)
+  ✔ lower-cases the type but keeps the subject as written (0.1258ms)
+  ✔ bang marks a breaking change (0.1385ms)
+  ✔ extracts a trailing PR number from squash merges (0.1175ms)
+  ✔ does not treat a PR-like token in the middle of the subject as the PR number (0.1116ms)
+  ✔ requires a space after the colon (0.1059ms)
+  ✔ rejects an empty scope (0.1089ms)
+  ✔ rejects a whitespace-only scope (0.1376ms)
+  ✔ rejects a scope with leading or trailing whitespace (0.1802ms)
+  ✔ a header with leading whitespace is not conventional (rule 6) (0.3591ms)
+  ✔ a header with leading whitespace keeps its text in subject and raw (0.2389ms)
+  ✔ trailing whitespace after the header is still framing (rule 6 list) (0.1233ms)
+  ✔ accepts a scope with an inner space (0.0694ms)
+  ✔ rejects an empty description (0.0465ms)
+✔ header (6.0745ms)
+▶ non-conventional messages
+  ✔ are kept with the header as subject (0.0813ms)
+  ✔ still get PR number, body and footers (0.7362ms)
+  ✔ empty input yields an empty, non-conventional commit (0.0807ms)
+✔ non-conventional messages (1.0141ms)
+▶ body
+  ✔ is null when absent (0.0689ms)
+  ✔ keeps multiple paragraphs (0.0537ms)
+  ✔ keeps leading indentation inside a paragraph (0.0595ms)
+  ✔ a paragraph that looks like prose is not a footer (0.1547ms)
+✔ body (0.4415ms)
+▶ footers
+  ✔ parses "Token: value" and "Token #value" forms (0.1544ms)
+  ✔ BREAKING CHANGE footer marks breaking and records the note (0.0761ms)
+  ✔ BREAKING-CHANGE is a synonym (0.0573ms)
+  ✔ multi-line footer values are joined (0.0934ms)
+  ✔ collects several issue numbers from one footer and dedupes (0.0885ms)
+  ✔ issue tokens are matched case-insensitively (0.0672ms)
+  ✔ footers separated by blank lines are all collected and body stays separate (0.0766ms)
+✔ footers (0.7826ms)
+▶ normalization
+  ✔ handles CRLF line endings (0.0781ms)
+  ✔ trims trailing whitespace and blank lines (0.0449ms)
+✔ normalization (0.1804ms)
+▶ groupCommits
+  ✔ criterion 1: fixed section order, empty sections omitted (1.1583ms)
+  ✔ criterion 1: full ordering of known and unknown types (0.3304ms)
+  ✔ criterion 2: entry fields (0.1669ms)
+  ✔ criterion 3: breaking commit only under Breaking changes, with notes (0.1675ms)
+  ✔ criterion 4: merge commits are ignored with a reason (0.1135ms)
+  ✔ criterion 5: totals add up on every fixture (1.1495ms)
+  ✔ criterion 6: order inside a section is input order (0.1807ms)
+  ✔ criterion 7: JSON round trip is lossless (0.2065ms)
+  ✔ criterion 9: only merge commits (0.1504ms)
+  ✔ criterion 9: feat! without footer has empty notes (0.2176ms)
+  ✔ criterion 9: unseen type gets its own section (0.1311ms)
+  ✔ a conventional commit whose subject starts with Merge is not ignored (0.0877ms)
+  ✔ rule 6: an indented "Merge " header is not a merge commit; it stays visible as Unclassified (0.0881ms)
+  ✔ rule 6 (T-039): an indented conventional header is Unclassified, not a feature (0.0907ms)
+✔ groupCommits (5.6414ms)
+▶ groupCommits with ignore patterns
+  ✔ criterion 3: without options, and with an empty list, the result is unchanged (0.2812ms)
+  ✔ criterion 5: a match goes to ignored with the first matching pattern, as written (0.1112ms)
+  ✔ criterion 4: a merge commit keeps its reason even when a pattern matches it (0.1999ms)
+  ✔ criterion 4: a breaking commit is never ignored by a pattern (0.1393ms)
+  ✔ criterion 5: nothing vanishes with merges, matches and a matching breaking commit (0.0708ms)
+  ✔ criterion 3: the pattern sees the first line only, untrimmed, case-sensitive, u flag only (0.335ms)
+  ✔ criterion 3: the same pattern list gives the same result twice (no regex state) (0.1061ms)
+  ✔ an invalid or empty pattern given to the library throws RangeError (0.4219ms)
+✔ groupCommits with ignore patterns (1.8984ms)
+ℹ tests 53
+ℹ suites 7
+ℹ pass 53
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.0517

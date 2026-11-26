@@ -50,17 +50,18 @@ function firstLine(raw: string): string {
  * @returns One `CheckedCommit` per commit in stream order, the malformed records unchanged, and
  *          the counts, where `passed + failed + skipped + malformed.length === total`. A message
  *          that starts with `Merge ` is a merge commit (the same test as `groupCommits()`) and is
- *          skipped whatever its header. A header passes only when the parser calls it
- *          conventional and its raw first line does not start with whitespace. Pure; never throws.
+ *          skipped whatever its header. A header passes when the parser calls it
+ *          conventional; the parser reads the header as received, so a first line that starts
+ *          with whitespace fails. Pure; never throws.
  */
 export function checkGitLog(result: GitLogResult): CheckResult {
   const commits = result.commits.map((commit): CheckedCommit => {
     const message = commit.message;
     const base = { sha: commit.sha, shortSha: commit.sha.slice(0, 7), header: firstLine(message.raw) };
     if (message.raw.startsWith('Merge ')) return { ...base, verdict: 'skip', reason: 'merge commit' };
-    // parseCommit() matches a trimmed header (src/commit.ts), so leading whitespace is checked here
-    // on the raw line (AGENTS.md rule 6; Qodo PR review finding 88effe66).
-    if (message.conventional && base.header.trimStart() === base.header) return { ...base, verdict: 'pass', reason: null };
+    // parseCommit() matches the header as received (AGENTS.md rule 6), so a header with leading
+    // whitespace is not conventional (T-039; Qodo PR review finding 88effe66).
+    if (message.conventional) return { ...base, verdict: 'pass', reason: null };
     return { ...base, verdict: 'fail', reason: 'not a conventional commit header' };
   });
   const count = (verdict: CheckedCommit['verdict']) => commits.filter(c => c.verdict === verdict).length;

@@ -111,6 +111,12 @@ describe('groupCommits', () => {
     assert.deepEqual(g.sections.map(s => s.title), ['Unclassified']);
     assert.equal(g.total, 1);
   });
+
+  test('rule 6 (T-039): an indented conventional header is Unclassified, not a feature', () => {
+    const g = groupStream(record(1, '  feat: x'));
+    assert.deepEqual(g.sections.map(s => s.title), ['Unclassified']);
+    assert.equal(g.total, 1);
+  });
 });
 
 // tickets/T-008-config-ignore-patterns.md
