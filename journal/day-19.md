@@ -6,8 +6,10 @@ PRs (with a counterexample), then make one small change to how the factory works
 not. Test the change and keep every gate. (The plan said "Earn automatic approval", T-019, for
 today; the thread is canonical. T-019 moves to a free slot.)
 
-Status: complete, with one stated limit: the Analytics dashboard is not available to this
-workspace. Post draft: `docs/posts/day-19.md` (not posted yet).
+Status: complete and posted, with one stated limit: the Analytics dashboard is not available to
+this workspace.
+
+- Reply in the thread (Nov 26): https://github.com/orgs/qodo-hackathon/discussions/21#discussioncomment-19936241
 
 ## Analytics access
 
