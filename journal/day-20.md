@@ -90,7 +90,15 @@ makes them stricter, not looser, and the issue body was kept in step with the fi
 
 ## Pull request
 
-_To be filled in._
+PR 44, https://github.com/UBayouski/tracenotes/pull/44, opened by the human with commit `7c7a61d`,
+body `Closes #43`. `ticket-link` was red on that commit, as designed (the backlog row still said
+`planned`); the agent set the row to `done (PR 44)` in the next commit.
+
+Prediction, written before the Qodo review of the pull request: no "Qodo approved" label, even
+on a clean review, because the change touches `.github/workflows/**` and `scripts/**`, which the
+approval guard covers.
+
+_Review at the head and the checks: to be filled in._
 
 ## Deployment
 
