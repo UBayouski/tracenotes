@@ -48,8 +48,8 @@ Branch `t-041-publish-own-notes`.
   `build.json` (the commit and the number of commits, no time) and a fixed `index.html`. It
   refuses a history with no commit, with a malformed record, or that does not start at the
   commit being published; input that is not valid UTF-8; a repository URL `render` rejects; an
-  output directory that is not empty.
-- `tests/build-site.test.ts`: 13 tests, red before the script existed
+  output path that already exists, empty or not; a missing parent directory.
+- `tests/build-site.test.ts`: 13 tests at first (22 after the review rounds below), red before the script existed
   (`evidence/day20/t041/tests-red.txt`).
 - `.github/workflows/pages.yml`: on a push to `main` only. The build job reads the repository
   (full history, no stored credential), refuses a shallow clone and runs the script; the deploy
@@ -98,7 +98,29 @@ Prediction, written before the Qodo review of the pull request: no "Qodo approve
 on a clean review, because the change touches `.github/workflows/**` and `scripts/**`, which the
 approval guard covers.
 
-_Review at the head and the checks: to be filled in._
+Checks at `e5e29d9`: `check` on Ubuntu and Windows and `ticket-link` green.
+
+Qodo review 1 (run 2200141, extended, complete at `e5e29d9`; the run on `7c7a61d` was aborted
+by the push): three Mediums and one Low, all on the build script the four local reviews had
+passed. Read with the Review Resolver, `evidence/day20/pr44/review-1-extended.json`. Gate on
+the pull request: NOT MET.
+
+| Finding | Level | What it said | Outcome |
+|---|---|---|---|
+| 7ab639c8 | Medium | `existsSync` follows links, so a link to nothing looked free and the rename replaced it; a file made between the check and the rename, too. | Valid; reproduced on Linux. The check and the rename are gone: one `mkdir` without `recursive` takes the path or fails. |
+| da4c1646 | Medium | Only the directory got its mode; under umask 077 the files stay 600 and Pages could refuse them. | Valid; reproduced on Linux (384 instead of 420). Directory 755 and files 644 are set explicitly. |
+| f553217c | Medium | The framing check took LF only after the last terminator; the parser also reads CR LF from a Windows shell. | Valid: `src/gitlog.ts` reads that framing on purpose. The build accepts the same. |
+| a8b63c45 | Low | This journal still said "not empty" and "13 tests". | Fixed. |
+
+All three fixes started red in a Linux container (`evidence/day20/pr44/tests-red-review-1-linux.txt`,
+then `tests-green-review-1-linux.txt`: 22 of 22). `npm run check` on Windows: 418 tests, 415
+pass, 3 skipped (the three that need file modes or links).
+
+The output directory is now on its third design. Staging and rename (round 2) existed to fix
+the cleanup of round 1, and brought the mode problem and the link problem with it. A plain
+`mkdir` that fails when the path is taken needs neither.
+
+_Review of the fix commit: to be filled in._
 
 ## Deployment
 

@@ -62,7 +62,7 @@ approval guard on `.github/workflows/**` and `scripts/**`.
 2. It refuses, with one line on stderr and exit 1, and writes nothing, when: the stream has no
    commit; the stream has a malformed record, or a record that is not a commit (the parser drops
    a whitespace-only record, T-040), or does not end with a record terminator followed by at
-   most one line feed; the first record of the stream is not the commit
+   most one line break (LF, or CR LF as a Windows shell writes it; the parser reads both); the first record of the stream is not the commit
    given (the stream is not the history of what is being published); the repository URL is one
    `render --repo-url` rejects. The commit argument is matched as received against 40 lower-case
    hex characters, nothing trimmed first (rule 6); anything else is a usage error, exit 2.
@@ -73,9 +73,10 @@ approval guard on `.github/workflows/**` and `scripts/**`.
    the commit history.
 5. Usage: `git log --format=<log format> | node scripts/build-site.ts --commit <sha>
    --repo-url <url> --out <dir>`. The run makes the output directory itself: a path that already
-   exists is refused, empty or not, and a missing parent is not created (both exit 1). The files
-   are written to a directory of the run's own next to the destination and renamed into place,
-   so a failed run leaves nothing behind and removes nothing it did not make. Unknown or repeated
+   exists is refused, empty or not, and a missing parent is not created (both exit 1). Taking the
+   path and checking that it is free are one step (a link to nothing counts as taken), so a
+   failed run leaves nothing behind and removes nothing it did not make. The directory is mode
+   755 and the files 644 whatever the umask of the caller. Unknown or repeated
    options and a missing value are usage errors (exit 2).
 6. `.github/workflows/pages.yml` runs on a push to `main` and on nothing else. Its build job has
    `contents: read` only, checks out the full history (`fetch-depth: 0`,

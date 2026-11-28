@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -96,6 +96,15 @@ describe('buildSite', () => {
     assert.equal(buildSite({ stream: stream.replace(/\n$/, ''), commit: head, repoUrl }).size, 4);
   });
 
+  // Qodo PR 44 review finding f553217c: the parser reads a stream whose line feeds a Windows
+  // shell turned into CR LF; the build has to read the same framing, not a narrower one.
+  test('a stream with CR LF after every record builds like the one with LF (criterion 2)', () => {
+    const windows = stream.replaceAll('\u001e\n', '\u001e\r\n');
+    assert.notEqual(windows, stream);
+    assert.deepEqual(buildSite({ stream: windows, commit: head, repoUrl }), buildSite({ stream, commit: head, repoUrl }));
+    assert.throws(() => buildSite({ stream: `${stream}\r`, commit: head, repoUrl }), /does not end with a record terminator/);
+  });
+
   test('refuses a repository URL that render rejects (criterion 2)', () => {
     assert.throws(() => buildSite({ stream, commit: head, repoUrl: `${repoUrl}.git` }), /invalid repoUrl/);
   });
@@ -145,6 +154,34 @@ describe('build-site command', () => {
       for (const name of SITE_FILES) {
         assert.equal(statSync(path.join(out, name)).mode & 0o777, 0o644, name);
       }
+    });
+  });
+
+  // Qodo PR 44 review finding da4c1646: the modes must not depend on the umask of the caller.
+  test('the modes are the same under a restrictive umask (criterion 5)', { skip: process.platform === 'win32' }, () => {
+    inTempDir(dir => {
+      const out = path.join(dir, 'site');
+      const command = 'umask 077 && exec "$0" "$@"';
+      const result = spawnSync('sh', ['-c', command, process.execPath, script, ...args(out)], { input: stream, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(statSync(out).mode & 0o777, 0o755);
+      for (const name of SITE_FILES) {
+        assert.equal(statSync(path.join(out, name)).mode & 0o777, 0o644, name);
+      }
+    });
+  });
+
+  // Qodo PR 44 review finding 7ab639c8: a link that points nowhere "does not exist" for a check
+  // that follows links, and a rename would then have replaced it.
+  test('refuses an output path that is a link to nothing (criterion 5)', { skip: process.platform === 'win32' }, () => {
+    inTempDir(dir => {
+      const out = path.join(dir, 'site');
+      symlinkSync(path.join(dir, 'nowhere'), out);
+      const result = run(script, args(out), stream);
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, /^error: output directory .* already exists\n$/);
+      assert.equal(lstatSync(out).isSymbolicLink(), true);
+      assert.deepEqual(readdirSync(dir), ['site']);
     });
   });
 

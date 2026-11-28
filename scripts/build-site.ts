@@ -12,7 +12,7 @@
  * `render` exits 0 on a stream it could not fully read (it counts malformed records) and on a
  * history of one commit, so a plain pipe would publish both. This script refuses them.
  */
-import { chmodSync, existsSync, mkdtempSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { groupGitLog, parseGitLog, RECORD_SEPARATOR, renderJson, renderMarkdown } from '../src/index.ts';
@@ -89,7 +89,9 @@ export function buildSite(input: SiteInput): Map<string, string> {
   // pipe adds one, Day 3); it sits inside the first record and changes no count here.
   const records = stream.split(RECORD_SEPARATOR);
   const tail = records.pop();
-  if (records.length === 0 || (tail !== '' && tail !== '\n')) {
+  // After the last terminator: nothing, or the one line break `git log` prints, which a Windows
+  // shell may have turned into CR LF. The parser reads both (PR 44 review finding f553217c).
+  if (records.length === 0 || (tail !== '' && tail !== '\n' && tail !== '\r\n')) {
     throw new RangeError('the history does not end with a record terminator');
   }
   const log = parseGitLog(stream);
@@ -179,28 +181,33 @@ export function main(
     return { code: 1, stderr: `error: ${reason(error)}\n` };
   }
 
+  // One call both checks that the path is free and takes it: `mkdir` without `recursive` fails
+  // when anything is there, a link to nothing included, and makes no parent. There is no moment
+  // between a check and a use, and what the call made is this run's own, so a failed run may
+  // remove it whole (Qodo local review findings c03742ea, afdf2ca4, 51e2696c; PR 44 review
+  // finding 7ab639c8, which the earlier check-then-rename had left open).
   const out = path.resolve(options.out);
-  if (existsSync(out)) {
-    return { code: 1, stderr: `error: output directory ${shown(options.out)} already exists\n` };
-  }
-  // The files are written into a directory this run makes under a name nobody else has, next to
-  // the destination, and the directory is then renamed into place. A failed run removes only
-  // that directory, so it cannot touch a file or a folder it did not create, and no parent
-  // directory is ever made (Qodo local review findings c03742ea, afdf2ca4, 51e2696c).
-  let staging: string | undefined;
   try {
-    staging = mkdtempSync(path.join(path.dirname(out), '.build-site-'));
-    for (const name of SITE_FILES) write(path.join(staging, name), files.get(name)!);
-    // mkdtemp makes the directory for its owner only. GitHub Pages refuses an artifact whose
-    // directory others cannot read, and a site is public anyway (Qodo local review finding
-    // 723eb8cd; seen on Linux as mode 700). Windows ignores these bits.
-    chmodSync(staging, 0o755);
-    renameSync(staging, out);
+    mkdirSync(out);
   } catch (error) {
-    if (staging !== undefined) {
-      // Best effort: a failure to clean up must not hide the first error.
-      try { rmSync(staging, { recursive: true, force: true }); } catch { /* reported above */ }
+    if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
+      return { code: 1, stderr: `error: output directory ${shown(options.out)} already exists\n` };
     }
+    return { code: 1, stderr: `error: cannot write to ${shown(options.out)}: ${reason(error)}\n` };
+  }
+  try {
+    // The modes are set, not left to the umask of the caller: GitHub Pages refuses an artifact
+    // whose directory or files others cannot read, and a site is public anyway (Qodo local
+    // review finding 723eb8cd, PR 44 review finding da4c1646). Windows ignores these bits.
+    chmodSync(out, 0o755);
+    for (const name of SITE_FILES) {
+      const file = path.join(out, name);
+      write(file, files.get(name)!);
+      chmodSync(file, 0o644);
+    }
+  } catch (error) {
+    // Best effort: a failure to clean up must not hide the first error.
+    try { rmSync(out, { recursive: true, force: true }); } catch { /* reported below */ }
     return { code: 1, stderr: `error: cannot write to ${shown(options.out)}: ${reason(error)}\n` };
   }
   return { code: 0, stderr: '' };
