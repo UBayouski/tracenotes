@@ -25,7 +25,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-017 | Routing policy: fix, human review, or approve, based on check results | 17 Nov 24 | planned |
 | T-018 | Verification agent brief and evidence format | 18 Nov 25 | planned |
 | T-019 | Auto-approval policy for docs-only and test-only changes | 19 Nov 26 | planned |
-| T-020 | Failure drills: stale review, failing test, missing git binary | 20 Nov 27 | planned |
+| T-020 | Failure drills: stale review, failing test, missing git binary | spare (the Day 20 brief was monitoring, T-041) | planned |
 | T-021 | Pre-release versions: alpha, beta, rc | spare | planned |
 | T-022 | Issue reference linking in rendered notes | spare | planned |
 | T-023 | Author attribution with opt-out | spare | planned |
@@ -46,6 +46,7 @@ change through one of these tickets. Tickets are specified in `tickets/` as they
 | T-038 | `ticket-link`: on a wrong backlog status, also print why the ticket is checked and the next step (7 of 7 failed CI runs are this by-design red; Day 18) | 18 Nov 25 (Day 18) | done (PR 40) |
 | T-039 | Rule 6 learns from its findings: "Applies to" names the check scripts, a rule added or widened comes with a sweep, and the parser matches the header as received (takes over T-030) | 19 Nov 26 (Day 19) | done (PR 42) |
 | T-040 | Git log reader: a whitespace-only record between separators is dropped silently; report it as malformed like any other junk (rule 6 sweep in T-039, `src/gitlog.ts:103`) | spare | planned |
+| T-041 | Publish tracenotes' own release notes to GitHub Pages on every push to `main` (`scripts/build-site.ts`, `pages.yml`), the deployment the Day 20 monitors check | 20 Nov 27 (Day 20, issue #43; inside the approval guard) | done (PR 44) |
 
 Process-only days: Day 02 (AGENTS.md), Day 22 (reproducibility pass), Day 23 (submission).
 

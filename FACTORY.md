@@ -9,7 +9,8 @@ against one real ticket, T-028 (`journal/day-10.md`).
 
 Thick border: a step T-028 actually went through on Nov 13, or, for the Qodo workflow (Day 14)
 and the Arnica scan (Day 16), a step that was actually run on that day. Dashed: planned, not built.
-Hexagon: a decision only the human makes. Plain: exists, not used by T-028.
+Hexagon: a decision only the human makes. Plain: exists, not used by T-028. The publish step
+and its monitors (Day 20) are plain until they have run.
 
 ```mermaid
 flowchart TD
@@ -65,6 +66,10 @@ flowchart TD
   MAIN --> AR["Security scan, after the merge, by hand (Day 16)<br/>the human syncs the organization fork of main<br/>Arnica scans it: dependencies and licenses,<br/>secrets, infrastructure files, code"]:::taken
   AR --> AF{{"Human reads the findings in Arnica's dashboard<br/>the agent investigates against the code and run logs<br/>human decides: fix, investigate further,<br/>or dismiss with a reason"}}:::taken
   AF -- "fix: a new ticket" --> T
+  MAIN --> PUB["Publish, on every push to main (Day 20)<br/>pages.yml: tracenotes renders the notes of this repository<br/>from its full history; the build refuses a shallow clone,<br/>a malformed record, a history that starts elsewhere<br/>GitHub Pages serves notes.json, notes.md, build.json"]
+  PUB --> MON["Two outside monitors, on a schedule<br/>Checkly: notes.json holds a known entry (PR 19)<br/>Better Stack: notes.md holds that entry's link<br/>a failed check sends an email"]
+  MON --> MR{{"Human reads the alert<br/>first: build.json and the response body,<br/>then the last Pages run on main,<br/>then GitHub Pages status"}}
+  MR -- "fix: a new ticket" --> T
   G4 -. "planned" .-> AP["PLANNED<br/>Arnica checks and comments on the pull request<br/>needs the repository itself in an organization"]:::planned
 
   classDef taken stroke-width:3px
@@ -85,6 +90,7 @@ flowchart TD
 | Qodo workflow and approval guard (Day 14) | Qodo's complete review of the head has no finding of Medium or higher (every category and finding type), and no approval guard matches. The guard covers `.github/workflows/**` and, since Nov 20, `scripts/**` in this repository. | The `labeled` event on the pull request (`gh api repos/<repo>/issues/<n>/events`, actor `qodo-code-review[bot]`) and the PR Triage panel ("Reviewed on <sha>", findings open). PR Triage shows no workflow or guard entry of its own. | No label. A Medium+ finding goes through the fix loop of 5a and 5b; a guarded change waits for the human whatever the review says. | Qodo adds the label; the human reads every guarded change and still merges every pull request. The label is the workflow's verdict only: it says nothing about 5a, about a disputed or stale finding, or about the acceptance criteria. |
 | Merge | 5a green and the gate report says MET. | The gate report. | — | The human. |
 | Security scan (Day 16) | Arnica's four scans of `main` have completed (SCA/license, secrets, IaC, SAST), and every finding has a decision. Not a merge gate: it runs after the merge, on a copy. | Arnica's job list (status, time and count per scan) and findings table, saved under `evidence/`; `gh api` proof that the fork and `main` are the same commit and tree. | A finding is investigated against the code and the run logs before it is believed. A fix is a new ticket and goes through every gate above. | The human: fix, investigate further, or dismiss with a reason. |
+| Published notes (Day 20) | The Pages run for the commit on `main` is green, and the two monitors find the known entry in the published files. Not a merge gate: it runs after the merge, on the deployed files. | The Pages run; `build.json` (which commit is live); the monitors' run history and alert emails, saved under `evidence/`. | An alert is read against `build.json` and the response body first, then the last Pages run. A fix is a new ticket and goes through every gate above. | The human. |
 
 Who makes the fix commit on a pull request depends on the lane. In a session the agent commits
 and pushes on its own once the human has opened the pull request (`AGENTS.md`, process rules).
@@ -165,6 +171,10 @@ fix all four. Evidence: `evidence/day16/`.
 
 ## Known gaps
 
+- **The monitors check one known entry, not freshness.** A Pages build that stops running leaves
+  the old files in place, and both monitors stay green. `build.json` names the commit that is
+  live; nothing compares it with `main` yet. The monitors' configuration lives in Checkly and
+  Better Stack, not in this repository.
 - **The security scan sees a copy, after the merge, when a person syncs it.** Arnica does not
   connect a personal account, so nothing scans a pull request and nothing rescans `main` on a
   merge. Until the fork is synced, Arnica's dashboard describes an older commit.

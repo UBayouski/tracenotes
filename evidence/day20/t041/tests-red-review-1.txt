@@ -1,0 +1,89 @@
+▶ buildSite
+  ✔ produces the four files, the notes exactly as render prints them (criterion 1) (303.6371ms)
+  ✔ build.json names the commit and the number of commits, and no time (criterion 3) (0.4323ms)
+  ✔ index.html links the three files and holds nothing from the history (criterion 4) (0.3487ms)
+  ✔ refuses a stream without a commit (criterion 2) (0.3201ms)
+  ✔ refuses a stream with a malformed record (criterion 2) (0.2646ms)
+  ✔ refuses a stream that does not start at the commit being published (criterion 2) (0.107ms)
+  ✖ refuses a stream whose records are not all commits (criterion 2) (0.553ms)
+  ✖ refuses a stream that does not end with a terminated record (criterion 2) (0.2546ms)
+  ✔ refuses a repository URL that render rejects (criterion 2) (0.1804ms)
+  ✔ refuses a commit that is not 40 lower-case hex characters, as received (criterion 2) (0.1805ms)
+✖ buildSite (307.2831ms)
+▶ build-site command
+  ✔ writes the four files into a new directory (criteria 1, 5) (124.0281ms)
+  ✔ a refusal prints one line, exits 1 and writes nothing (criterion 2) (132.7789ms)
+  ✔ refuses an output directory that is not empty (criterion 5) (124.2868ms)
+  ✖ a write that fails part-way leaves nothing behind (criterion 2) (3.0434ms)
+  ✔ input that is not valid UTF-8 is refused, not repaired (criterion 2, rule 6) (127.0915ms)
+  ✔ usage errors exit 2 and keep the value on one line (criteria 2, 5) (853.0604ms)
+✖ build-site command (1364.8253ms)
+ℹ tests 16
+ℹ suites 2
+ℹ pass 13
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1814.3878
+
+✖ failing tests:
+
+test at tests\build-site.test.ts:81:3
+✖ refuses a stream whose records are not all commits (criterion 2) (0.553ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception: " \u001e\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\u001fAda\u001f2026-11-27T10:00:00+00:00\u001ffeat: a\u001e\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\u001fAda\u001f2026-11-27T10:00:00+00:00\u001ffix: b\u001e\n"
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/build-site.test.ts:86:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /3 records but 2 commits/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\build-site.test.ts:91:3
+✖ refuses a stream that does not end with a terminated record (criterion 2) (0.2546ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\u001fAda\u001f2026-11-27T10:00:00+00:00\u001ffeat(render): add a thing (#7)\u001e\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\u001fAda\u001f2026-11-27T10:00:00+00:00\u001ffix: mend a thing"
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/build-site.test.ts:94:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /does not end with a record terminator/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\build-site.test.ts:147:3
+✖ a write that fails part-way leaves nothing behind (criterion 2) (3.0434ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at file:///D:/Projects/Qodo/dark_factory/tests/build-site.test.ts:155:16
+      at inTempDir (file:///D:/Projects/Qodo/dark_factory/tests/build-site.test.ts:30:5)
+      at TestContext.<anonymous> (file:///D:/Projects/Qodo/dark_factory/tests/build-site.test.ts:148:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

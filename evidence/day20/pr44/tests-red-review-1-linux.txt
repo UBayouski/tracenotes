@@ -1,0 +1,8 @@
+  ✖ a stream with CR LF after every record builds like the one with LF (criterion 2) (0.218965ms)
+  ✖ the modes are the same under a restrictive umask (criterion 5) (67.671161ms)
+  ✖ refuses an output path that is a link to nothing (criterion 5) (70.976736ms)
+ℹ tests 22
+ℹ pass 19
+ℹ fail 3
+ℹ skipped 0
+  384 !== 420
