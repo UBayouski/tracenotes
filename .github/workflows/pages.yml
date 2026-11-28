@@ -1,0 +1,73 @@
+# Day 20 (T-041): the factory's one deployment. On every push to main, tracenotes renders the
+# release notes of this repository from its own history, and GitHub Pages serves the result:
+#   https://ubayouski.github.io/tracenotes/notes.json   the notes as a JSON document
+#   https://ubayouski.github.io/tracenotes/notes.md     the same notes as Markdown
+#   https://ubayouski.github.io/tracenotes/build.json   the commit the files were built from
+# Two outside monitors read these files on a schedule (FACTORY.md, "After main").
+#
+# The build job reads the repository and holds no write permission. The deploy job holds the two
+# permissions Pages needs and runs nothing from the repository: it only hands the artifact of
+# the build job to Pages.
+#
+# scripts/build-site.ts refuses a history it could not fully read. The step before it refuses a
+# shallow clone, which would otherwise publish notes with a single entry and a green run.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  # A deployment that has started is never cancelled. GitHub keeps one waiting run per group, so
+  # of several pushes in a row the newest waits and is deployed last.
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24
+
+      - name: Refuse a shallow history
+        shell: bash
+        run: test "$(git rev-parse --is-shallow-repository)" = "false"
+
+      # No `npm ci`: tracenotes has no runtime dependency and Node runs the TypeScript files.
+      - name: Build the site with tracenotes
+        shell: bash
+        env:
+          COMMIT: ${{ github.sha }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          git log --format='%H%x1f%an%x1f%aI%x1f%B%x1e' "$COMMIT" \
+            | node scripts/build-site.ts --commit "$COMMIT" --repo-url "$REPO_URL" --out _site
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

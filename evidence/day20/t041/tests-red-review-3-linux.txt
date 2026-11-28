@@ -1,0 +1,32 @@
+Unable to find image 'node:24-slim' locally
+24-slim: Pulling from library/node
+bfaf5d99692a: Pulling fs layer
+b65f2e54b23e: Pulling fs layer
+b1dd3d113aab: Pulling fs layer
+fa47c2d97c6f: Pulling fs layer
+1b1d337d4a7c: Pulling fs layer
+b1dd3d113aab: Already exists
+bfaf5d99692a: Download complete
+b65f2e54b23e: Download complete
+b65f2e54b23e: Pull complete
+1b1d337d4a7c: Download complete
+d61feef31abd: Download complete
+1634ed2d73df: Download complete
+fa47c2d97c6f: Download complete
+fa47c2d97c6f: Pull complete
+bfaf5d99692a: Pull complete
+1b1d337d4a7c: Pull complete
+Digest: sha256:873f586f3794f52281bd039bf02c048a0be08fde619338f9941bad1eb6b34530
+Status: Downloaded newer image for node:24-slim
+0022
+v24.22.3
+  ✖ the directory and its files are readable by everyone (criterion 5) (69.603702ms)
+✖ build-site command (1203.231593ms)
+ℹ tests 19
+ℹ pass 18
+ℹ fail 1
+ℹ skipped 0
+✖ failing tests:
+✖ the directory and its files are readable by everyone (criterion 5) (69.603702ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  448 !== 493

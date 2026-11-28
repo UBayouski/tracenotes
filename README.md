@@ -28,6 +28,11 @@ Not yet: running git for the log itself, selecting ranges by tag, writing `CHANG
 `node src/cli.ts --help` prints the exact usage. The usage section below shows `parse` and
 `log` only.
 
+Published: on every push to `main`, tracenotes writes the release notes of this repository from
+its own history, and GitHub Pages serves them at <https://ubayouski.github.io/tracenotes/>
+(`notes.md`, `notes.json`, and `build.json` with the commit they were built from). Two outside
+monitors read those files on a schedule; see `FACTORY.md`.
+
 See `BACKLOG.md` for the plan, `journal/` for the daily log and `FACTORY.md` for how a change
 gets from a ticket to `main`.
 
