@@ -10,7 +10,7 @@ against one real ticket, T-028 (`journal/day-10.md`).
 Thick border: a step T-028 actually went through on Nov 13, or, for the Qodo workflow (Day 14)
 and the Arnica scan (Day 16), a step that was actually run on that day. Dashed: planned, not built.
 Hexagon: a decision only the human makes. Plain: exists, not used by T-028. The publish step
-and its monitors (Day 20) are plain until they have run.
+and its monitors (Day 20) ran on Nov 28.
 
 ```mermaid
 flowchart TD
@@ -66,9 +66,9 @@ flowchart TD
   MAIN --> AR["Security scan, after the merge, by hand (Day 16)<br/>the human syncs the organization fork of main<br/>Arnica scans it: dependencies and licenses,<br/>secrets, infrastructure files, code"]:::taken
   AR --> AF{{"Human reads the findings in Arnica's dashboard<br/>the agent investigates against the code and run logs<br/>human decides: fix, investigate further,<br/>or dismiss with a reason"}}:::taken
   AF -- "fix: a new ticket" --> T
-  MAIN --> PUB["Publish, on every push to main (Day 20)<br/>pages.yml: tracenotes renders the notes of this repository<br/>from its full history; the build refuses a shallow clone,<br/>a malformed record, a history that starts elsewhere<br/>GitHub Pages serves notes.json, notes.md, build.json"]
-  PUB --> MON["Two outside monitors, on a schedule<br/>Checkly: notes.json holds a known entry (PR 19)<br/>Better Stack: notes.md holds that entry's link<br/>a failed check sends an email"]
-  MON --> MR{{"Human reads the alert<br/>first: build.json and the response body,<br/>then the last Pages run on main,<br/>then GitHub Pages status"}}
+  MAIN --> PUB["Publish, on every push to main (Day 20)<br/>pages.yml: tracenotes renders the notes of this repository<br/>from its full history; the build refuses a shallow clone,<br/>a malformed record, a history that starts elsewhere<br/>GitHub Pages serves notes.json, notes.md, build.json"]:::taken
+  PUB --> MON["Two outside monitors, on a schedule<br/>Checkly: notes.json holds a known entry (PR 19)<br/>Better Stack: notes.md holds that entry's link<br/>a failed check sends an email"]:::taken
+  MON --> MR{{"Human reads the alert<br/>first: build.json and the response body,<br/>then the last Pages run on main,<br/>then GitHub Pages status"}}:::taken
   MR -- "fix: a new ticket" --> T
   G4 -. "planned" .-> AP["PLANNED<br/>Arnica checks and comments on the pull request<br/>needs the repository itself in an organization"]:::planned
 

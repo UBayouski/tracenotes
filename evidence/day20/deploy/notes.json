@@ -1,0 +1,1228 @@
+{
+  "schemaVersion": 1,
+  "title": "Unreleased",
+  "sections": [
+    {
+      "title": "Features",
+      "entries": [
+        {
+          "scope": "pages",
+          "subject": "publish tracenotes' own release notes on every push to main (T-041)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "7c7a61dd9469c3cae4648beacf9811d96292e616",
+            "shortSha": "7c7a61d",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/7c7a61dd9469c3cae4648beacf9811d96292e616",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "parser",
+          "subject": "match the commit header as received; rule 6 covers checks and needs a sweep (T-039)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "6a8d58b7eeed2e3c670563ab5c9c017c13de725f",
+            "shortSha": "6a8d58b",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/6a8d58b7eeed2e3c670563ab5c9c017c13de725f",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "ci",
+          "subject": "ticket-link says why a ticket is checked and what to do next (T-038)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "aa962990137a99683bb19458aed2de3e91d5d13a",
+            "shortSha": "aa96299",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/aa962990137a99683bb19458aed2de3e91d5d13a",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "skills",
+          "subject": "release-notes-audit skill with a tested audit script (T-032)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "9ba1863d161bb912803101321623e8dddf069791",
+            "shortSha": "9ba1863",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/9ba1863d161bb912803101321623e8dddf069791",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "check",
+          "subject": "lint commit headers in a git log stream (T-009)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "d52ba6901d8324b7f0db5d5db0b063048a788836",
+            "shortSha": "d52ba69",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/d52ba6901d8324b7f0db5d5db0b063048a788836",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "render",
+          "subject": "add --origin, link base from the origin remote without its credentials (T-010)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "03d4a17d4ce6eca1f0a885181631b5653847e93e",
+            "shortSha": "03d4a17",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/03d4a17d4ce6eca1f0a885181631b5653847e93e",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "config",
+          "subject": "add --config with ignore patterns and a quality gate (T-008)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "501f9838e2321b5e616b8a2d4d34d2bcf85897c0",
+            "shortSha": "501f983",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/501f9838e2321b5e616b8a2d4d34d2bcf85897c0",
+            "prNumber": 20,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/20"
+          }
+        },
+        {
+          "scope": "render",
+          "subject": "add JSON output with --format json (T-007)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "7a1d606f87b01c1bc8674d54af92190c783df311",
+            "shortSha": "7a1d606",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/7a1d606f87b01c1bc8674d54af92190c783df311",
+            "prNumber": 19,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/19"
+          }
+        },
+        {
+          "scope": "version",
+          "subject": "recommend the next version with the rule that produced it",
+          "breakingNotes": [],
+          "source": {
+            "sha": "b2910fecf52231fa7e2d8da34a182a085a5681d4",
+            "shortSha": "b2910fe",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/b2910fecf52231fa7e2d8da34a182a085a5681d4",
+            "prNumber": 15,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/15"
+          }
+        },
+        {
+          "scope": "render",
+          "subject": "render Markdown notes with a source link on every entry",
+          "breakingNotes": [],
+          "source": {
+            "sha": "7f7af10857fe20a1c0b42d245e5a7d4871e320c3",
+            "shortSha": "7f7af10",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/7f7af10857fe20a1c0b42d245e5a7d4871e320c3",
+            "prNumber": 13,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/13"
+          }
+        },
+        {
+          "scope": "group",
+          "subject": "group commits into release-note sections",
+          "breakingNotes": [],
+          "source": {
+            "sha": "d3b0d315f0dac49c17f7ef0d988fc8aae225f41c",
+            "shortSha": "d3b0d31",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/d3b0d315f0dac49c17f7ef0d988fc8aae225f41c",
+            "prNumber": 11,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/11"
+          }
+        },
+        {
+          "scope": null,
+          "subject": "parse git log streams from stdin (T-002)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "db554e520a47d3d14553640df0d02142fc412950",
+            "shortSha": "db554e5",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/db554e520a47d3d14553640df0d02142fc412950",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "parse Conventional Commits messages (T-001)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "81eb4479a880cc19b2b493e4c3a472d9b84a89d2",
+            "shortSha": "81eb447",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/81eb4479a880cc19b2b493e4c3a472d9b84a89d2",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "entries": [
+        {
+          "scope": "pages",
+          "subject": "take the output path in one step, fixed modes, CR LF framing (T-041)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "fa898d8f952f1de6075be05ef181201427c054ed",
+            "shortSha": "fa898d8",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/fa898d8f952f1de6075be05ef181201427c054ed",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "ci",
+          "subject": "say the first-commit red is expected only conditionally (T-038)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "5aac37fe13e8d824414be5dfc3a67cfb32625697",
+            "shortSha": "5aac37f",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/5aac37fe13e8d824414be5dfc3a67cfb32625697",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "skills",
+          "subject": "keep the audit's link scan linear and a stray bracket from hiding a link (T-037)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "62fd843f499e95d9720aa68393035539f4bc10e9",
+            "shortSha": "62fd843",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/62fd843f499e95d9720aa68393035539f4bc10e9",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "ci",
+          "subject": "fail closed on every line that mentions uses (T-034)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "4099677592f4934ebb67fdd8c361a7835e6308e9",
+            "shortSha": "4099677",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/4099677592f4934ebb67fdd8c361a7835e6308e9",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "cli",
+          "subject": "escape user-supplied values in every usage error (T-031)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "f942ab5d8c156d048d1615e8f1e57f9f018d2f8d",
+            "shortSha": "f942ab5",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/f942ab5d8c156d048d1615e8f1e57f9f018d2f8d",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "skills",
+          "subject": "without --config, only merge commits may be ignored (T-032)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "8b70fb816e57c7fdf8b754bbad81908548a90be1",
+            "shortSha": "8b70fb8",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/8b70fb816e57c7fdf8b754bbad81908548a90be1",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "skills",
+          "subject": "audit the breaking-change notes of each entry (T-032)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "37b35aab6e240ec0919eb3f5cf03a6dde59a42c5",
+            "shortSha": "37b35aa",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/37b35aab6e240ec0919eb3f5cf03a6dde59a42c5",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "skills",
+          "subject": "accept only safe characters in pasted audit values (T-032)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "cc014f95697e8a2e87dc91a06a01d9e7d8bce45d",
+            "shortSha": "cc014f9",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/cc014f95697e8a2e87dc91a06a01d9e7d8bce45d",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "skills",
+          "subject": "audit the exact note lines, footer and PR links; fresh-session evidence (T-032)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "73f8a1eece784e12bf8889388f340578fde5b012",
+            "shortSha": "73f8a1e",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/73f8a1eece784e12bf8889388f340578fde5b012",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "check",
+          "subject": "list skipped merges, fail leading whitespace, escape more (T-009)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3bb2f6c54ce07dd086d827bab4b838b26f7fcbe8",
+            "shortSha": "3bb2f6c",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3bb2f6c54ce07dd086d827bab4b838b26f7fcbe8",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "origin",
+          "subject": "say which origin read failure happened, never git's output (T-010)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "50779493f268d3166ecdbeca2514ee27071c9b4a",
+            "shortSha": "5077949",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/50779493f268d3166ecdbeca2514ee27071c9b4a",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "origin",
+          "subject": "never run a git.exe from the working folder; isolate test git config (T-010)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "21bc1b1e2e3c167018d244463dd0791bcd37891e",
+            "shortSha": "21bc1b1",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/21bc1b1e2e3c167018d244463dd0791bcd37891e",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "hygiene",
+          "subject": "show odd file names as escapes in the report (T-028)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "85dffae575dc3440eeaf8cc23207e3755d4de50e",
+            "shortSha": "85dffae",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/85dffae575dc3440eeaf8cc23207e3755d4de50e",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "ci",
+          "subject": "resolve the three informational findings on PR 22",
+          "breakingNotes": [],
+          "source": {
+            "sha": "e286eb930d8f256ed22e249c1a85a0e7092bfc09",
+            "shortSha": "e286eb9",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/e286eb930d8f256ed22e249c1a85a0e7092bfc09",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "ci",
+          "subject": "resolve the PR 22 review findings on the ticket checks",
+          "breakingNotes": [],
+          "source": {
+            "sha": "435b12e842d9a18ce3d85d5fee25b9907b069604",
+            "shortSha": "435b12e",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/435b12e842d9a18ce3d85d5fee25b9907b069604",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "config",
+          "subject": "escape the config path in error lines (T-008)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "931d447b6d21646af4427a63d90a079332253129",
+            "shortSha": "931d447",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/931d447b6d21646af4427a63d90a079332253129",
+            "prNumber": 20,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/20"
+          }
+        },
+        {
+          "scope": "render",
+          "subject": "validate repo URL port and up front, show usage on empty stdin, reject unsafe PR numbers (Qodo PR 14)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "eb0dce77ec906edb7556cc65ce945f9a864e3511",
+            "shortSha": "eb0dce7",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/eb0dce77ec906edb7556cc65ce945f9a864e3511",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "cli",
+          "subject": "print usage when stdin is a terminal",
+          "breakingNotes": [],
+          "source": {
+            "sha": "8a5c41a3dc576ab090c78ff5f84cdf6e53cc56eb",
+            "shortSha": "8a5c41a",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/8a5c41a3dc576ab090c78ff5f84cdf6e53cc56eb",
+            "prNumber": 4,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/4"
+          }
+        },
+        {
+          "scope": "gitlog",
+          "subject": "report junk before the SHA as malformed; strip PowerShell BOM",
+          "breakingNotes": [],
+          "source": {
+            "sha": "f8e9b11aa21d3b2bf8a3d4016ac376f7ff05d89f",
+            "shortSha": "f8e9b11",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/f8e9b11aa21d3b2bf8a3d4016ac376f7ff05d89f",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "address Qodo review findings on T-001",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3450ffa6a211640cf8183c4a5d4981f5cf5677e5",
+            "shortSha": "3450ffa",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3450ffa6a211640cf8183c4a5d4981f5cf5677e5",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "title": "chore",
+      "entries": [
+        {
+          "scope": null,
+          "subject": "project scaffold, backlog, tickets, and journal",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3e332b16354c76311078c4b9cb294c9cbf1af636",
+            "shortSha": "3e332b1",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3e332b16354c76311078c4b9cb294c9cbf1af636",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "title": "ci",
+      "entries": [
+        {
+          "scope": null,
+          "subject": "pin every workflow action to a commit SHA (T-034)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "8c8766342bd4d63af2b55548eed4e6aa68ed2120",
+            "shortSha": "8c87663",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/8c8766342bd4d63af2b55548eed4e6aa68ed2120",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "required checks, ticket-link check and ticket guard (Day 10)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "1433e3d4863bf0e2571ba2cea7925bbb82266497",
+            "shortSha": "1433e3d",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/1433e3d4863bf0e2571ba2cea7925bbb82266497",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "agent-ticket",
+          "subject": "force tag mode with track_progress so the agent gets the issue, a branch, and git",
+          "breakingNotes": [],
+          "source": {
+            "sha": "2a74c314bb8cfe41b9d95b00945f12830b9257cd",
+            "shortSha": "2a74c31",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/2a74c314bb8cfe41b9d95b00945f12830b9257cd",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "agent-fix",
+          "subject": "only push fixes to agent/* branches; no AI trailers on human commits",
+          "breakingNotes": [],
+          "source": {
+            "sha": "f9880ec9ccf491bb0fe5cc2fce4e32a6e2d03132",
+            "shortSha": "f9880ec",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/f9880ec9ccf491bb0fe5cc2fce4e32a6e2d03132",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "label-triggered agent workflow, T-026 ticket, bot-commit exception on agent/* (Day 4)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "71fb0c848f93d9325d10d995374780dac3169d09",
+            "shortSha": "71fb0c8",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/71fb0c848f93d9325d10d995374780dac3169d09",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "title": "docs",
+      "entries": [
+        {
+          "scope": "backlog",
+          "subject": "T-041 done (PR 44)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "e5e29d9c8f19437cc5d35845d2f43a7e137905d7",
+            "shortSha": "e5e29d9",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/e5e29d9c8f19437cc5d35845d2f43a7e137905d7",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "journal",
+          "subject": "Day 19, rule 6 learns from its findings",
+          "breakingNotes": [],
+          "source": {
+            "sha": "b804b04799f19ea269bf755af20ed77e6cd80450",
+            "shortSha": "b804b04",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/b804b04799f19ea269bf755af20ed77e6cd80450",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-039 done (PR 42)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "17b3ad3351cdc99efbd22cb07adf9f68c6856d65",
+            "shortSha": "17b3ad3",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/17b3ad3351cdc99efbd22cb07adf9f68c6856d65",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "journal",
+          "subject": "Day 18, a red build that explains itself",
+          "breakingNotes": [],
+          "source": {
+            "sha": "a7b21d42c6afa34b134839100149df3a6ece9a53",
+            "shortSha": "a7b21d4",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/a7b21d42c6afa34b134839100149df3a6ece9a53",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-038 done (PR 40)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "849171a7fa523e6ed73c38a0b2c399c08f80a8b0",
+            "shortSha": "849171a",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/849171a7fa523e6ed73c38a0b2c399c08f80a8b0",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-17",
+          "subject": "post link and accepted-decision screenshot",
+          "breakingNotes": [],
+          "source": {
+            "sha": "5e9d05a20998ed6bf4baa4123ba864b136a5cd59",
+            "shortSha": "5e9d05a",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/5e9d05a20998ed6bf4baa4123ba864b136a5cd59",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-17",
+          "subject": "journal and evidence for the PR 16 decision review",
+          "breakingNotes": [],
+          "source": {
+            "sha": "c48e791dba8fece934cbefc88e8c4a0f2cf973e6",
+            "shortSha": "c48e791",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/c48e791dba8fece934cbefc88e8c4a0f2cf973e6",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-16",
+          "subject": "post link",
+          "breakingNotes": [],
+          "source": {
+            "sha": "2c4fc9331b7bbd5072e9718d3ef00394677987d0",
+            "shortSha": "2c4fc93",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/2c4fc9331b7bbd5072e9718d3ef00394677987d0",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-16",
+          "subject": "journal and evidence after PR 38",
+          "breakingNotes": [],
+          "source": {
+            "sha": "35eb303c578aec829f53860b9662bede70d9588b",
+            "shortSha": "35eb303",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/35eb303c578aec829f53860b9662bede70d9588b",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-037 done (PR 38)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "6ab70d6a536c0a3a3e85722e6bd0bc7130c10fe2",
+            "shortSha": "6ab70d6",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/6ab70d6a536c0a3a3e85722e6bd0bc7130c10fe2",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-16",
+          "subject": "journal and evidence for PR 36",
+          "breakingNotes": [],
+          "source": {
+            "sha": "99aa0a43bac1c02f2f103596e8566b7a4d56221d",
+            "shortSha": "99aa0a4",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/99aa0a43bac1c02f2f103596e8566b7a4d56221d",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-035 done (PR 36)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "44fe418085a075be0b66b8bbf63686530297a19a",
+            "shortSha": "44fe418",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/44fe418085a075be0b66b8bbf63686530297a19a",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-15",
+          "subject": "journal",
+          "breakingNotes": [],
+          "source": {
+            "sha": "b349b8b51f646db1fba59cf48ebb9f9fa9dc686c",
+            "shortSha": "b349b8b",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/b349b8b51f646db1fba59cf48ebb9f9fa9dc686c",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "day-14",
+          "subject": "approval step in FACTORY.md, journal and evidence",
+          "breakingNotes": [],
+          "source": {
+            "sha": "17765f91a1b230a538e6513676d84c3b8d7ae30c",
+            "shortSha": "17765f9",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/17765f91a1b230a538e6513676d84c3b8d7ae30c",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "drop the T-034 row, PR 34 added it as done",
+          "breakingNotes": [],
+          "source": {
+            "sha": "e7720eac6a38dbfa6d088095720a63d31a9fb4dd",
+            "shortSha": "e7720ea",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/e7720eac6a38dbfa6d088095720a63d31a9fb4dd",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-034 done (PR 34)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "024a686132e9405e01151c84fd8ed8e6945b5d82",
+            "shortSha": "024a686",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/024a686132e9405e01151c84fd8ed8e6945b5d82",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-031 done (PR 33)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "d4bae4c9182dc0337b82d6b79f8f0a936f9c39a2",
+            "shortSha": "d4bae4c",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/d4bae4c9182dc0337b82d6b79f8f0a936f9c39a2",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "journal",
+          "subject": "Day 12 and 13 merged, post links",
+          "breakingNotes": [],
+          "source": {
+            "sha": "532219fc7eb311fce8090200d8c642a6b9fe0356",
+            "shortSha": "532219f",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/532219fc7eb311fce8090200d8c642a6b9fe0356",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-032 done (PR 30)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "4ad7bddeb7051c774a3ae2327529d8f6ce327762",
+            "shortSha": "4ad7bdd",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/4ad7bddeb7051c774a3ae2327529d8f6ce327762",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "journal",
+          "subject": "Day 12, PR 28 gate met, lesson",
+          "breakingNotes": [],
+          "source": {
+            "sha": "2142d2ae5719ffe810f2728734a4e0e4f15ff2ac",
+            "shortSha": "2142d2a",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/2142d2ae5719ffe810f2728734a4e0e4f15ff2ac",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "T-009 done (PR 28)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "ef866b218050e8a75200e49e2c21ad74f1a7d073",
+            "shortSha": "ef866b2",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/ef866b218050e8a75200e49e2c21ad74f1a7d073",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "journal",
+          "subject": "Day 11, make the reviewer yours (PR 26 before/after)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "e211fe7df7bd9dc7d3f4a7f4e1e5ae701047e32e",
+            "shortSha": "e211fe7",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/e211fe7df7bd9dc7d3f4a7f4e1e5ae701047e32e",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "review",
+          "subject": "keep the Day 11 review guidelines in .pr_agent.toml; evidence",
+          "breakingNotes": [],
+          "source": {
+            "sha": "272cc4777b72f1f0c3b6151b2642c0a205410e02",
+            "shortSha": "272cc47",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/272cc4777b72f1f0c3b6151b2642c0a205410e02",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "correct FACTORY.md after review, README status for Day 10",
+          "breakingNotes": [],
+          "source": {
+            "sha": "38c897839b1b1bf3e455e768a74f09d5ce2846c3",
+            "shortSha": "38c8978",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/38c897839b1b1bf3e455e768a74f09d5ce2846c3",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "correct FACTORY.md after review, README status for Day 10",
+          "breakingNotes": [],
+          "source": {
+            "sha": "ef500c8c0f94eeb6cef188c6d047f0f954f6ad27",
+            "shortSha": "ef500c8",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/ef500c8c0f94eeb6cef188c6d047f0f954f6ad27",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "factory",
+          "subject": "FACTORY.md, the path from a ticket to main with its gates",
+          "breakingNotes": [],
+          "source": {
+            "sha": "a2ac51e5b823b81d1979894d42f7c5a85e835bd1",
+            "shortSha": "a2ac51e",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/a2ac51e5b823b81d1979894d42f7c5a85e835bd1",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "backlog",
+          "subject": "mark T-028 done (PR 24)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "bb6c03ebfdc6c95a2c08b846ebfdf7c2430642a7",
+            "shortSha": "bb6c03e",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/bb6c03ebfdc6c95a2c08b846ebfdf7c2430642a7",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "journal",
+          "subject": "record the PR 22 gate result and the dismissals",
+          "breakingNotes": [],
+          "source": {
+            "sha": "9019690b272f4baeccbd5a73538801b12d9ba7e8",
+            "shortSha": "9019690",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/9019690b272f4baeccbd5a73538801b12d9ba7e8",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "add T-028 source hygiene to the backlog",
+          "breakingNotes": [],
+          "source": {
+            "sha": "6dc9a90e17e8b454f24bdb685db76b20c48b19b8",
+            "shortSha": "6dc9a90",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/6dc9a90e17e8b454f24bdb685db76b20c48b19b8",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "gate",
+          "subject": "count a skipped review for docs-only commits, record the PR 21 result",
+          "breakingNotes": [],
+          "source": {
+            "sha": "ca9f87e925a30d1cc538cff2080c6191f4ddc7fe",
+            "shortSha": "ca9f87e",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/ca9f87e925a30d1cc538cff2080c6191f4ddc7fe",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "agents",
+          "subject": "let the agent act on its own on an open PR, stop on any question",
+          "breakingNotes": [],
+          "source": {
+            "sha": "f3dc67b1f6b35e657dccd4e338b99927c2d57a58",
+            "shortSha": "f3dc67b",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/f3dc67b1f6b35e657dccd4e338b99927c2d57a58",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Day 8 journal merge note and post link",
+          "breakingNotes": [],
+          "source": {
+            "sha": "280c2fd2f3d5123ffdea0a2cadb7c184688c6c9a",
+            "shortSha": "280c2fd",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/280c2fd2f3d5123ffdea0a2cadb7c184688c6c9a",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "link Day 7 post in journal",
+          "breakingNotes": [],
+          "source": {
+            "sha": "25903fb23322e41386ea52167494dba82d9375e5",
+            "shortSha": "25903fb",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/25903fb23322e41386ea52167494dba82d9375e5",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "T-005 done; Day 7 journal merge note",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3576d568f7bfbbab5bbeefc0c9a2cbc287bcab8d",
+            "shortSha": "3576d56",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3576d568f7bfbbab5bbeefc0c9a2cbc287bcab8d",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Day 7 journal and Review Resolver evidence for PR 16",
+          "breakingNotes": [],
+          "source": {
+            "sha": "9a70ea37cde50664439956d86e97d43b64493562",
+            "shortSha": "9a70ea3",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/9a70ea37cde50664439956d86e97d43b64493562",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Day 6 journal, T-004 ticket and Codebase Wisdom evidence; T-004 done",
+          "breakingNotes": [],
+          "source": {
+            "sha": "04b761142b561a6804532c9ce011edee95698c9c",
+            "shortSha": "04b7611",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/04b761142b561a6804532c9ce011edee95698c9c",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Day 5 addendum, T-003 via the factory; T-003 and T-026 done in backlog",
+          "breakingNotes": [],
+          "source": {
+            "sha": "100c4904b9ecbbdd34081c7dedd5b13561597a2a",
+            "shortSha": "100c490",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/100c4904b9ecbbdd34081c7dedd5b13561597a2a",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Day 5 journal, import result and rule id",
+          "breakingNotes": [],
+          "source": {
+            "sha": "89f9bc4149b996bdc96198d46b93583fbedff847",
+            "shortSha": "89f9bc4",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/89f9bc4149b996bdc96198d46b93583fbedff847",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "agents",
+          "subject": "rule 6 lists all existing framing; workflows push without per-push approval (Qodo PR 9)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "190db54db339835910085338797c6cc2f696e1fd",
+            "shortSha": "190db54",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/190db54db339835910085338797c6cc2f696e1fd",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "agents",
+          "subject": "rule 6 Validate Before You Normalize from review history; push needs explicit approval (Day 5)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "e12a5994f2a0b0e19a5a042f65ef9a5bb495f993",
+            "shortSha": "e12a599",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/e12a5994f2a0b0e19a5a042f65ef9a5bb495f993",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "review",
+          "subject": "set ignore_bot_pr in both sections; record the guard test",
+          "breakingNotes": [],
+          "source": {
+            "sha": "91d3e81770851f3a25a00ab21b89a68cddb78ecf",
+            "shortSha": "91d3e81",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/91d3e81770851f3a25a00ab21b89a68cddb78ecf",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Day 4 journal; let Qodo review bot pushes on agent branches",
+          "breakingNotes": [],
+          "source": {
+            "sha": "200e023829b33fb0c90806e59e8bc56a0adf562d",
+            "shortSha": "200e023",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/200e023829b33fb0c90806e59e8bc56a0adf562d",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "require child-process CLI tests in AGENTS.md; record PR 2 review",
+          "breakingNotes": [],
+          "source": {
+            "sha": "fa5e41ab7f80562b881d19e470ae4da4b559c05b",
+            "shortSha": "fa5e41a",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/fa5e41ab7f80562b881d19e470ae4da4b559c05b",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "add AGENTS.md factory rules, Day 1 journal, and LF line-ending policy",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3af11aadac003837acea5bc9c26023c09cf2a614",
+            "shortSha": "3af11aa",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3af11aadac003837acea5bc9c26023c09cf2a614",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "title": "refactor",
+      "entries": [
+        {
+          "scope": "cli",
+          "subject": "inject stdout/stderr sinks so tests stop patching process streams",
+          "breakingNotes": [],
+          "source": {
+            "sha": "4ee70d041cf521dafffb7e97f440cee294fca5f1",
+            "shortSha": "4ee70d0",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/4ee70d041cf521dafffb7e97f440cee294fca5f1",
+            "prNumber": 4,
+            "prUrl": "https://github.com/UBayouski/tracenotes/pull/4"
+          }
+        }
+      ]
+    },
+    {
+      "title": "test",
+      "entries": [
+        {
+          "scope": "hygiene",
+          "subject": "forbid raw invisible characters in TypeScript sources (T-028)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3b09408388dcf62d0e2db238c1366215e4da0867",
+            "shortSha": "3b09408",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3b09408388dcf62d0e2db238c1366215e4da0867",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "version",
+          "subject": "pin trigger order to render's section order; amend T-005 criterion 4 (Qodo PR 16)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "3e538a2c2c057964f010b4b28eb5e0020a1daac9",
+            "shortSha": "3e538a2",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/3e538a2c2c057964f010b4b28eb5e0020a1daac9",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": "group",
+          "subject": "pin that an indented Merge header is not ignored (Qodo PR 12)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "49c8632878e2d34547e0ae58d2a7d5876baba78d",
+            "shortSha": "49c8632",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/49c8632878e2d34547e0ae58d2a7d5876baba78d",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "title": "Unclassified",
+      "entries": [
+        {
+          "scope": null,
+          "subject": "Journal updates.",
+          "breakingNotes": [],
+          "source": {
+            "sha": "ebb67dd424ddef2c6959e947ee10a396a201b1e5",
+            "shortSha": "ebb67dd",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/ebb67dd424ddef2c6959e947ee10a396a201b1e5",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Journal updates",
+          "breakingNotes": [],
+          "source": {
+            "sha": "bb917d000b0a73ac7aeda6adbc52c04290dc91eb",
+            "shortSha": "bb917d0",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/bb917d000b0a73ac7aeda6adbc52c04290dc91eb",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Fixing Arnica findings",
+          "breakingNotes": [],
+          "source": {
+            "sha": "8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf",
+            "shortSha": "8e15dc9",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/8e15dc9a5a920b1c4ca6c5e29c5b1d06792a5daf",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Arnica report",
+          "breakingNotes": [],
+          "source": {
+            "sha": "8f88b60d25e4e2aab258bc9212f6f4f18426b59e",
+            "shortSha": "8f88b60",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/8f88b60d25e4e2aab258bc9212f6f4f18426b59e",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "fix(ci): do not keep the job token after checkout (T-035)",
+          "breakingNotes": [],
+          "source": {
+            "sha": "fae957aa4b6d0daf6c4d38aca1f3f440ef722589",
+            "shortSha": "fae957a",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/fae957aa4b6d0daf6c4d38aca1f3f440ef722589",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Journal updates",
+          "breakingNotes": [],
+          "source": {
+            "sha": "9ccf4ecac550bdc2ec1cdbaea65233deca151a5b",
+            "shortSha": "9ccf4ec",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/9ccf4ecac550bdc2ec1cdbaea65233deca151a5b",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Journal updates",
+          "breakingNotes": [],
+          "source": {
+            "sha": "76fe68c2a6102556f766d5a5e546c868a307fefe",
+            "shortSha": "76fe68c",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/76fe68c2a6102556f766d5a5e546c868a307fefe",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "journal update",
+          "breakingNotes": [],
+          "source": {
+            "sha": "dc3362453ad8306c17e1da5ae4cbc335376f5e52",
+            "shortSha": "dc33624",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/dc3362453ad8306c17e1da5ae4cbc335376f5e52",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Journl day 11 update",
+          "breakingNotes": [],
+          "source": {
+            "sha": "d0b3721ad0bb46c3c6a21e8e8489f57f5baad95a",
+            "shortSha": "d0b3721",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/d0b3721ad0bb46c3c6a21e8e8489f57f5baad95a",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "Updating on journal entries",
+          "breakingNotes": [],
+          "source": {
+            "sha": "05ab5f192ec5d448a63665ec323f00671b28d8b6",
+            "shortSha": "05ab5f1",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/05ab5f192ec5d448a63665ec323f00671b28d8b6",
+            "prNumber": null,
+            "prUrl": null
+          }
+        },
+        {
+          "scope": null,
+          "subject": "PR commit to resolve issue",
+          "breakingNotes": [],
+          "source": {
+            "sha": "e3684e441398c91cd8bf16a211137720b35005bf",
+            "shortSha": "e3684e4",
+            "commitUrl": "https://github.com/UBayouski/tracenotes/commit/e3684e441398c91cd8bf16a211137720b35005bf",
+            "prNumber": null,
+            "prUrl": null
+          }
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "shown": 98,
+    "total": 126,
+    "ignored": 28,
+    "malformed": 0
+  }
+}

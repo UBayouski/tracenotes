@@ -1,0 +1,35 @@
+Better Stack incident 1059338140, read from the incident page on Nov 28, 2026 00:33 UTC
+(the page shows Pacific time; 4:26pm PST = 00:26 UTC). The email address is removed.
+
+Monitor:              TEMP failure test: expects an entry that does not exist (id 5314257)
+Monitor type:         URL doesn't contain keyword
+Monitor required keyword: day-20-entry-that-does-not-exist
+Checked URL:          GET https://ubayouski.github.io/tracenotes/notes.md
+Cause:                Keyword not found (looked for day-20-entry-that-does-not-exist)
+Response code:        200
+Started:              Nov 27, 2026 at 4:26pm PST, ongoing when read
+Escalation:           Entire team
+
+Timeline (oldest first, all Nov 27 at 4:26pm PST):
+- Received a keyword not found (looked for day-20-entry-that-does-not-exist) error at
+  ubayouski.github.io/tracenotes/notes.md when checked from Asia, North America, Australia.
+- Incident started.
+- Notifying the entire team.
+- Sent an email to [the account owner] at [address removed].
+- The incident e-mail sent to [address removed] was loaded.
+
+Restored, read Nov 28, 2026 about 00:35 UTC:
+- The temporary monitor (id 5314257) was removed on its Configure page.
+- Monitors list: one monitor, "tracenotes notes.md has the PR 19 entry", Up, checked every
+  3 minutes (screens/07-betterstack-restored-only-real-monitor-up.jpg).
+- Incidents list: this incident is kept and closed, length 8 minutes. The other entry,
+  "google.com, Sample incident", is Better Stack's onboarding sample, not one of ours.
+
+Real monitor (id 5314253), as saved Nov 28 about 00:32 UTC:
+  Alert us when:  URL doesn't contain keyword
+  URL:            https://ubayouski.github.io/tracenotes/notes.md
+  Keyword:        7a1d606f87b01c1bc8674d54af92190c783df311
+  Notify:         primary responder, e-mail only; no escalation
+  Frequency:      3 minutes; recovery period 3 minutes; confirmation: immediate
+Until that save it was of type "URL becomes unavailable" (created that way in onboarding), so
+its "Up" before 00:32 UTC only showed that the page answered.

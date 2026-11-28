@@ -7,7 +7,10 @@ same alert route, the saved notification, restore, and a note on what to investi
 (The plan said "Try to fool your factory", T-020, for today; the thread is canonical. T-020 moves
 to a free slot.)
 
-Status: in progress. The deployment is built and not yet merged; no monitor exists yet.
+Status: complete, not posted yet. Deployed, both monitors passing on schedule, a controlled
+failure and its e-mail captured for each, temporary monitors removed.
+
+- Reply in the thread: _TODO_
 
 ## Starting point
 
@@ -120,25 +123,140 @@ The output directory is now on its third design. Staging and rename (round 2) ex
 the cleanup of round 1, and brought the mode problem and the link problem with it. A plain
 `mkdir` that fails when the path is taken needs neither.
 
-_Review of the fix commit: to be filled in._
+Fix commit `fa898d8` (agent, second exception). Checks green on Ubuntu and Windows, so the
+mode and link tests have now also run on GitHub's Linux runner. Qodo review 2 (run 2200168,
+standard, complete at `fa898d8`): all four findings `implemented`, nothing new
+(`evidence/day20/pr44/review-2-extended.json`). No label and no `labeled` event on a clean,
+complete review: the prediction held, the approval guard kept the pull request for a person.
+
+Quality gate on the pull request: **MET at `fa898d8`**, merge state clean.
 
 ## Deployment
 
-_To be filled in: Pages turned on, the first run, `build.json` against the merge commit._
+All times below are UTC on Nov 28; the tools show Pacific time, eight hours behind.
+
+- The human turned GitHub Pages on before the merge: source GitHub Actions, HTTPS enforced. The
+  `github-pages` environment lets only `main` deploy (read back with `gh api`).
+- The human fixed the cut-off title and merged PR 44 as `6f0e2a1` at 00:20:30. Issue #43 closed.
+- Pages run 46087365156 for `6f0e2a1`: build 00:20:36 to 00:20:56, deploy 00:20:59 to 00:21:10,
+  both green. `Check` on `main` green too.
+- Read back from https://ubayouski.github.io/tracenotes/ (`evidence/day20/deploy/`): all four
+  files answer 200. `build.json` names `6f0e2a1` and 126 commits. `notes.json` has the PR 19
+  entry (`7a1d606`, "add JSON output with --format json (T-007)", `prNumber` 19) and
+  `counts.malformed` 0. Criterion 10 of the ticket is met.
+
+Environment: production. It is the one deployment the project has.
 
 ## Monitors
 
-_To be filled in: Checkly and Better Stack configuration (redacted), schedule, assertion, the
-scheduled pass, the controlled failure, the two emails, the restored state._
+One capability, checked by two tools on two files: **the published release notes still hold
+the entry for PR 19**, with its subject and its source. That entry exists only if the whole
+chain worked: the workflow ran on `main`, read the full history, tracenotes parsed and grouped
+it, rendered it, and Pages served the result. A page that answers 200 with an empty or broken
+document fails both checks. Both read a public file with an anonymous GET; there is no test
+identity, no test data and nothing to clean up on the site.
+
+### Better Stack: keyword on `notes.md`
+
+Free account, no card. Set up by the human, corrected and finished by the agent in Chrome with
+the human's go-ahead. Record: `evidence/day20/betterstack-incident-1059338140.txt`.
+
+```text
+Monitor:        tracenotes notes.md has the PR 19 entry
+Alert us when:  URL doesn't contain keyword
+URL:            https://ubayouski.github.io/tracenotes/notes.md
+Keyword:        7a1d606f87b01c1bc8674d54af92190c783df311
+Notify:         primary responder, e-mail only
+Frequency:      3 minutes
+```
+
+The keyword is the commit SHA of the PR 19 entry. It occurs once in `notes.md`, inside that
+entry's link.
+
+- Scheduled pass: Up on the 3-minute schedule after the keyword was set at about 00:32
+  (`screens/06`, `screens/10` at 00:45).
+- Controlled failure: a second, temporary monitor on the same URL and e-mail route, keyword
+  `day-20-entry-that-does-not-exist` (`screens/02`). Incident 1059338140 started at 00:26:
+  "Keyword not found", response code 200, seen from three regions.
+- Notification: the e-mail "New incident started" arrived at 00:26 with the checked URL and the
+  cause (`screens/09`). A test alert Better Stack had sent at 00:22 ("New test incident
+  started", `example.com`, status 500) is not this evidence and is not used.
+- Restored: the temporary monitor was removed with the human's approval at about 00:35; the
+  e-mail "Incident resolved" followed (`screens/08`); the list shows one monitor, Up
+  (`screens/07`). The site was never touched.
+
+### Checkly: JSON assertion on `notes.json`
+
+Account on the 14-day Team trial without a card; it drops to the free Hobby plan on Dec 11. Set
+up by the agent in Chrome at the human's request. Record: `evidence/day20/checkly-checks.txt`.
+
+```text
+Check:        API check, "tracenotes notes.json has the PR 19 entry"
+Request:      GET https://ubayouski.github.io/tracenotes/notes.json
+Assertion 1:  Status code  Equals  200
+Assertion 2:  JSON body
+              $..entries[?(@.source.sha=="7a1d606f87b01c1bc8674d54af92190c783df311")].subject
+              Equals  add JSON output with --format json (T-007)
+Frequency:    10 minutes, round-robin, N. Virginia and N. California
+Retries:      linear, 2
+Alerts:       e-mail, on failure and on recovery
+```
+
+The entry is found by its commit SHA, not by its position: a new feature moves every entry down
+one place, and an assertion on `entries[7]` would fail on the next merge for no reason.
+
+- Scheduled pass: created at about 00:47, both assertions green; the run the schedule made at
+  about 00:57 passed too (`screens/13`).
+- Controlled failure: a temporary check with the same request and e-mail channel, the same JSON
+  path, expecting "day 20 subject that does not exist"; every minute, no retries. Its test
+  request failed as intended with response 200. The event history shows the failure at
+  00:49:18 from N. Virginia and "Sent 1 notifications" (`screens/12`).
+- Notification: the e-mail "[Checkly] Failure alert for TEMP failure test: expects a subject
+  that does not exist" arrived at 00:49 (`screens/14`): request, status 200, location
+  N. Virginia, timestamp Nov 28 00:48 +00:00, and the failed JSON body assertion. Checkly's own
+  analysis in the mail calls it "an intentional negative test, not a service failure".
+- Restored: the temporary check was deleted with the human's approval at about 01:01; the list
+  shows one check, passing, 100 % (`screens/15`). The site was never touched.
 
 ## First response
 
-_To be filled in after the controlled failure._
+When one of these alerts fires for real, in this order:
+
+1. **`build.json` and the response body the alert links to.** Is it our page, and which commit
+   is live? This splits the cases at once: not our page (GitHub Pages or DNS), our page from an
+   old commit (the publish stopped), or our page from the newest commit without the entry (the
+   product or the history changed).
+2. **The last `Pages` run on `main`** (`gh run list --workflow pages.yml`). The site changes
+   only when that workflow deploys, so the newest merge is the first suspect. A red build step
+   names its reason in one line: a malformed record, a shallow clone, a history that does not
+   start at the pushed commit.
+3. **If the run is green and the entry is gone:** run the same pipe locally for that commit and
+   compare with `node src/cli.ts render`. Then the change is in parsing, grouping or rendering,
+   or someone rewrote history and `7a1d606` no longer exists.
+4. **If it is not our page:** githubstatus.com for Pages, then the resolved addresses in the
+   alert.
+
+Which alert fired matters too. Only Checkly: the JSON document changed shape or the subject
+changed. Only Better Stack: the Markdown link format changed. Both: the entry or the site.
 
 ## What I missed
 
-_To be filled in._
+- **The real Better Stack monitor was the wrong type for its first twelve minutes.** The
+  onboarding form created it as "URL becomes unavailable". It showed Up, I saved that
+  screenshot as evidence, and only the configuration page showed there was no keyword at all:
+  the exact "homepage answers 200" check the brief warns about. I had asked the human to
+  confirm the type and then did not wait for the answer before treating the green dot as a pass.
+- **The first failure e-mail I was shown was a test alert,** and it looks almost the same as a
+  real one. The brief separates the two for a reason: the test proves the channel, not that a
+  failed check reaches it.
+- **Three designs for one output directory.** Each review round fixed what the round before
+  had introduced: cleanup code, then staging and rename, then a plain `mkdir`. Four deep local
+  reviews passed a script in which the pull-request review still found three Mediums.
+- **A scripted edit turned escape sequences into raw characters twice** (a line feed inside a
+  string, a byte order mark). The source-hygiene test caught the second one.
 
 ## Lesson
 
-_To be filled in._
+A green monitor says what its configuration says, nothing more. Read the saved configuration
+back before believing the dot, and make the check fail once on purpose: the controlled failure
+is the only moment the whole path from assertion to inbox is actually seen working.

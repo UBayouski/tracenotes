@@ -1,0 +1,41 @@
+Checkly, set up Nov 28, 2026 about 00:46-00:50 UTC (the app shows Pacific time). Account on
+the 14-day Team trial without a card; it drops to the free Hobby plan on Dec 11.
+
+Real check: "API Check #1tracenotes notes.json has the PR 19 entry" (API check)
+  Request:      GET https://ubayouski.github.io/tracenotes/notes.json, follow redirects
+  Assertion 1:  Status code  Equals  200
+  Assertion 2:  JSON body
+                $..entries[?(@.source.sha=="7a1d606f87b01c1bc8674d54af92190c783df311")].subject
+                Equals  add JSON output with --format json (T-007)
+  Limits:       degraded after 5000 ms, failed after 20000 ms
+  Frequency:    10 minutes, round-robin over N. Virginia (us-east-1) and N. California (us-west-1)
+  Retries:      linear, 2 retries, 60 s base
+  Alerts:       account settings; e-mail channel, failure and recovery
+  Test request before saving: both assertions passed, 200, 208 ms.
+
+Temporary check: "TEMP failure test: expects a subject that does not exist"
+  (id d62809e6-7cc1-4d01-83a3-4c917bdca763)
+  Same request and the same e-mail channel. One assertion: the same JSON path,
+  Equals "day 20 subject that does not exist". Frequency 1 minute, round-robin, no retries.
+  Test request before saving: failed as intended, 200, actual value
+  "add JSON output with --format json (T-007)".
+
+Event history, read 00:52 UTC:
+  TEMP failure test ... failed at location N. Virginia, Nov 27 16:49:18 PST (00:49:18 UTC),
+  response 200, 42 ms, "Sent 1 notifications".
+
+Monitors list, read 00:58 UTC (screens/13-checkly-scheduled-pass-and-temp-failing.png):
+  Real check: passing, two results, both green, the second "1 minute ago": the run made by the
+  10-minute schedule about 00:57 UTC, ten minutes after the check was created. Availability 100 %.
+  Temporary check: failing on every 1-minute run since 00:49 UTC. Availability 0 %.
+
+Restored, about 01:01 UTC, with the human's approval:
+  The temporary check was deleted from its actions menu ("Check deleted successfully").
+  The real check was renamed to "tracenotes notes.json has the PR 19 entry" (the form's default
+  text "API Check #1" had stayed in front of the name) and saved.
+  Monitors list: one check, passing, 100 % (screens/15-checkly-restored-only-real-check-passing.png).
+
+Failure e-mail (the human's screenshot, screens/14-checkly-email-failure-alert.png):
+  "[Checkly] Failure alert for TEMP failure test: expects a subject that does not exist",
+  received 4:49 PM PST; request GET .../notes.json, status 200, N. Virginia,
+  timestamp Nov 28 00:48 +00:00, failed assertion JSON_BODY EQUALS "day 20 subject tha...".
